@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1>Dear, <%= @user.name %></h1>
+    <h2><%=  Setting.plugin_task_reminder['header'] %></h2>
+    <p>
+      You have not managed to update the status of assigned task <%=  @issue.subject %>.
+      <br/>
+      Kindly update the status so issues will not arise.
+    </p>
+
+    <p><%=  Setting.plugin_task_reminder['footer'] %></p>
+  </body>
+</html>
