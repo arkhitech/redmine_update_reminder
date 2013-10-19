@@ -1,9 +1,9 @@
-Dear <%=@user.name%>
-
 <%=  Setting.plugin_task_reminder['header'] %>
- 
-You have not managed to update the status of assigned task <%=  @issue.subject %>.
 
-Kindly update the status so issues will not arise.
- 
+<%=@user.name%>,
+
+"#{h(@issue.tracker)} ##{@issue.id}", <%=url_for {controller: 'issues', action: 'show', id: issue}) %> needs to be updated. 
+
+Please provide feedback on the ticket at the earliest.
+
 <%=  Setting.plugin_task_reminder['footer'] %>

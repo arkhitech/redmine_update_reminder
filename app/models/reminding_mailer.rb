@@ -1,5 +1,10 @@
 class RemindingMailer < ActionMailer::Base
-  default from: 'no_reply@task_reminder_plugin'
+  default from: Setting.mail_from
+
+  def self.default_url_options
+    Mailer.default_url_options
+  end
+  
   def reminder_email(user,issue)
     @user=user
     @issue=issue

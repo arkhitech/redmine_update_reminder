@@ -4,14 +4,21 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <h1>Dear, <%= @user.name %></h1>
-    <h2><%=  Setting.plugin_task_reminder['header'] %></h2>
+    <span class="header">
+      <%= Redmine::WikiFormatting.to_html(Setting.text_formatting,
+          Setting.plugin_task_reminder['header']).html_safe %>
+    </span>
+                         
+    <%= @user.name %>,
     <p>
-      You have not managed to update the status of assigned task <%=  @issue.subject %>.
-      <br/>
-      Kindly update the status so issues will not arise.
+      <%= link_to("#{h(@issue.tracker)} ##{@issue.id}", 
+          {controller: 'issues', action: 'show', id: issue, only_path: false}) %>
+      needs to be updated. Please provide feedback on the ticket at the earliest.
     </p>
 
-    <p><%=  Setting.plugin_task_reminder['footer'] %></p>
+    <span class="header">
+      <%= Redmine::WikiFormatting.to_html(Setting.text_formatting,
+          Setting.plugin_task_reminder['footer']).html_safe %>
+    </span>
   </body>
 </html>
