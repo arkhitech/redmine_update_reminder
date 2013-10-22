@@ -1,9 +1,10 @@
-<%=  Setting.plugin_task_reminder['header'] %>
+<%=  Setting.plugin_redmine_update_reminder['header'] %>
 
 <%=@user.name%>,
 
-"#{h(@issue.tracker)} ##{@issue.id}", <%=url_for {controller: 'issues', action: 'show', id: issue}) %> needs to be updated. 
+<%="#{h(@issue.tracker)} ##{@issue.id}"%>, 
+<%= url_for({controller: 'issues', action: 'show', id: @issue}) %> needs to be updated. 
 
 Please provide feedback on the ticket at the earliest.
 
-<%=  Setting.plugin_task_reminder['footer'] %>
+<%=  Setting.plugin_redmine_update_reminder['footer'] %>

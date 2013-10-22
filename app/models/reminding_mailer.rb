@@ -8,6 +8,6 @@ class RemindingMailer < ActionMailer::Base
   def reminder_email(user,issue)
     @user=user
     @issue=issue
-    mail(to: @user.mail, subject: @issue.subject, cc: Setting.plugin_task_reminder['cc'] )
+    mail(to: @user.mail, subject: @issue.subject, cc: Setting.plugin_redmine_update_reminder['cc'] )
   end
 end
