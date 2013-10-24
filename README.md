@@ -1,8 +1,10 @@
 Redmine_Update_Reminder:
+========================
 
 This plugin sends reminder email to assigned users if an issue is not updated within specified duration.
 
 Functionality:
+==============
 
 All the mails are CC'ed to a single User (generally scrum master) along with the assigned user for notifying that a given task needs updation.  
 The duration for each kind of tracker can be set in settings.
@@ -10,13 +12,14 @@ Duration takes input in days, and can be decimal point numbers (for instance .5 
 Emails Headers and Footers are configurable for personalization.
 
 Installation:
+=============
 
 The plugin is available for download from 
-	github.com:arkhitech/redmine_update_reminder
-Once the the plugin is installed download whenever gem by following the guide at 
-	http://eewang.github.io/blog/2013/03/12/how-to-schedule-tasks-using-whenever/
-Go to redmine's plugins directory and wheneverize the downloaded plugin directory.
-Open config directory and and edit schedule.rb
+	`github.com:arkhitech/redmine_update_reminder`
+
+Go to redmine's plugins directory and `wheneverize` the downloaded redmine_update_reminder plugin directory.
+Open config directory and edit schedule.rb
+
 
 for example:
 
@@ -30,6 +33,6 @@ These issues will be checked every 15 minutes and will be sent emails till they 
 
 Check whenever gems documentation for detailed description of its working.
 
-The rake task can be run without schedular using this command
+The rake task can be run without scheduling using this command
 rake redmine_update_reminder:send_reminders
 
