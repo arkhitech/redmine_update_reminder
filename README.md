@@ -1,4 +1,4 @@
-Redmine_Update_Reminder:
+redmine_intouch:
 ========================
 
 This plugin sends reminder email to assigned users if an issue is not updated within specified duration.
@@ -6,7 +6,7 @@ This plugin sends reminder email to assigned users if an issue is not updated wi
 Functionality:
 ==============
 
-All the mails are CC'ed to a single User (generally scrum master) along with the assigned user for notifying that a given task needs updation.  
+All the mails are CC'ed to a single User (generally scrum master) along with the assigned user for notifying that a given task needs updation.
 The duration for each kind of tracker can be set in settings.
 Duration takes input in days, and can be decimal point numbers (for instance .5 for 12 hours).
 Emails Headers and Footers are configurable for personalization.
@@ -14,10 +14,10 @@ Emails Headers and Footers are configurable for personalization.
 Installation:
 =============
 
-The plugin is available for download from 
-	`github.com:arkhitech/redmine_update_reminder`
+The plugin is available for download from
+	`github.com:arturtr/redmine_intouch`
 
-Go to redmine's plugins directory and `wheneverize` the downloaded redmine_update_reminder plugin directory.
+Go to redmine's plugins directory and `wheneverize` the downloaded redmine_intouch plugin directory.
 Open config directory and edit schedule.rb
 
 
@@ -25,11 +25,11 @@ for example:
 
 	set :environment, "production"
 	every 15.minutes do
-	rake "redmine_update_reminder:send_reminders"
-	end 
+	rake "redmine_intouch:send_reminders"
+	end
 
-This will check for all issues that have not been updated in the specified duration from current time and send them an email. 
-These issues will be checked every 15 minutes and will be sent emails till they are updated. 
+This will check for all issues that have not been updated in the specified duration from current time and send them an email.
+These issues will be checked every 15 minutes and will be sent emails till they are updated.
 
 Check whenever gems documentation for detailed description of its working.
 

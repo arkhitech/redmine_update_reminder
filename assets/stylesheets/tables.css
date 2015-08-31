@@ -1,0 +1,30 @@
+.half {
+    display: inline-block;
+    width: 44%;
+    vertical-align: top;
+}
+
+
+.fourth {
+    display: inline-block;
+    width: 22%;
+    vertical-align: top;
+}
+
+.fourth.alarm {
+    margin-right: 20px;
+    background-color: #ffd9d9;
+}
+
+.tabular.settings .fourth p {
+    padding-left: 180px;
+}
+
+ul.work-days li {
+    display: inline-block;
+}
+
+.tabular.settings ul.work-days li label {
+    margin-left: 0;
+    float: none;
+}

@@ -22,3 +22,15 @@
 # end
 
 # Learn more: http://github.com/javan/whenever
+
+every 30.minutes do
+  rake 'intouch:telegram:notification:alarm'
+end
+
+every 1.day, at: '10:00' do
+  rake 'intouch:telegram:notification:new'
+end
+
+every 2.hours do
+  rake 'intouch:telegram:notification:work_in_progress'
+end
