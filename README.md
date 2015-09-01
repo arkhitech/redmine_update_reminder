@@ -2,6 +2,7 @@ redmine_intouch:
 ========================
 
 This plugin sends reminder email to assigned users if an issue is not updated within specified duration.
+Developed by: [Centos-admin.ru](http://centos-admin.ru/)
 
 Functionality:
 ==============
@@ -15,7 +16,7 @@ Installation:
 =============
 
 The plugin is available for download from
-	`github.com:arturtr/redmine_intouch`
+	`github.com:olemskoi/redmine_intouch`
 
 Go to redmine's plugins directory and `wheneverize` the downloaded redmine_intouch plugin directory.
 Open config directory and edit schedule.rb
