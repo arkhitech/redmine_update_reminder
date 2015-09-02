@@ -1,0 +1,31 @@
+<%= error_messages_for 'intouch_settings' %>
+
+<% errors = [] %>
+<% errors << l(:label_intouch_enable_module) unless @project.module_enabled?(:intouch) %>
+
+<% if errors.empty? %>
+  <%= form_tag({controller: :intouch, action: :save_settings, project_id: @project, tab: 'intouch'}, method: :put, class: "tabular", multipart: true, id: 'intouch_settings') do %>
+
+  <div class="splitcontentleft intouch-settings">
+    <h3><%=l(:label_intouch_telegram)%></h3>
+    <%= render partial: 'projects/settings/intouch_telegram' %>
+  </div>
+
+  <div class="splitcontentright">
+    <h3><%=l(:label_intouch_email)%></h3>
+    <%#= render partial: 'projects/settings/intouch_email' %>
+  </div>
+
+  <div style="clear:both;"></div>
+
+  <%= submit_tag l(:button_save) %>
+
+  <% end %>
+
+<% else %>
+  <p class="nodata"><%= errors.join("<br/>").html_safe %></p>
+<% end %>
+
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'project_settings', plugin: 'redmine_intouch' %>
+<% end %>

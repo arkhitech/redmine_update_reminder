@@ -1,31 +1,33 @@
 namespace :intouch do
-  task :send_reminders => :environment do
-    trackers = Tracker.all
+  namespace :email do
+    task :send_reminders => :environment do
+      trackers = Tracker.all
 
-    trackers.each do |t|
-      logger = Rails.logger
-      logger.info "Tracker:#{t.name}"
+      trackers.each do |t|
+        logger = Rails.logger
+        logger.info "Tracker:#{t.name}"
 
-      open_issue_status_ids = IssueStatus.select('id').where(is_closed: false).collect { |is| is.id }
+        open_issue_status_ids = IssueStatus.select('id').where(is_closed: false).collect { |is| is.id }
 
-      update_duration = Setting.plugin_redmine_update_reminder["#{t.id}_update_duration"]
-      if !update_duration.blank? && update_duration.to_f > 0
-        updated_since = Time.now - (update_duration.to_f * 24).hours
-        issues = Issue.where(['tracker_id = ? AND assigned_to_id IS NOT NULL AND status_id IN (?) AND (updated_on < ?)',
-                              t.id, open_issue_status_ids, updated_since])
+        update_duration = Setting.plugin_redmine_update_reminder["#{t.id}_update_duration"]
+        if !update_duration.blank? && update_duration.to_f > 0
+          updated_since = Time.now - (update_duration.to_f * 24).hours
+          issues = Issue.where('tracker_id = ? AND assigned_to_id IS NOT NULL AND status_id IN (?) AND (updated_on < ?)',
+                               t.id, open_issue_status_ids, updated_since)
 
-        issues.each do |issue|
-          RemindingMailer.reminder_email(issue.assigned_to, issue).deliver unless issue.assigned_to.nil?
+          issues.each do |issue|
+            RemindingMailer.reminder_email(issue.assigned_to, issue).deliver unless issue.assigned_to.nil?
+          end
         end
       end
     end
   end
 
+
   namespace :telegram do
     namespace :notification do
       task :alarm do
-        settings = Setting.plugin_redmine_intouch
-        alarm_priority_ids = settings.keys.select{|key| key.include?('alarm_priority')}.map{|key| key.split('_').last }
+        alarm_priority_ids = IssuePriority.alarm_ids
 
       end
 
@@ -39,9 +41,21 @@ namespace :intouch do
     end
 
     task :bot => :environment do
+      token = Setting.plugin_redmine_intouch['telegram_bot_token']
+
+      unless token.present?
+        puts 'Telegram Bot Token not found. Please set it in the plugin config web-interface.'
+        exit
+      end
+
       puts 'Telegram Bot: Connecting to telegram...'
-      bot = TelegramBot.new(token: Redmine::Configuration['telegram_bot_token'])
+      bot = TelegramBot.new(token: token)
       bot_name = bot.get_me.username
+
+      unless bot_name.present?
+        puts 'Telegram Bot Token is invalid'
+        exit
+      end
 
       puts "#{bot_name}: connected"
       puts "#{bot_name}: waiting for new users and group chats..."

@@ -1,2 +1,2 @@
-# Plugin's routes
-# See: http://guides.rubyonrails.org/routing.html
+
+put "intouch/save_settings" => "intouch#save_settings"

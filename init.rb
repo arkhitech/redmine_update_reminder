@@ -1,6 +1,9 @@
 require 'redmine'
-require_dependency 'intouch_hook_listener'
-require_dependency 'intouch/user_patch'
+require_dependency 'intouch/hook_listener'
+require_dependency 'intouch/patches/projects_helper_patch'
+require_dependency 'intouch/patches/issue_patch'
+require_dependency 'intouch/patches/issue_priority_patch'
+require_dependency 'intouch/patches/user_patch'
 
 Redmine::Plugin.register :redmine_intouch do
   name 'Redmine Intouch plugin'
@@ -13,5 +16,12 @@ Redmine::Plugin.register :redmine_intouch do
                'header' => 'Update on Task Required',
                'footer' => 'powered by Centos-admin.ru',
                'duration' => 3
-           }, partial: 'settings/reminder_settings')
+           }, partial: 'settings/intouch')
+
+  project_module :intouch do
+    permission :manage_intouch_settings, {
+      :projects => :settings,
+      :intouch_settings => :save,
+    }
+  end
 end

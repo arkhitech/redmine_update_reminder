@@ -1,0 +1,54 @@
+<p>
+  <label for="settings_telegram_bot_token">Bot Token</label>
+  <%= text_field_tag 'settings[telegram_bot_token]', @settings['telegram_bot_token'], size: 50 %>
+</p>
+<div class="box tabular settings">
+  <h4>Work days</h4>
+
+  <ul class="work-days">
+    <li>
+      <label for="settings_work_day_from">From</label>
+      <%= time_field_tag "settings[work_day_from]", @settings["work_day_from"] %>
+    </li>
+    <li>
+      <label for="settings_work_day_to">to</label>
+      <%= time_field_tag "settings[work_day_to]", @settings["work_day_to"] %>
+    </li>
+    <% Date::DAYNAMES.each_with_index do |day, i| %>
+      <li>
+        <%= check_box_tag "settings[work_days_#{i}]", '1',
+                          @settings["work_days_#{i}"] %>
+        <label for="settings_work_days_<%= i %>"><%= day %></label>
+      </li>
+    <% end %>
+  </ul>
+</div>
+<br>
+
+
+<div class="box tabular settings fourth alarm">
+  <h4>Alarm priorities</h4>
+  <% IssuePriority.find_each do |priority| %>
+    <p>
+
+      <label><%= priority.name %></label>
+      <%= check_box_tag "settings[alarm_priority_#{priority.id}]", '1',
+                        @settings["alarm_priority_#{priority.id}"] %>
+    </p>
+
+  <% end %>
+</div>
+<% %w(new work_in_progress feedback).each do |notification_group| %>
+  <div class="box tabular settings fourth">
+    <h4><%= notification_group.humanize %> statuses</h4>
+    <% IssueStatus.find_each do |status| %>
+      <p>
+
+        <label><%= status.name %></label>
+        <%= check_box_tag "settings[#{notification_group}_status_#{status.id}]", '1',
+                          @settings["#{notification_group}_status_#{status.id}"] %>
+      </p>
+
+    <% end %>
+  </div>
+<% end %>

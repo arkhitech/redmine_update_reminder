@@ -13,7 +13,7 @@ module Intouch
         end
 
         def telegram_user_id=(id)
-          self.telegram_user = TelegramUser.find(id)
+          self.telegram_user = TelegramUser.find(id) if id.present?
         end
       end
     end

@@ -1,3 +1,7 @@
 # English strings go here for Rails i18n
 en:
-  # my_label: "My label"
+ label_intouch: InTouch
+ label_intouch_settings: InTouch
+ label_intouch_telegram: Telegram
+ label_intouch_email: E-mail
+ label_intouch_enable_module: Для этого проекта должey быть включён модуль InTouch
