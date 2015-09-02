@@ -3,7 +3,6 @@ class TelegramSender
     project = Project.find project_id
     issue = project.issues.find issue_id
 
-    issue = Issue.last
     notice = 'alarm'
     project_id = 1
 
@@ -18,9 +17,6 @@ class TelegramSender
     token = Setting.plugin_redmine_intouch['telegram_bot_token']
     bot = TelegramBot.new(token: token)
 
-
-
-
     users.each do |user|
       telegram_user = user.telegram_user
       reply = TelegramBot::OutMessage.new(chat: TelegramBot::Channel.new(id: telegram_user.tid))
@@ -34,8 +30,5 @@ class TelegramSender
       reply.text = message
       bot.send_message(reply)
     end
-
-
-
   end
 end
