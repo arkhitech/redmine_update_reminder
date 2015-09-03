@@ -29,12 +29,13 @@ end
 
 every 1.day, at: '10:00' do
   rake 'intouch:telegram:notification:new'
+  rake 'intouch:telegram:notification:overdue'
 end
 
-every 10.minutes do
+every 5.minutes do
   rake 'intouch:telegram:notification:work_in_progress'
 end
 
-every 10.minutes do
+every 5.minutes do
   rake 'intouch:telegram:notification:feedback'
 end
