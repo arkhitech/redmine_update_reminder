@@ -1,2 +1,1 @@
-
-put "intouch/save_settings" => "intouch#save_settings"
+put 'intouch/save_settings' => 'intouch#save_settings'

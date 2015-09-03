@@ -1,5 +1,5 @@
 class TelegramUser < ActiveRecord::Base
-  # unloadable
+  unloadable
 
   belongs_to :user
 end

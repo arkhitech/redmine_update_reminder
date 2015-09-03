@@ -26,17 +26,42 @@ namespace :intouch do
 
   namespace :telegram do
     namespace :notification do
-      task :alarm do
-        alarm_priority_ids = IssuePriority.alarm_ids
-
+      task :alarm => :environment do
+        Issue.alarms.each do |issue|
+          TelegramSender.send_alarm_message(issue.project_id, issue.id)
+        end
       end
 
-      task :new do
-
+      task :new => :environment do
+        if work_day? and work_time?
+          Issue.news.each do |issue|
+            TelegramSender.send_new_message(issue.project_id, issue.id)
+          end
+        end
       end
 
-      task :work_in_progress do
+      task :overdue => :environment do
+        if work_day? and work_time?
+          Issue.where(status_id: IssueStatus.alarm_ids).where('due_date < ?', Date.today).
+              where.not(priority_id: IssuePriority.alarm_ids).each do |issue|
+            TelegramSender.send_overdue_message(issue.project_id, issue.id)
+          end
+        end
+      end
 
+      task :work_in_progress => :environment do
+        if work_day? and work_time?
+          Issue.working.each do |issue|
+            TelegramSender.send_working_message(issue.project_id, issue.id) if issue.updated_on < 2.hours.ago
+          end
+        end
+      end
+      task :feedback => :environment do
+        if work_day? and work_time?
+          Issue.feedbacks.each do |issue|
+            TelegramSender.send_feedback_message(issue.project_id, issue.id) if issue.updated_on < 2.hours.ago
+          end
+        end
       end
     end
 
@@ -97,4 +122,17 @@ namespace :intouch do
       end
     end
   end
+end
+
+
+def work_day?
+  settings = Setting.plugin_redmine_intouch
+  work_days = settings.keys.select { |key| key.include?('work_days') }.map { |key| key.split('_').last.to_i }
+  work_days.include? Date.today.wday
+end
+
+def work_time?
+  from = Time.parse Setting.plugin_redmine_intouch['work_day_from']
+  to = Time.parse Setting.plugin_redmine_intouch['work_day_to']
+  from <= Time.now and Time.now <= to
 end

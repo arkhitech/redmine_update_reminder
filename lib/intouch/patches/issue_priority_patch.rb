@@ -7,9 +7,8 @@ module Intouch
 
         def self.alarm_ids
           settings = Setting.plugin_redmine_intouch
-          settings.keys.select{|key| key.include?('alarm_priority')}.map{|key| key.split('_').last }
+          settings.keys.select { |key| key.include?('alarm_priority') }.map { |key| key.split('_').last }
         end
-
 
       end
     end

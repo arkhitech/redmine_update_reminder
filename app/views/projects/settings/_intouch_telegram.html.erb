@@ -3,22 +3,30 @@
     <thead>
       <tr>
         <th></th>
-        <% %w(author assigned_to watchers telegram_groups).each do |receiver| %>
+        <% %w(author assigned_to watchers user_groups telegram_groups).each do |receiver| %>
           <th><%= receiver %></th>
         <% end %>
       </tr>
     </thead>
 
-    <% %w(alarm new wip feedback).each do |notice| %>
+    <% %w(alarm new wip feedback overdue).each do |notice| %>
       <tr>
         <th><%= notice %></th>
         <% %w(author assigned_to watchers).each do |receiver| %>
           <% sym = "telegram_#{notice}_#{receiver}".to_sym %>
-          <td>
+          <td class="center">
             <%= check_box_tag sym, '1', IntouchSetting[sym, @project.id].to_i > 0 %>
           </td>
 
         <% end %>
+        <td>
+          <% Group.find_each do |user_group| %>
+            <% sym = "telegram_#{notice}_user_groups".to_sym %>
+            <%= check_box_tag "telegram_#{notice}_user_groups[#{user_group.id}]", '1',
+                              IntouchSetting[sym, @project.id][user_group.id.to_s].to_i > 0 %>
+            <%= label_tag user_group.name %><br>
+          <% end %>
+        </td>
         <td>
           <% TelegramGroupChat.find_each do |telegram_group| %>
             <% sym = "telegram_#{notice}_telegram_groups".to_sym %>

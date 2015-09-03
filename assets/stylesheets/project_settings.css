@@ -2,3 +2,18 @@
     float: none;
     margin-left: 0;
 }
+
+.intouch-settings table {
+    border-spacing: 0;
+}
+.intouch-settings table th {
+    border-top: 1px solid #555;
+
+}
+.intouch-settings table td {
+    padding: 7px;
+    border-top: 1px solid #555;
+    border-left: 1px solid #555;
+
+
+}

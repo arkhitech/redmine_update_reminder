@@ -3,6 +3,7 @@ require_dependency 'intouch/hook_listener'
 require_dependency 'intouch/patches/projects_helper_patch'
 require_dependency 'intouch/patches/issue_patch'
 require_dependency 'intouch/patches/issue_priority_patch'
+require_dependency 'intouch/patches/issue_status_patch'
 require_dependency 'intouch/patches/user_patch'
 
 Redmine::Plugin.register :redmine_intouch do

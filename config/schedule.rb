@@ -31,6 +31,10 @@ every 1.day, at: '10:00' do
   rake 'intouch:telegram:notification:new'
 end
 
-every 2.hours do
+every 10.minutes do
   rake 'intouch:telegram:notification:work_in_progress'
+end
+
+every 10.minutes do
+  rake 'intouch:telegram:notification:feedback'
 end

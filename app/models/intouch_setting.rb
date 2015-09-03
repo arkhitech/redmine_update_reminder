@@ -8,11 +8,12 @@ class IntouchSetting < ActiveRecord::Base
   self.available_settings ||= {}
 
   def self.load_available_settings
-    %w(alarm new wip feedback).each do |notice|
+    %w(alarm new wip feedback overdue).each do |notice|
       %w(author assigned_to watchers).each do |receiver|
         define_setting "telegram_#{notice}_#{receiver}"
       end
       define_setting "telegram_#{notice}_telegram_groups", serialized: true, default: {}
+      define_setting "telegram_#{notice}_user_groups", serialized: true, default: {}
     end
   end
 
