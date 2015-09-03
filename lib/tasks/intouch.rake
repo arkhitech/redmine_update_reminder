@@ -41,6 +41,8 @@ namespace :intouch do
     end
 
     task :bot => :environment do
+      PidFile.new(piddir: '/tmp', pidfile: 'telegram-bot.pid')
+
       token = Setting.plugin_redmine_intouch['telegram_bot_token']
 
       unless token.present?
