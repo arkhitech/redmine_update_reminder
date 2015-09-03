@@ -15,6 +15,7 @@ class IntouchSetting < ActiveRecord::Base
       define_setting "telegram_#{notice}_telegram_groups", serialized: true, default: {}
       define_setting "telegram_#{notice}_user_groups", serialized: true, default: {}
     end
+    define_setting 'email_cc', default: ''
   end
 
 
@@ -30,7 +31,7 @@ class IntouchSetting < ActiveRecord::Base
   @cached_cleared_on = Time.now
 
 
-  validates_uniqueness_of :name, :scope => [:project_id]
+  validates_uniqueness_of :name, scope: [:project_id]
 
   def value
     v = read_attribute(:value)

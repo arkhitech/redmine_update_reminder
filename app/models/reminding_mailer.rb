@@ -5,9 +5,14 @@ class RemindingMailer < ActionMailer::Base
     Mailer.default_url_options
   end
 
-  def reminder_email(user,issue)
-    @user=user
-    @issue=issue
-    mail(to: @user.mail, subject: @issue.subject, cc: Setting.plugin_redmine_intouch['cc'] )
+  def reminder_email(user, issue)
+    @user = user
+    @issue = issue
+
+    if IntouchSetting[:email_cc, @issue.project_id].present?
+      mail(to: @user.mail, subject: @issue.subject, cc: IntouchSetting[:email_cc, @issue.project_id])
+    else
+      mail to: @user.mail, subject: @issue.subject
+    end
   end
 end

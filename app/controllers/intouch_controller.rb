@@ -30,6 +30,7 @@ class IntouchController < ApplicationController
       set_settings_param("telegram_#{notice}_telegram_groups".to_sym)
       set_settings_param("telegram_#{notice}_user_groups".to_sym)
     end
+    set_settings_param(:email_cc)
   end
 
   def set_settings_param(param)

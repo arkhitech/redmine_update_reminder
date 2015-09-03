@@ -1,12 +1,3 @@
-<p>
-  <label for="settings_cc">CarbonCopy To</label>
-  <%= select_tag('settings[cc]',
-                 options_for_select(User.where(status: 1).collect { |u| [u.name, u.mail] }, @settings['cc'])) %>
-</p>
-
-<p>
-  <%= @settings['cc'] %>
-</p>
 
 <p>
   <label for="settings_header">Header</label>

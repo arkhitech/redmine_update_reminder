@@ -1,4 +1,4 @@
-namespace :intouch do |args|
+namespace :intouch do
   namespace :email do
     task :send_reminders => :environment do
       trackers = Tracker.all
