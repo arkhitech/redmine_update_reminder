@@ -8,7 +8,7 @@ class IntouchSetting < ActiveRecord::Base
   self.available_settings ||= {}
 
   def self.load_available_settings
-    %w(alarm new wip feedback overdue).each do |notice|
+    %w(alarm new working feedback overdue).each do |notice|
       %w(author assigned_to watchers).each do |receiver|
         define_setting "telegram_#{notice}_#{receiver}"
       end

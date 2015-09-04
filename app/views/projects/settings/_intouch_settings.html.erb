@@ -1,18 +1,18 @@
 <%= error_messages_for 'intouch_settings' %>
 
 <% errors = [] %>
-<% errors << l(:label_intouch_enable_module) unless @project.module_enabled?(:intouch) %>
+<% errors << l('intouch.label.enable_module') unless @project.module_enabled?(:intouch) %>
 
 <% if errors.empty? %>
   <%= form_tag({controller: :intouch, action: :save_settings, project_id: @project, tab: 'intouch'}, method: :put, class: "tabular", multipart: true, id: 'intouch_settings') do %>
 
   <div class="splitcontentleft intouch-settings">
-    <h3><%=l(:label_intouch_telegram)%></h3>
+    <h3><%=l('intouch.label.telegram')%></h3>
     <%= render partial: 'projects/settings/intouch_telegram' %>
   </div>
 
   <div class="splitcontentright">
-    <h3><%=l(:label_intouch_email)%></h3>
+    <h3><%=l('intouch.label.email')%></h3>
     <%= render partial: 'projects/settings/intouch_email' %>
   </div>
 

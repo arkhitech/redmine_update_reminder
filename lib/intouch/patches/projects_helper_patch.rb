@@ -41,7 +41,7 @@ module Intouch
           tabs.push({name: 'intouch_settings',
                      action: :manage_intouch_settings,
                      partial: 'projects/settings/intouch_settings',
-                     label: :label_intouch_settings}) if User.current.allowed_to?(:manage_intouch_settings, @project)
+                     label: 'intouch.label.settings'}) if User.current.allowed_to?(:manage_intouch_settings, @project)
 
           tabs
 

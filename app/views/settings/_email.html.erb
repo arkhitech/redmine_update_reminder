@@ -1,11 +1,10 @@
-
 <p>
-  <label for="settings_header">Header</label>
+  <label for="settings_header"><%= l 'intouch.email.header' %></label>
   <%= text_area_tag 'settings[header]', @settings['header'] %>
 </p>
 
 <p>
-  <label for="settings_footer">Footer</label>
+  <label for="settings_footer"><%= l 'intouch.email.footer' %></label>
   <%= text_area_tag 'settings[footer]', @settings['footer'] %>
 </p>
 
@@ -17,7 +16,7 @@
     </p>
 
     <p>
-      <label for="settings_duration">Reminder Interval (in Days)</label>
+      <label for="settings_duration"><%= l 'intouch.email.interval' %></label>
       <%= text_field_tag "settings[#{tracker.id}_update_duration]", @settings["#{tracker.id}_update_duration"] %></p>
   </div>
 

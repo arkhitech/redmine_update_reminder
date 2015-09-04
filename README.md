@@ -1,9 +1,48 @@
 # redmine_intouch
 
-This plugin sends reminder email to assigned users if an issue is not updated within specified duration.
-Developed by: [Centos-admin.ru](http://centos-admin.ru/)
+Плагин разработан [Centos-admin.ru](http://centos-admin.ru/).
 
-## Настройка бота Telegram
+Плагин предназначен для рассылки уведомлений пользователям RedMine и Telegram.
+Состоит и двух модулей - email и telegram
+
+## Telegram
+
+Рассылает уведомления о сменене статуса задачи либо же напоминания о задачах, статус которых давно не менялся.
+
+## E-mail
+
+Отправляет уведомления исполнителям по задачам, в случае если задача не обновлялась больше, чем указанное в настройках количество часов.
+
+Настройки указываются для каждого треккера индивидуальные.
+
+### Настройка плагина
+
+Перед запуском бота на странице настройки плагина нужно указать:
+
+* токен бота Telegram (как его получить описано ниже)
+* рабочее время - в это время отправляются уведомления по задачам с приорететам отличным от "Авария"
+* указать какие приоритеты считать аварийными
+* указать какие статусы считать новой задаче, в работе и обратной связью
+
+После этого необходимо запустить бота командой:
+
+```
+bundle exec rake intouch:telegram:bot PID_DIR='/pid/dir'
+```
+
+Также необходимо добавть в CRON задачи описанные в ```schedule.rb```.  Для этого из папки плагина нужно выполнить:
+
+```
+bundle exec whenewer -w redmine_intouch
+```
+
+Очистить CRON от этих задач можно командой:
+
+```
+bundle exec whenewer -c redmine_intouch
+```
+
+### Создание бота Telegram
 
 Бота необходимо зарегистрировать и получить его токен. Для этого в Telegram существует специальный бот — @BotFather.
 
@@ -12,41 +51,79 @@ Developed by: [Centos-admin.ru](http://centos-admin.ru/)
 
 Полученный токен нужно ввести на странце настройки плагина.
 
-После этого можно запустить бота командой:
+### Добавление аккаутна Telegram к пользователю
 
+После того как бот запущен и пользователи поприветствовали его командой `/start`, 
+на страничке редактированию пользователя, можно выбрать соответствующий ему аккаунт Telegram. 
+
+### Настройка модуля внутри проекта
+
+В настройках проекта на вкалдке "Модули" нужно выбрать модуль Intouch. 
+В результате в настройках появится вкладка "Intouch".
+
+На этой вкладке можно настроить по каким типам задач куда слать уведомления Telegram.
+
+Типы задач:
+
+* Авария
+* Новая
+* В работе
+* Обратная связь
+* Просроченная
+
+Получатели уведомлений:
+
+* Автор задачи
+* Исполнитель
+* Наблюдатели
+* Группа пользователей RedMine
+* Групповой чат Telegram
+
+**Важное замечание: для того, чтобы пользователь Telegram получал сообщения, нужно чтобы он предварительно написал команду ```/start``` боту**
+
+В разделе email можно указать кому посылать скрытую копию при отправке уведомлений по e-mail.
+
+### Доступные rake-задачи
+
+```rake intouch:email:send_reminders``` - отправляет увудомление исполнителям задач, которые давно не обновлялись
+
+```rake intouch:telegram:bot PID_DIR='/pid/dir' LOG_DIR='/log/dir'``` - запускает процесс бота Telegram, параметры PID_DIR и LOG_DIR обязательны                              
+
+```rake intouch:telegram:notification:alarm``` - отправляет уведомления пользователям Telegram об аварийных задачах             
+
+```rake intouch:telegram:notification:feedback``` - отправляет уведомления пользователям Telegram о задачах с обратной связью          
+
+```rake intouch:telegram:notification:new``` - отправляет уведомления пользователям Telegram о новых задачах               
+
+```rake intouch:telegram:notification:overdue``` - отправляет уведомления пользователям Telegram о просроченных задачах           
+
+```rake intouch:telegram:notification:work_in_progress```  - отправляет уведомления пользователям Telegram о задачах в статутсе "В работе"  
+
+### Пример настройки schedule.rb
+
+```ruby
+every 1.hour do
+  rake 'intouch:email:send_reminders'
+end
+
+every 30.minutes do
+  rake 'intouch:telegram:notification:alarm'
+end
+
+every 1.day, at: '10:00' do
+  rake 'intouch:telegram:notification:new'
+  rake 'intouch:telegram:notification:overdue'
+end
+
+every 5.minutes do
+  rake 'intouch:telegram:notification:work_in_progress'
+end
+
+every 5.minutes do
+  rake 'intouch:telegram:notification:feedback'
+end
 ```
-bundle exec rake intouch:telegram:bot PID_DIR='/pid/dir' LOG_DIR='/log/dir' &
-```
-
-Functionality:
-==============
-
-All the mails are CC'ed to a single User (generally scrum master) along with the assigned user for notifying that a given task needs updation.
-The duration for each kind of tracker can be set in settings.
-Duration takes input in days, and can be decimal point numbers (for instance .5 for 12 hours).
-Emails Headers and Footers are configurable for personalization.
-
-Installation:
-=============
-
-The plugin is available for download from
-	`github.com:olemskoi/redmine_intouch`
-
-Go to redmine's plugins directory and `wheneverize` the downloaded redmine_intouch plugin directory.
-Open config directory and edit schedule.rb
 
 
-for example:
 
-	set :environment, "production"
-	every 15.minutes do
-	rake "redmine_intouch:send_reminders"
-	end
-
-This will check for all issues that have not been updated in the specified duration from current time and send them an email.
-These issues will be checked every 15 minutes and will be sent emails till they are updated.
-
-Check whenever gems documentation for detailed description of its working.
-
-The rake task can be run without scheduling using this command
-rake redmine_update_reminder:send_reminders
+Плагин разработан [Centos-admin.ru](http://centos-admin.ru/).

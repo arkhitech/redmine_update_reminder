@@ -1,11 +1,11 @@
 <% intouch_tabs = [
-    {name: 'telegram', partial: 'settings/telegram', label: :label_intouch_telegram},
-    {name: 'email', partial: 'settings/email', label: :label_intouch_email}
+    {name: 'telegram', partial: 'settings/telegram', label: 'intouch.label.telegram'},
+    {name: 'email', partial: 'settings/email', label: 'intouch.label.email'}
 ] %>
 
 <%= render_tabs intouch_tabs %>
 
-<% html_title(l(:label_settings), l(:label_intouch)) -%>
+<% html_title(l(:label_settings), l('intouch.label.base')) -%>
 
 <% content_for :header_tags do %>
   <%= stylesheet_link_tag 'tables', plugin: 'redmine_intouch' %>

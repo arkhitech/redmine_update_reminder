@@ -1,6 +1,6 @@
 <div class="box">
   <p>
-    <label for="email_cc">CarbonCopy To</label>
+    <label for="email_cc"><%= l "intouch.email.cc_to" %></label>
     <%= select_tag('email_cc',
                    options_for_select(@project.users.collect { |u| [u.name, u.mail] }, IntouchSetting[:email_cc, @project.id]),
                    include_blank: true) %>

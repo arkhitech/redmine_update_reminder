@@ -2,16 +2,16 @@
   <table>
     <thead>
       <tr>
-        <th></th>
-        <% %w(author assigned_to watchers user_groups telegram_groups).each do |receiver| %>
-          <th><%= receiver %></th>
+        <th><%= l "intouch.recipient.title" %></th>
+        <% %w(author assigned_to watchers user_groups telegram_groups).each do |recipient| %>
+          <th><%= l "intouch.recipient.#{recipient}" %></th>
         <% end %>
       </tr>
     </thead>
 
-    <% %w(alarm new wip feedback overdue).each do |notice| %>
+    <% %w(alarm new working feedback overdue).each do |notice| %>
       <tr>
-        <th><%= notice %></th>
+        <th><%= l "intouch.statuses.#{notice}" %></th>
         <% %w(author assigned_to watchers).each do |receiver| %>
           <% sym = "telegram_#{notice}_#{receiver}".to_sym %>
           <td class="center">

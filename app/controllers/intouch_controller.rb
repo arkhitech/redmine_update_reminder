@@ -23,7 +23,7 @@ class IntouchController < ApplicationController
   end
 
   def set_settings
-    %w(alarm new wip feedback overdue).each do |notice|
+    %w(alarm new working feedback overdue).each do |notice|
       %w(author assigned_to watchers).each do |receiver|
         set_settings_param("telegram_#{notice}_#{receiver}".to_sym)
       end

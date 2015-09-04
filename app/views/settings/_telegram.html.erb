@@ -3,15 +3,15 @@
   <%= text_field_tag 'settings[telegram_bot_token]', @settings['telegram_bot_token'], size: 50 %>
 </p>
 <div class="box tabular settings">
-  <h4>Work days</h4>
+  <h4><%= l 'intouch.work_days.title' %></h4>
 
   <ul class="work-days">
     <li>
-      <label for="settings_work_day_from">From</label>
+      <label for="settings_work_day_from"><%= l 'intouch.work_days.from' %></label>
       <%= time_field_tag "settings[work_day_from]", @settings["work_day_from"] %>
     </li>
     <li>
-      <label for="settings_work_day_to">to</label>
+      <label for="settings_work_day_to"><%= l 'intouch.work_days.to' %></label>
       <%= time_field_tag "settings[work_day_to]", @settings["work_day_to"] %>
     </li>
     <% Date::DAYNAMES.each_with_index do |day, i| %>
@@ -27,7 +27,7 @@
 
 
 <div class="box tabular settings fourth alarm">
-  <h4>Alarm priorities</h4>
+  <h4><%= l 'intouch.priorities.title' %> "<%= l 'intouch.priorities.alarm' %>"</h4>
   <% IssuePriority.find_each do |priority| %>
     <p>
 
@@ -38,9 +38,10 @@
 
   <% end %>
 </div>
-<% %w(new work_in_progress feedback).each do |notification_group| %>
+<% %w(new working feedback).each do |notification_group| %>
   <div class="box tabular settings fourth">
-    <h4><%= notification_group.humanize %> statuses</h4>
+    <h4><%= l 'intouch.statuses.title' %> "<%= l "intouch.statuses.#{notification_group}" %>"</h4>
+
     <% IssueStatus.find_each do |status| %>
       <p>
 
