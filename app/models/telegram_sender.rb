@@ -10,7 +10,7 @@ class TelegramSender
   end
 
   def self.send_working_message(project_id, issue_id)
-    send_message('wip', project_id, issue_id)
+    send_message('working', project_id, issue_id)
   end
 
   def self.send_feedback_message(project_id, issue_id)

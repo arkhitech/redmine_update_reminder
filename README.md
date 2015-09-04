@@ -30,16 +30,16 @@
 bundle exec rake intouch:telegram:bot PID_DIR='/pid/dir'
 ```
 
-Также необходимо добавть в CRON задачи описанные в ```schedule.rb```.  Для этого из папки плагина нужно выполнить:
+Также необходимо добавить в CRON задачи описанные в `config/schedule.rb`.  Для этого нужно выполнить:
 
 ```
-bundle exec whenewer -w redmine_intouch
+bundle exec whenever -w redmine_intouch -f plugins/redmine_intouch/config/schedule.rb
 ```
 
 Очистить CRON от этих задач можно командой:
 
 ```
-bundle exec whenewer -c redmine_intouch
+bundle exec whenever -c redmine_intouch -f plugins/redmine_intouch/config/schedule.rb
 ```
 
 ### Создание бота Telegram

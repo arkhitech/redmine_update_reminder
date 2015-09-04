@@ -4,6 +4,7 @@ module Intouch
 
 
       base.class_eval do
+        unloadable
 
         def self.alarm_ids
           settings = Setting.plugin_redmine_intouch

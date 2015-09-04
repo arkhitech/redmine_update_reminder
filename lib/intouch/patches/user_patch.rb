@@ -4,6 +4,7 @@ module Intouch
 
 
       base.class_eval do
+        unloadable
         has_one :telegram_user, dependent: :destroy
 
         safe_attributes 'telegram_user_id'

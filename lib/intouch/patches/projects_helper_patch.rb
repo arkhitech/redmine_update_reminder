@@ -26,15 +26,13 @@ module Intouch
         base.send(:include, InstanceMethods)
 
         base.class_eval do
-          # unloadable
+          unloadable
 
           alias_method_chain :project_settings_tabs, :intouch_settings
         end
       end
 
       module InstanceMethods
-        # include ContactsHelper
-
         def project_settings_tabs_with_intouch_settings
           tabs = project_settings_tabs_without_intouch_settings
 
