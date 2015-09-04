@@ -34,7 +34,7 @@ class TelegramSender
 
     receivers = (users + group_users).uniq
 
-    message = "#{notice.upcase} - #{project.name}: #{issue.subject}"
+    message = "#{notice.upcase} - #{project.name}: #{issue.subject} https://factory.southbridge.ru/issues/#{issue.id}"
 
     token = Setting.plugin_redmine_intouch['telegram_bot_token']
     bot = TelegramBot.new(token: token)
