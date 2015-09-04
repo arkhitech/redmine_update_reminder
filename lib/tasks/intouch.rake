@@ -33,16 +33,26 @@ namespace :intouch do
     namespace :notification do
       desc 'Notification for telegram users about alarm issues'
       task :alarm => :environment do
-        Issue.alarms.each do |issue|
-          TelegramSender.send_alarm_message(issue.project_id, issue.id)
+        Issue.joins(:project).alarms.group_by(&:project_id).each do |project_id, issues|
+          project = Project.find project_id
+          if project.module_enabled?(:intouch)
+            issues.each do |issue|
+              TelegramSender.send_alarm_message(issue.project_id, issue.id) if issue.project.present?
+            end
+          end
         end
       end
 
       desc 'Notification for telegram users about new issues'
       task :new => :environment do
         if work_day? and work_time?
-          Issue.news.each do |issue|
-            TelegramSender.send_new_message(issue.project_id, issue.id)
+          Issue.joins(:project).news.group_by(&:project_id).each do |project_id, issues|
+            project = Project.find project_id
+            if project.module_enabled?(:intouch)
+              issues.each do |issue|
+                TelegramSender.send_new_message(issue.project_id, issue.id)
+              end
+            end
           end
         end
       end
@@ -50,9 +60,14 @@ namespace :intouch do
       desc 'Notification for telegram users about overdue issues'
       task :overdue => :environment do
         if work_day? and work_time?
-          Issue.where(status_id: IssueStatus.alarm_ids).where('due_date < ?', Date.today).
-              where.not(priority_id: IssuePriority.alarm_ids).each do |issue|
-            TelegramSender.send_overdue_message(issue.project_id, issue.id)
+          Issue.joins(:project).where(status_id: IssueStatus.alarm_ids).where('due_date < ?', Date.today).
+              where.not(priority_id: IssuePriority.alarm_ids).group_by(&:project_id).each do |project_id, issues|
+            project = Project.find project_id
+            if project.module_enabled?(:intouch)
+              issues.each do |issue|
+                TelegramSender.send_overdue_message(issue.project_id, issue.id)
+              end
+            end
           end
         end
       end
@@ -60,8 +75,13 @@ namespace :intouch do
       desc 'Notification for telegram users about working issues'
       task :work_in_progress => :environment do
         if work_day? and work_time?
-          Issue.working.each do |issue|
-            TelegramSender.send_working_message(issue.project_id, issue.id) if issue.updated_on < 2.hours.ago
+          Issue.joins(:project).working.group_by(&:project_id).each do |project_id, issues|
+            project = Project.find project_id
+            if project.module_enabled?(:intouch)
+              issues.each do |issue|
+                TelegramSender.send_working_message(issue.project_id, issue.id) if issue.updated_on < 2.hours.ago
+              end
+            end
           end
         end
       end
@@ -69,8 +89,13 @@ namespace :intouch do
       desc 'Notification for telegram users about feedback issues'
       task :feedback => :environment do
         if work_day? and work_time?
-          Issue.feedbacks.each do |issue|
-            TelegramSender.send_feedback_message(issue.project_id, issue.id) if issue.updated_on < 2.hours.ago
+          Issue.joins(:project).feedbacks.group_by(&:project_id).each do |project_id, issues|
+            project = Project.find project_id
+            if project.module_enabled?(:intouch)
+              issues.each do |issue|
+                TelegramSender.send_feedback_message(issue.project_id, issue.id) if issue.updated_on < 2.hours.ago
+              end
+            end
           end
         end
       end
@@ -125,7 +150,7 @@ namespace :intouch do
             t_user.save
             reply.text = "Hello, #{user.first_name}! I'm added your profile for Redmine notifications."
             bot.send_message(reply)
-            logger.info "#{bot_name}: new user #{user.name} added!"
+            logger.info "#{bot_name}: new user #{user.first_name} #{user.last_name} @#{user.username} added!"
           else
             reply.text = "Hello, #{user.first_name}! You are already connected for Redmine notifications."
             bot.send_message(reply)
