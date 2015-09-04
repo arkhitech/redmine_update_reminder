@@ -123,11 +123,11 @@ namespace :intouch do
           reply = message.reply
           if t_user.new_record?
             t_user.save
-            reply.text = "Hello, #{user.first_name}! I'm added your profile for RedMine notifications."
+            reply.text = "Hello, #{user.first_name}! I'm added your profile for Redmine notifications."
             bot.send_message(reply)
             logger.info "#{bot_name}: new user #{user.name} added!"
           else
-            reply.text = "Hello, #{user.first_name}! You are already connected for RedMine notifications."
+            reply.text = "Hello, #{user.first_name}! You are already connected for Redmine notifications."
             bot.send_message(reply)
           end
         elsif message.chat.id < 0
@@ -137,7 +137,7 @@ namespace :intouch do
           reply = message.reply
           if t_chat.new_record?
             t_chat.save
-            reply.text = "Hello, people! I'm added this group chat for RedMine notifications."
+            reply.text = "Hello, people! I'm added this group chat for Redmine notifications."
             bot.send_message(reply)
             logger.info "#{bot_name}: new group #{chat.title} added!"
           else
