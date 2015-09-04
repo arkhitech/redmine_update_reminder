@@ -17,9 +17,8 @@ class TelegramSender
     send_message('feedback', project_id, issue_id)
   end
 
-  def self.send_message(notice, project_id, issue_id)
+  def self.send_message(notice, project_id, issue)
     project = Project.find project_id
-    issue = project.issues.find issue_id
 
     users = %w(author assigned_to watchers).map do |receiver|
       param = "telegram_#{notice}_#{receiver}".to_sym
@@ -34,7 +33,7 @@ class TelegramSender
 
     receivers = (users + group_users).uniq
 
-    message = "#{notice.upcase} - #{project.name}: #{issue.subject} https://factory.southbridge.ru/issues/#{issue.id}"
+    message = "[#{issue.priority.try :name}] [#{issue.status.try :name}] #{project.name}: #{issue.subject} https://factory.southbridge.ru/issues/#{issue.id}"
 
     token = Setting.plugin_redmine_intouch['telegram_bot_token']
     bot = TelegramBot.new(token: token)

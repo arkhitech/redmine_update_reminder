@@ -29,11 +29,17 @@ module Intouch
           if changed_attributes
             if changed_attributes['priority_id'] &&
                 IssuePriority.alarm_ids.include?(priority.id.to_s)
-              TelegramSender.send_alarm_message(project_id, id)
+              TelegramSender.send_alarm_message(project_id, self)
             elsif changed_attributes['status_id']
-              TelegramSender.send_new_message(project_id, id) if IssueStatus.new_ids.include?(status.id.to_s)
-              TelegramSender.send_working_message(project_id, id) if IssueStatus.working_ids.include?(status.id.to_s)
-              TelegramSender.send_feedback_message(project_id, id) if IssueStatus.feedback_ids.include?(status.id.to_s)
+              if IssuePriority.alarm_ids.include?(priority.id.to_s)
+                TelegramSender.send_alarm_message(project_id, self)
+              elsif IssueStatus.new_ids.include?(status.id.to_s)
+                TelegramSender.send_new_message(project_id, self)
+              elsif IssueStatus.working_ids.include?(status.id.to_s)
+                TelegramSender.send_working_message(project_id, self)
+              elsif IssueStatus.feedback_ids.include?(status.id.to_s)
+                TelegramSender.send_feedback_message(project_id, self)
+              end
             end
           end
         end
