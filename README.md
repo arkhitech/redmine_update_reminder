@@ -5,6 +5,12 @@
 Плагин предназначен для рассылки уведомлений пользователям RedMine и Telegram.
 Состоит и двух модулей - email и telegram
 
+## Requirements
+
+Для работы палагина необходимо установить плагин [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq)
+
+[Запуск Sidekiq как демона](https://github.com/mperham/sidekiq/wiki/Deployment#daemonization)
+
 ## Telegram
 
 Рассылает уведомления о сменене статуса задачи либо же напоминания о задачах, статус которых давно не менялся.
