@@ -16,7 +16,7 @@ module Intouch
         end
 
         def self.working
-          Issue.where(status_id: IssueStatus.wip_ids).where.not(priority_id: IssuePriority.alarm_ids)
+          Issue.where(status_id: IssueStatus.working_ids).where.not(priority_id: IssuePriority.alarm_ids)
         end
 
         def self.feedbacks

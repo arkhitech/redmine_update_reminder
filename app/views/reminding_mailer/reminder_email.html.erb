@@ -6,7 +6,7 @@
   <body>
     <span class="header">
       <%= Redmine::WikiFormatting.to_html(Setting.text_formatting,
-          Setting.plugin_redmine_update_reminder['header']).html_safe %>
+          Setting.plugin_redmine_intouch['header']).html_safe %>
     </span>
                          
     <%= @user.name %>,
@@ -18,7 +18,7 @@
 
     <span class="header">
       <%= Redmine::WikiFormatting.to_html(Setting.text_formatting,
-          Setting.plugin_redmine_update_reminder['footer']).html_safe %>
+          Setting.plugin_redmine_intouch['footer']).html_safe %>
     </span>
   </body>
 </html>

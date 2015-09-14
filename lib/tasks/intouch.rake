@@ -13,7 +13,7 @@ namespace :intouch do
 
           open_issue_status_ids = IssueStatus.select('id').where(is_closed: false).collect { |is| is.id }
 
-          update_duration = Setting.plugin_redmine_update_reminder["#{t.id}_update_duration"]
+          update_duration = Setting.plugin_redmine_intouch["#{t.id}_update_duration"]
           if !update_duration.blank? && update_duration.to_f > 0
             updated_since = Time.now - (update_duration.to_f).hours
             issues = Issue.where('tracker_id = ? AND assigned_to_id IS NOT NULL AND status_id IN (?) AND (updated_on < ?)',
