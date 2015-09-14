@@ -19,8 +19,13 @@ namespace :intouch do
             issues = Issue.where('tracker_id = ? AND assigned_to_id IS NOT NULL AND status_id IN (?) AND (updated_on < ?)',
                                  t.id, open_issue_status_ids, updated_since)
 
-            issues.each do |issue|
-              RemindingMailer.reminder_email(issue.assigned_to, issue).deliver unless issue.assigned_to.nil?
+            issues.group_by(&:project_id).each do |project_id, project_issues|
+              project = Project.find project_id
+              if project.module_enabled?(:intouch)
+                project_issues.each do |issue|
+                  RemindingMailer.reminder_email(issue.assigned_to, issue).deliver unless issue.assigned_to.nil?
+                end
+              end
             end
           end
         end
