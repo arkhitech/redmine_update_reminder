@@ -21,7 +21,7 @@ namespace :intouch do
 
             issues.group_by(&:project_id).each do |project_id, project_issues|
               project = Project.find project_id
-              if project.module_enabled?(:intouch)
+              if project.module_enabled?(:intouch) and project.active?
                 project_issues.each do |issue|
                   RemindingMailer.reminder_email(issue.assigned_to, issue).deliver unless issue.assigned_to.nil?
                 end
@@ -40,7 +40,7 @@ namespace :intouch do
       task :alarm => :environment do
         Issue.joins(:project).alarms.group_by(&:project_id).each do |project_id, issues|
           project = Project.find project_id
-          if project.module_enabled?(:intouch)
+          if project.module_enabled?(:intouch) and project.active?
             issues.each do |issue|
               TelegramSender.send_alarm_message(issue.project_id, issue.id) if issue.project.present?
             end
@@ -53,7 +53,7 @@ namespace :intouch do
         if work_day? and work_time?
           Issue.joins(:project).news.group_by(&:project_id).each do |project_id, issues|
             project = Project.find project_id
-            if project.module_enabled?(:intouch)
+            if project.module_enabled?(:intouch) and project.active?
               issues.each do |issue|
                 TelegramSender.send_new_message(issue.project_id, issue.id)
               end
@@ -68,7 +68,7 @@ namespace :intouch do
           Issue.joins(:project).where(status_id: IssueStatus.alarm_ids).where('due_date < ?', Date.today).
               where.not(priority_id: IssuePriority.alarm_ids).group_by(&:project_id).each do |project_id, issues|
             project = Project.find project_id
-            if project.module_enabled?(:intouch)
+            if project.module_enabled?(:intouch) and project.active?
               issues.each do |issue|
                 TelegramSender.send_overdue_message(issue.project_id, issue.id)
               end
@@ -82,7 +82,7 @@ namespace :intouch do
         if work_day? and work_time?
           Issue.joins(:project).working.group_by(&:project_id).each do |project_id, issues|
             project = Project.find project_id
-            if project.module_enabled?(:intouch)
+            if project.module_enabled?(:intouch) and project.active?
               issues.each do |issue|
                 TelegramSender.send_working_message(issue.project_id, issue.id) if issue.updated_on < 2.hours.ago
               end
@@ -96,7 +96,7 @@ namespace :intouch do
         if work_day? and work_time?
           Issue.joins(:project).feedbacks.group_by(&:project_id).each do |project_id, issues|
             project = Project.find project_id
-            if project.module_enabled?(:intouch)
+            if project.module_enabled?(:intouch) and project.active?
               issues.each do |issue|
                 TelegramSender.send_feedback_message(issue.project_id, issue.id) if issue.updated_on < 2.hours.ago
               end
