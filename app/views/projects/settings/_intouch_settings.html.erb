@@ -4,21 +4,30 @@
 <% errors << l('intouch.label.enable_module') unless @project.module_enabled?(:intouch) %>
 
 <% if errors.empty? %>
-  <%= form_tag({controller: :intouch, action: :save_settings, project_id: @project, tab: 'intouch'}, method: :put, class: "tabular", multipart: true, id: 'intouch_settings') do %>
+  <%= form_tag({controller: :intouch, action: :save_settings, project_id: @project, tab: 'intouch_settings'}, method: :put, class: "tabular", multipart: true, id: 'intouch_settings') do %>
+    <div class="box">
+      <p>
+        <label for="settings_template_id">Использовать настройки из шаблона</label>
+        <%= select_tag('settings_template_id',
+                       options_for_select(SettingsTemplate.order(:name).collect { |u| [u.name, u.id] }, IntouchSetting[:settings_template_id, @project.id]),
+                       include_blank: true) %>
+      </p>
 
-  <div class="splitcontentleft intouch-settings">
-    <h3><%=l('intouch.label.telegram')%></h3>
-    <%= render partial: 'projects/settings/intouch_telegram' %>
-  </div>
+   </div>
 
-  <div class="splitcontentright">
-    <h3><%=l('intouch.label.email')%></h3>
-    <%= render partial: 'projects/settings/intouch_email' %>
-  </div>
+    <div class="splitcontentleft intouch-settings">
+      <h3><%= l('intouch.label.telegram') %></h3>
+      <%= render partial: 'projects/settings/intouch_telegram' %>
+    </div>
 
-  <div style="clear:both;"></div>
+    <div class="splitcontentright">
+      <h3><%= l('intouch.label.email') %></h3>
+      <%= render partial: 'projects/settings/intouch_email' %>
+    </div>
 
-  <%= submit_tag l(:button_save) %>
+    <div style="clear:both;"></div>
+
+    <%= submit_tag l(:button_save) %>
 
   <% end %>
 

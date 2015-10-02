@@ -1,0 +1,11 @@
+<h2><%= link_to l(:label_intouch_settings_template_plural), :controller => 'settings_templates', :action => 'index' %> &#187; <%=l(:label_intouch_settings_template_new)%></h2>
+
+<%= form_tag({:action => 'create'}, :class => "tabular") do %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag l(:button_create), class: 'intouch-submit' %>
+<% end %>
+
+
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'project_settings', plugin: 'redmine_intouch' %>
+<% end %>

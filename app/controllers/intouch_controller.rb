@@ -10,7 +10,7 @@ class IntouchController < ApplicationController
       flash[:notice] = l(:notice_successful_update)
     end
 
-    redirect_to controller: 'projects', action: 'settings', tab: params[:tab] || 'intouch', id: @project
+    redirect_to controller: 'projects', action: 'settings', tab: params[:tab] || 'intouch_settings', id: @project
   end
 
   private
@@ -25,15 +25,16 @@ class IntouchController < ApplicationController
   def set_settings
     %w(alarm new working feedback overdue).each do |notice|
       %w(author assigned_to watchers).each do |receiver|
-        set_settings_param("telegram_#{notice}_#{receiver}".to_sym)
+        set_settings_param("telegram_#{notice}_#{receiver}")
       end
-      set_settings_param("telegram_#{notice}_telegram_groups".to_sym)
-      set_settings_param("telegram_#{notice}_user_groups".to_sym)
+      set_settings_param("telegram_#{notice}_telegram_groups")
+      set_settings_param("telegram_#{notice}_user_groups")
     end
-    set_settings_param(:email_cc)
+    set_settings_param('email_cc')
+    set_settings_param('settings_template_id')
   end
 
   def set_settings_param(param)
-    IntouchSetting[param, @project.id] = params[param] if params[param]
+    IntouchSetting[param, @project.id] = params[param]
   end
 end

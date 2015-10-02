@@ -5,14 +5,30 @@ class TelegramSenderWorker
     project = Project.find project_id
     issue = Issue.find issue_id
 
+    template = if IntouchSetting[:settings_template_id, project_id].present?
+       SettingsTemplate.find_by id: IntouchSetting[:settings_template_id, project_id]
+    else
+      nil
+    end
+
     users = %w(author assigned_to watchers).map do |receiver|
-      param = "telegram_#{notice}_#{receiver}".to_sym
-      receiver if IntouchSetting[param, project_id].to_i > 0
+      param = "telegram_#{notice}_#{receiver}"
+      if template.present?
+        receiver if template.settings[param].to_i > 0
+      else
+        receiver if IntouchSetting[param, project_id].to_i > 0
+      end
     end.compact.map do |method|
       issue.send method
     end.flatten.uniq
 
-    user_group_ids = IntouchSetting["telegram_#{notice}_user_groups".to_sym, project_id].keys
+    user_groups = if template.present?
+                       template.settings["telegram_#{notice}_user_groups"]
+                     else
+                       IntouchSetting["telegram_#{notice}_user_groups", project_id]
+                     end
+
+    user_group_ids = user_groups.is_a?(Hash) ? user_groups.keys : []
 
     group_users = Group.where(id: user_group_ids).map(&:users).uniq
 
@@ -39,4 +55,5 @@ class TelegramSenderWorker
       bot.send_message(reply)
     end
   end
+
 end

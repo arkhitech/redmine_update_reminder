@@ -16,6 +16,7 @@ class IntouchSetting < ActiveRecord::Base
       define_setting "telegram_#{notice}_user_groups", serialized: true, default: {}
     end
     define_setting 'email_cc', default: ''
+    define_setting 'settings_template_id', default: ''
   end
 
 

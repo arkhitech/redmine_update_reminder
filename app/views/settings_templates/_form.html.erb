@@ -1,0 +1,76 @@
+<%= error_messages_for 'settings_template' %>
+
+<div class="box tabular">
+  <p><label for="settings_template_name"><%= l(:field_name) %><span class="required"> *</span></label>
+    <%= text_field 'settings_template', 'name' %></p>
+</div>
+
+  <div class="intouch-settings">
+    <div class="splitcontentleft ">
+      <h3><%= l('intouch.label.telegram') %></h3>
+
+      <div class="box">
+        <table>
+          <thead>
+          <tr>
+            <th><%= l "intouch.recipient.title" %></th>
+            <% %w(author assigned_to watchers user_groups telegram_groups).each do |recipient| %>
+              <th><%= l "intouch.recipient.#{recipient}" %></th>
+            <% end %>
+          </tr>
+          </thead>
+          <% %w(alarm new working feedback overdue).each do |notice| %>
+            <tr>
+              <th><%= l "intouch.statuses.#{notice}" %></th>
+              <% %w(author assigned_to watchers).each do |receiver| %>
+                <% sym = "telegram_#{notice}_#{receiver}".to_sym %>
+                <td class="center">
+                  <%= check_box_tag sym, '1', @settings_template.send(sym) %>
+                </td>
+
+              <% end %>
+              <td>
+                <% Group.find_each do |user_group| %>
+                  <% sym = "telegram_#{notice}_user_groups".to_sym %>
+                  <%= check_box_tag "telegram_#{notice}_user_groups[#{user_group.id}]", '1',
+                                    @settings_template.settings[sym][user_group.id.to_s] %>
+                  <%= label_tag user_group.name %><br>
+                <% end %>
+              </td>
+              <td>
+                <% TelegramGroupChat.find_each do |telegram_group| %>
+                  <% sym = "telegram_#{notice}_telegram_groups".to_sym %>
+                  <%= check_box_tag "telegram_#{notice}_telegram_groups[#{telegram_group.id}]", '1',
+                                    @settings_template.settings[sym][telegram_group.id.to_s] %>
+                  <%= label_tag telegram_group.title %><br>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+
+        </table>
+
+      </div>
+
+    </div>
+
+    <div class="splitcontentright">
+      <h3><%= l('intouch.label.email') %></h3>
+
+      <div class="box">
+        <p>
+          <label for="email_cc"><%= l "intouch.email.cc_to" %></label>
+          <%= select_tag('email_cc',
+                         options_for_select(User.all.collect { |u| [u.name, u.mail] }, @settings_template.email_cc),
+                         include_blank: true) %>
+        </p>
+
+        <p>
+          <%= @settings_template.email_cc %>
+        </p>
+
+
+      </div>
+
+    </div>
+  </div>

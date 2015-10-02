@@ -17,3 +17,17 @@
 
 
 }
+
+.intouch-settings .splitcontentleft {
+    width: 60%;
+}
+.intouch-settings .splitcontentright {
+    width: 39%;
+}
+.intouch-settings .splitcontentright p {
+    padding-left: 10px;
+}
+
+.intouch-submit {
+    float: right;
+}

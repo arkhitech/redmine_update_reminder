@@ -1,4 +1,8 @@
 en:
+  name: Name
+  label_intouch_settings_template_new: New
+  label_intouch_settings_template_edit: Edit
+  label_intouch_settings_template_plural: Settings Templates
   intouch:
     label:
       base: InTouch
@@ -6,6 +10,7 @@ en:
       telegram: Telegram
       email: E-mail
       enable_module: Need to enable InTouch module
+      settings_templates: Settings Templates
 
     work_days:
       title: Work days

@@ -1,4 +1,5 @@
 ru:
+  label_intouch_settings_template_new: Новый
   intouch:
     label:
       base: InTouch
@@ -6,6 +7,7 @@ ru:
       telegram: Telegram
       email: E-mail
       enable_module: Для этого проекта должeн быть включён модуль InTouch
+      settings_template: Групповые настройки для проектов
 
     work_days:
       title: Рабочие дни
