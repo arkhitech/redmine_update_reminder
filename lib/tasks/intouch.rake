@@ -145,7 +145,7 @@ namespace :intouch do
       end
 
       LOG.info 'Telegram Bot: Connecting to telegram...'
-      bot = TelegramBot.new(token: token)
+      bot = TelegramBot.new(token: token, logger: LOG)
       bot_name = bot.get_me.username
 
       unless bot_name.present?
