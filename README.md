@@ -11,6 +11,8 @@
 
 [Запуск Sidekiq как демона](https://github.com/mperham/sidekiq/wiki/Deployment#daemonization)
 
+* примеры конфигурационного файла и скрипта для `init.d` находятся в папке `tools`
+
 ## Telegram
 
 Рассылает уведомления о сменене статуса задачи либо же напоминания о задачах, статус которых давно не менялся.
@@ -35,6 +37,8 @@
 ```
 bundle exec rake intouch:telegram:bot PID_DIR='/pid/dir'
 ```
+
+* пример скрипта для `init.d` в папке `tools`
 
 Также необходимо добавить в CRON задачи описанные в `config/schedule.rb`.  Для этого нужно выполнить:
 
