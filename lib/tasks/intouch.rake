@@ -109,39 +109,52 @@ namespace :intouch do
     # bundle exec rake intouch:telegram:bot PID_DIR='/tmp'
     desc "Runs telegram bot process (options: PID_DIR='/pid/dir')"
     task :bot => :environment do
-      logger = Logger.new(Rails.root.join('log', 'telegram-bot.log'))
+      LOG = Logger.new(Rails.root.join('log', 'telegram-bot.log'))
 
       Process.daemon(true, true)
 
       if ENV['PID_DIR']
         pid_dir = ENV['PID_DIR']
         PidFile.new(piddir: pid_dir, pidfile: 'telegram-bot.pid')
+      else
+        PidFile.new(pidfile: 'telegram-bot.pid')
       end
 
-      Signal.trap('TERM') { abort }
-      Signal.trap('QUIT') { abort }
-      Signal.trap('HUP') { abort }
+      at_exit { LOG.error 'aborted by some reasons' }
 
-      logger.info "Start daemon..."
+      Signal.trap('TERM') do
+        at_exit { LOG.error 'Aborted with TERM signal' }
+        abort 'Aborted with TERM signal'
+      end
+      Signal.trap('QUIT') do
+        at_exit { LOG.error 'Aborted with QUIT signal' }
+        abort 'Aborted with QUIT signal'
+      end
+      Signal.trap('HUP') do
+        at_exit { LOG.error 'Aborted with HUP signal' }
+        abort 'Aborted with HUP signal'
+      end
+
+      LOG.info "Start daemon..."
 
       token = Setting.plugin_redmine_intouch['telegram_bot_token']
 
       unless token.present?
-        logger.error 'Telegram Bot Token not found. Please set it in the plugin config web-interface.'
+        LOG.error 'Telegram Bot Token not found. Please set it in the plugin config web-interface.'
         exit
       end
 
-      logger.info 'Telegram Bot: Connecting to telegram...'
+      LOG.info 'Telegram Bot: Connecting to telegram...'
       bot = TelegramBot.new(token: token)
       bot_name = bot.get_me.username
 
       unless bot_name.present?
-        logger.error 'Telegram Bot Token is invalid'
+        LOG.error 'Telegram Bot Token is invalid'
         exit
       end
 
-      logger.info "#{bot_name}: connected"
-      logger.info "#{bot_name}: waiting for new users and group chats..."
+      LOG.info "#{bot_name}: connected"
+      LOG.info "#{bot_name}: waiting for new users and group chats..."
 
       bot.get_updates(fail_silently: true) do |message|
         if message.text == '/start'
@@ -155,7 +168,7 @@ namespace :intouch do
             t_user.save
             reply.text = "Hello, #{user.first_name}! I'm added your profile for Redmine notifications."
             bot.send_message(reply)
-            logger.info "#{bot_name}: new user #{user.first_name} #{user.last_name} @#{user.username} added!"
+            LOG.info "#{bot_name}: new user #{user.first_name} #{user.last_name} @#{user.username} added!"
           else
             reply.text = "Hello, #{user.first_name}! You are already connected for Redmine notifications."
             bot.send_message(reply)
@@ -169,7 +182,7 @@ namespace :intouch do
             t_chat.save
             reply.text = "Hello, people! I'm added this group chat for Redmine notifications."
             bot.send_message(reply)
-            logger.info "#{bot_name}: new group #{chat.title} added!"
+            LOG.info "#{bot_name}: new group #{chat.title} added!"
           else
             # reply.text = 'Hello, again!'
             # bot.send_message(reply)
