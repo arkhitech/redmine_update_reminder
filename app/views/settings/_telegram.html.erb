@@ -5,7 +5,7 @@
 <div class="box tabular settings">
   <h4><%= l 'intouch.work_days.title' %></h4>
 
-  <ul class="work-days">
+  <ul class="inline-checkboxes">
     <li>
       <label for="settings_work_day_from"><%= l 'intouch.work_days.from' %></label>
       <%= time_field_tag "settings[work_day_from]", @settings["work_day_from"] %>
@@ -26,30 +26,31 @@
 <br>
 
 
-<div class="box tabular settings fourth alarm">
+<div class="box tabular settings alarm">
   <h4><%= l 'intouch.priorities.title' %> "<%= l 'intouch.priorities.alarm' %>"</h4>
-  <% IssuePriority.find_each do |priority| %>
-    <p>
-
-      <label><%= priority.name %></label>
-      <%= check_box_tag "settings[alarm_priority_#{priority.id}]", '1',
-                        @settings["alarm_priority_#{priority.id}"] %>
-    </p>
-
-  <% end %>
-</div>
-<% %w(new working feedback).each do |notification_group| %>
-  <div class="box tabular settings fourth">
-    <h4><%= l 'intouch.statuses.title' %> "<%= l "intouch.statuses.#{notification_group}" %>"</h4>
-
-    <% IssueStatus.find_each do |status| %>
-      <p>
-
-        <label><%= status.name %></label>
-        <%= check_box_tag "settings[#{notification_group}_status_#{status.id}]", '1',
-                          @settings["#{notification_group}_status_#{status.id}"] %>
-      </p>
+  <ul class="inline-checkboxes">
+    <% IssuePriority.find_each do |priority| %>
+      <li>
+        <%= check_box_tag "settings[alarm_priority_#{priority.id}]", '1',
+                          @settings["alarm_priority_#{priority.id}"] %>
+        <label><%= priority.name %></label>
+      </li>
 
     <% end %>
+  </ul>
+</div>
+<% %w(new working feedback).each do |notification_group| %>
+  <div class="box tabular settings">
+    <h4><%= l 'intouch.statuses.title' %> "<%= l "intouch.statuses.#{notification_group}" %>"</h4>
+    <ul class="inline-checkboxes">
+      <% IssueStatus.find_each do |status| %>
+        <li>
+          <%= check_box_tag "settings[#{notification_group}_status_#{status.id}]", '1',
+                            @settings["#{notification_group}_status_#{status.id}"] %>
+          <label><%= status.name %></label>
+        </li>
+
+      <% end %>
+    </ul>
   </div>
 <% end %>

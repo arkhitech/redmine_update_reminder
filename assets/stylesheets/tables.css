@@ -4,7 +4,6 @@
     vertical-align: top;
 }
 
-
 .fourth {
     display: inline-block;
     width: 22%;
@@ -20,11 +19,11 @@
     padding-left: 180px;
 }
 
-ul.work-days li {
+ul.inline-checkboxes li {
     display: inline-block;
 }
 
-.tabular.settings ul.work-days li label {
+.tabular.settings ul.inline-checkboxes li label {
     margin-left: 0;
     float: none;
 }

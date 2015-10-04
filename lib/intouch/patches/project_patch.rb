@@ -6,6 +6,10 @@ module Intouch
 
         after_create :copy_settings_from_parent
 
+        def settings_template
+          SettingsTemplate.find_by id: IntouchSetting['settings_template_id', id]
+        end
+
         private
 
         def copy_settings_from_parent

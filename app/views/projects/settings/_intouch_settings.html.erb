@@ -11,18 +11,24 @@
         <%= select_tag('settings_template_id',
                        options_for_select(SettingsTemplate.order(:name).collect { |u| [u.name, u.id] }, IntouchSetting[:settings_template_id, @project.id]),
                        include_blank: true) %>
+        <%= link_to l(:label_intouch_settings_template_new), {:controller => "settings_templates", :action => 'new'}, :class => 'icon icon-add' %>
+        <% if @project.settings_template.present? %>
+          <%= link_to 'Редактировать текущий', :controller => "settings_templates", :action => 'edit', :id => @project.settings_template %>
+        <% end %>
       </p>
 
-   </div>
-
-    <div class="splitcontentleft intouch-settings">
-      <h3><%= l('intouch.label.telegram') %></h3>
-      <%= render partial: 'projects/settings/intouch_telegram' %>
     </div>
 
-    <div class="splitcontentright">
-      <h3><%= l('intouch.label.email') %></h3>
-      <%= render partial: 'projects/settings/intouch_email' %>
+    <div class="intouch-settings" <%= raw('style="display: none;"') if @project.settings_template.present? %>>
+      <div>
+        <h3><%= l('intouch.label.telegram') %></h3>
+        <%= render partial: 'projects/settings/intouch_telegram' %>
+      </div>
+
+      <div>
+        <h3><%= l('intouch.label.email') %></h3>
+        <%= render partial: 'projects/settings/intouch_email' %>
+      </div>
     </div>
 
     <div style="clear:both;"></div>
@@ -37,4 +43,5 @@
 
 <% content_for :header_tags do %>
   <%= stylesheet_link_tag 'project_settings', plugin: 'redmine_intouch' %>
+  <%= javascript_include_tag 'intouch', plugin: 'redmine_intouch' %>
 <% end %>
