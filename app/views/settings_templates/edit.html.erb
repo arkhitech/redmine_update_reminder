@@ -2,7 +2,7 @@
 
 <%= form_tag({:action => 'update', :id => @settings_template}, :class => "tabular", :method => :put) do %>
   <%= render :partial => 'form' %>
-  <%= submit_tag l(:button_save), class: 'intouch-submit' %>
+  <%= submit_tag l(:button_save) %>
 <% end %>
 
 <% content_for :header_tags do %>
