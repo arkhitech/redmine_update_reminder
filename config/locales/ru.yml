@@ -1,41 +1,39 @@
 ru:
-  label_intouch_settings_template_new: Новый
   intouch:
+    email:
+      cc_to: "Получатель скрытой копии"
+      footer: "Футер"
+      header: "Заголовок"
+      interval: "Интервал, после которого отправлять уведомления (в часах)"
     label:
       base: InTouch
-      settings: InTouch
-      telegram: Telegram
       email: E-mail
-      enable_module: Для этого проекта должeн быть включён модуль InTouch
-      settings_template: Групповые настройки для проектов
-
-    work_days:
-      title: Рабочие дни
-      from: С
-      to: по
-
+      enable_module: "Для этого проекта должeн быть включён модуль InTouch"
+      settings: InTouch
+      settings_templates: "Шаблоны настроек"
+      telegram: Telegram
     priorities:
-      title: Приоритеты
-      alarm: Авария
-
-    statuses:
-      title: Статусы
-      new: Новая
-      working: В работе
-      feedback: Обратная связь
-      alarm: Авария
-      overdue: Просроченная
-
-    email:
-      header: Заголовок
-      footer: Футер
-      interval: Интервал, после которого отправлять уведомления (в часах)
-      cc_to: Получатель скрытой копии
-
+      alarm: "Авария"
+      title: "Приоритеты"
     recipient:
-      title: Получатель
-      author: Автор
-      assigned_to: Исполнитель
-      watchers: Наблюдатели
-      user_groups: Группа пользователей
-      telegram_groups: Групповой чат Telegram
+      assigned_to: "Исполнитель"
+      author: "Автор"
+      telegram_groups: "Групповой чат Telegram"
+      title: "Получатель"
+      user_groups: "Группа пользователей"
+      watchers: "Наблюдатели"
+    statuses:
+      alarm: "Авария"
+      feedback: "Обратная связь"
+      new: "Новая"
+      overdue: "Просроченная"
+      title: "Статусы"
+      working: "В работе"
+    work_days:
+      from: "С"
+      title: "Рабочие дни"
+      to: "по"
+  label_intouch_settings_template_edit: "Редактировать"
+  label_intouch_settings_template_new: "Новый"
+  label_intouch_settings_template_plural: "Шаблоны настроек"
+  name: "Название"

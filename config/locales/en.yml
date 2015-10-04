@@ -1,44 +1,39 @@
 en:
-  name: Name
-  label_intouch_settings_template_new: New
-  label_intouch_settings_template_edit: Edit
-  label_intouch_settings_template_plural: Settings Templates
   intouch:
+    email:
+      cc_to: Carbon Copy To
+      footer: Footer
+      header: Header
+      interval: Reminder Interval (in hours)
     label:
       base: InTouch
-      settings: InTouch
-      telegram: Telegram
       email: E-mail
       enable_module: Need to enable InTouch module
+      settings: InTouch
       settings_templates: Settings Templates
-
-    work_days:
-      title: Work days
-      from: From
-      to: to
-
+      telegram: Telegram
     priorities:
+      alarm: Alarm
       title: Proirities
-      alarm: Alarm
-
-    statuses:
-      title: Statuses
-      new: New
-      working: Work in progress
-      feedback: Feedback
-      alarm: Alarm
-      overdue: Overdue
-
-    email:
-      header: Header
-      footer: Footer
-      interval: Reminder Interval (in hours)
-      cc_to: Carbon Copy To
-
     recipient:
-      title: Recipient
-      author: Author
       assigned_to: Assignee
-      watchers: Watchers
-      user_groups: Grour users
+      author: Author
       telegram_groups: Telegram groups
+      title: Recipient
+      user_groups: Grour users
+      watchers: Watchers
+    statuses:
+      alarm: Alarm
+      feedback: Feedback
+      new: New
+      overdue: Overdue
+      title: Statuses
+      working: Work in progress
+    work_days:
+      from: From
+      title: Work days
+      to: to
+  label_intouch_settings_template_edit: Edit
+  label_intouch_settings_template_new: New
+  label_intouch_settings_template_plural: Settings Templates
+  name: Name
