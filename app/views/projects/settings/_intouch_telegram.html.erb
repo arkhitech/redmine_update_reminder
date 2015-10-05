@@ -1,12 +1,12 @@
 <div class="box">
   <table>
     <thead>
-      <tr>
-        <th><%= l "intouch.recipient.title" %></th>
-        <% %w(author assigned_to watchers user_groups telegram_groups).each do |recipient| %>
-          <th><%= l "intouch.recipient.#{recipient}" %></th>
-        <% end %>
-      </tr>
+    <tr>
+      <th><%= l "intouch.recipient.title" %></th>
+      <% %w(author assigned_to watchers user_groups).each do |recipient| %>
+        <th><%= l "intouch.recipient.#{recipient}" %></th>
+      <% end %>
+    </tr>
     </thead>
 
     <% %w(alarm new working feedback overdue).each do |notice| %>
@@ -15,7 +15,7 @@
         <% %w(author assigned_to watchers).each do |receiver| %>
           <% sym = "telegram_#{notice}_#{receiver}".to_sym %>
           <td class="center">
-            <%= check_box_tag sym, '1', IntouchSetting[sym, @project.id].to_i > 0 %>
+            <%= check_box_tag sym, '1', @project.intouch_settings[sym].to_i > 0 %>
           </td>
 
         <% end %>
@@ -23,19 +23,46 @@
           <% Group.find_each do |user_group| %>
             <% sym = "telegram_#{notice}_user_groups".to_sym %>
             <%= check_box_tag "telegram_#{notice}_user_groups[#{user_group.id}]", '1',
-                              IntouchSetting[sym, @project.id][user_group.id.to_s].to_i > 0 %>
+                              @project.group_settings(sym)[user_group.id.to_s].to_i > 0 %>
             <%= label_tag user_group.name %><br>
-          <% end %>
-        </td>
-        <td>
-          <% TelegramGroupChat.find_each do |telegram_group| %>
-            <% sym = "telegram_#{notice}_telegram_groups".to_sym %>
-            <%= check_box_tag "telegram_#{notice}_telegram_groups[#{telegram_group.id}]", '1', IntouchSetting[sym, @project.id][telegram_group.id.to_s].to_i > 0 %>
-            <%= label_tag telegram_group.title %><br>
           <% end %>
         </td>
       </tr>
     <% end %>
   </table>
+
+  <h4><%= l "intouch.recipient.telegram_groups" %></h4>
+
+  <% TelegramGroupChat.find_each do |telegram_group| %>
+    <h5><%= telegram_group.title %></h5>
+    <table>
+      <thead>
+      <tr>
+        <th>Статус \ Приоритет</th>
+        <% IssuePriority.order(:position).each do |priority| %>
+          <th><%= priority.name %></th>
+        <% end %>
+      </tr>
+      </thead>
+      <tbody>
+      <% IssueStatus.order(:position).each do |status| %>
+        <tr>
+          <th>
+            <%= status.name %>
+          </th>
+          <% IssuePriority.order(:position).each do |priority| %>
+            <td>
+              <%= check_box_tag "telegram_groups[#{telegram_group.id}][#{status.id}][]", priority.id,
+                                @project.telegram_group_settings(telegram_group.id, status.id, priority.id) %>
+            </td>
+
+          <% end %>
+        </tr>
+
+
+      <% end %>
+      </tbody>
+    </table>
+  <% end %>
 
 </div>

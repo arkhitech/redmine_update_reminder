@@ -10,5 +10,37 @@
     <%= IntouchSetting[:email_cc, @project.id] %>
   </p>
 
+  <table>
+    <thead>
+    <tr>
+      <th><%= l "intouch.recipient.title" %></th>
+      <% %w(author assigned_to watchers user_groups).each do |recipient| %>
+        <th><%= l "intouch.recipient.#{recipient}" %></th>
+      <% end %>
+    </tr>
+    </thead>
+
+    <% %w(alarm new working feedback overdue).each do |notice| %>
+      <tr>
+        <th><%= l "intouch.statuses.#{notice}" %></th>
+        <% %w(author assigned_to watchers).each do |receiver| %>
+          <% sym = "email_#{notice}_#{receiver}".to_sym %>
+          <td class="center">
+            <%= check_box_tag sym, '1', @project.intouch_settings[sym].to_i > 0 %>
+          </td>
+
+        <% end %>
+        <td>
+          <% Group.find_each do |user_group| %>
+            <% sym = "email_#{notice}_user_groups".to_sym %>
+            <%= check_box_tag "email_#{notice}_user_groups[#{user_group.id}]", '1',
+                              @project.group_settings(sym)[user_group.id.to_s].to_i > 0 %>
+            <%= label_tag user_group.name %><br>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+
 
 </div>
