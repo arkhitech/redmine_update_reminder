@@ -1,4 +1,10 @@
 <div class="box">
+  <p class="description">
+    Укажите каким пользователям отравлять уведомление в Telegram при каких статусах задачи.<br>
+    Уведомление придет к получателю, если у него в настройках указан профиль Telegram.<br>
+    Чтобы профили Telegram были добавлены в Redmine, каждый пользователь должен отправить боту сообщение
+    <strong>/start</strong>
+  </p>
   <table>
     <thead>
     <tr>
@@ -13,17 +19,16 @@
       <tr>
         <th><%= l "intouch.statuses.#{notice}" %></th>
         <% %w(author assigned_to watchers).each do |receiver| %>
-          <% sym = "telegram_#{notice}_#{receiver}".to_sym %>
           <td class="center">
-            <%= check_box_tag sym, '1', @project.intouch_settings[sym].to_i > 0 %>
+            <%= check_box_tag "intouch_settings[telegram_settings][#{notice}][#{receiver}]", '1',
+                              @project.telegram_settings.try(:[], notice).try(:[], receiver) %>
           </td>
 
         <% end %>
         <td>
           <% Group.find_each do |user_group| %>
-            <% sym = "telegram_#{notice}_user_groups".to_sym %>
-            <%= check_box_tag "telegram_#{notice}_user_groups[#{user_group.id}]", '1',
-                              @project.group_settings(sym)[user_group.id.to_s].to_i > 0 %>
+            <%= check_box_tag "intouch_settings[telegram_settings][#{notice}][user_groups][#{user_group.id}]", '1',
+                              @project.telegram_settings.try(:[], notice).try(:[], 'user_groups').try(:[], user_group.id.to_s) %>
             <%= label_tag user_group.name %><br>
           <% end %>
         </td>
@@ -32,6 +37,9 @@
   </table>
 
   <h4><%= l "intouch.recipient.telegram_groups" %></h4>
+  <p class="description">
+    Укажите в какую группу какие уведомления посылать
+  </p>
 
   <% TelegramGroupChat.find_each do |telegram_group| %>
     <h5><%= telegram_group.title %></h5>
@@ -52,8 +60,9 @@
           </th>
           <% IssuePriority.order(:position).each do |priority| %>
             <td>
-              <%= check_box_tag "telegram_groups[#{telegram_group.id}][#{status.id}][]", priority.id,
-                                @project.telegram_group_settings(telegram_group.id, status.id, priority.id) %>
+              <%= check_box_tag "intouch_settings[telegram_settings][groups][#{telegram_group.id}][#{status.id}][]", priority.id,
+                                @project.telegram_settings.try(:[], 'groups').try(:[], telegram_group.id.to_s).
+                                    try(:[], status.id.to_s).try(:include?, priority.id.to_s) %>
             </td>
 
           <% end %>

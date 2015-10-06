@@ -1,13 +1,13 @@
 <div class="box">
   <p>
     <label for="email_cc"><%= l "intouch.email.cc_to" %></label>
-    <%= select_tag('email_cc',
-                   options_for_select(@project.users.collect { |u| [u.name, u.mail] }, IntouchSetting[:email_cc, @project.id]),
+    <%= select_tag('intouch_settings[email_settings][cc]',
+                   options_for_select(@project.users.collect { |u| [u.name, u.mail] }, @project.email_settings.try(:[], 'cc')),
                    include_blank: true) %>
   </p>
 
   <p>
-    <%= IntouchSetting[:email_cc, @project.id] %>
+    <%= @project.email_settings.try(:[], 'cc') %>
   </p>
 
   <table>
@@ -24,17 +24,16 @@
       <tr>
         <th><%= l "intouch.statuses.#{notice}" %></th>
         <% %w(author assigned_to watchers).each do |receiver| %>
-          <% sym = "email_#{notice}_#{receiver}".to_sym %>
           <td class="center">
-            <%= check_box_tag sym, '1', @project.intouch_settings[sym].to_i > 0 %>
+            <%= check_box_tag "intouch_settings[email_settings][#{notice}][#{receiver}]", '1',
+                              @project.email_settings.try(:[], notice).try(:[], receiver) %>
           </td>
 
         <% end %>
         <td>
           <% Group.find_each do |user_group| %>
-            <% sym = "email_#{notice}_user_groups".to_sym %>
-            <%= check_box_tag "email_#{notice}_user_groups[#{user_group.id}]", '1',
-                              @project.group_settings(sym)[user_group.id.to_s].to_i > 0 %>
+            <%= check_box_tag "intouch_settings[email_settings][#{notice}][user_groups][#{user_group.id}]", '1',
+                              @project.email_settings.try(:[], notice).try(:[], 'user_groups').try(:[], user_group.id.to_s) %>
             <%= label_tag user_group.name %><br>
           <% end %>
         </td>

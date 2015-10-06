@@ -8,8 +8,8 @@
     <div class="box">
       <p>
         <label for="settings_template_id">Использовать настройки из шаблона</label>
-        <%= select_tag('settings_template_id',
-                       options_for_select(SettingsTemplate.order(:name).collect { |u| [u.name, u.id] }, IntouchSetting[:settings_template_id, @project.id]),
+        <%= select_tag('intouch_settings[settings_template_id]',
+                       options_for_select(SettingsTemplate.order(:name).collect { |u| [u.name, u.id] }, @project.settings_template_id),
                        include_blank: true) %>
         <%= link_to l(:label_intouch_settings_template_new), {:controller => "settings_templates", :action => 'new'}, :class => 'icon icon-add' %>
         <% if @project.settings_template.present? %>

@@ -18,7 +18,7 @@ ru:
     recipient:
       assigned_to: "Исполнитель"
       author: "Автор"
-      telegram_groups: "Групповой чат Telegram"
+      telegram_groups: "Групповые чаты Telegram"
       title: "Получатель"
       user_groups: "Группа пользователей"
       watchers: "Наблюдатели"

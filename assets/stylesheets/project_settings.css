@@ -14,8 +14,6 @@
     padding: 7px;
     border-top: 1px solid #555;
     border-left: 1px solid #555;
-
-
 }
 
 .intouch-settings .splitcontentleft {
@@ -26,4 +24,16 @@
 }
 .intouch-settings .splitcontentright p {
     padding-left: 10px;
+}
+
+.intouch-settings p.description {
+    margin: 10px;
+    padding: 0;
+}
+
+.intouch-settings h4 {
+    margin-top: 15px;
+}
+.intouch-settings h5 {
+    margin: 0;
 }
