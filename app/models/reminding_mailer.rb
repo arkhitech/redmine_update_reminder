@@ -5,16 +5,17 @@ class RemindingMailer < ActionMailer::Base
     Mailer.default_url_options
   end
 
-  def reminder_email(user, issue)
-    @user = user
+  def reminder_email(user_id, issue)
+    @user = User.find user_id
     @issue = issue
+    project = @issue.project
 
     email_cc =
-        if IntouchSetting[:settings_template_id, @issue.project_id].present?
-          template = SettingsTemplate.find_by id: IntouchSetting[:settings_template_id, @issue.project_id]
-          template.present? ? template.email_cc : IntouchSetting[:email_cc, @issue.project_id]
+        if project.settings_template_id.present?
+          template = project.settings_template
+          template.present? ? template.email_settings['cc'] : project.email_settings['cc']
         else
-          IntouchSetting[:email_cc, @issue.project_id]
+          project.email_settings['cc']
         end
 
     if email_cc.present?

@@ -2,7 +2,7 @@ module Intouch
   module ProjectPatch
     def self.included(base) # :nodoc:
       base.class_eval do
-        unloadable
+        unloadable if Rails.env.production?
 
         # noinspection RubyArgCount
         store :intouch_settings,  accessors: %w(settings_template_id telegram_settings email_settings)

@@ -1,0 +1,50 @@
+<div class="box tabular settings">
+  <h4><%= l 'intouch.work_days.title' %></h4>
+
+  <ul class="inline-checkboxes">
+    <li>
+      <label for="settings_work_day_from"><%= l 'intouch.work_days.from' %></label>
+      <%= time_field_tag "settings[work_day_from]", @settings["work_day_from"] %>
+    </li>
+    <li>
+      <label for="settings_work_day_to"><%= l 'intouch.work_days.to' %></label>
+      <%= time_field_tag "settings[work_day_to]", @settings["work_day_to"] %>
+    </li>
+    <% Date::DAYNAMES.rotate.each_with_index do |day, i| %>
+      <li>
+        <%= check_box_tag "settings[work_days_#{i}]", '1',
+                          @settings["work_days_#{i}"] %>
+        <label for="settings_work_days_<%= i %>"><%= day %></label>
+      </li>
+    <% end %>
+  </ul>
+</div>
+
+<div class="box tabular settings alarm">
+  <h4><%= l 'intouch.priorities.title' %> "<%= l 'intouch.priorities.alarm' %>"</h4>
+  <ul class="inline-checkboxes">
+    <% IssuePriority.find_each do |priority| %>
+      <li>
+        <%= check_box_tag "settings[alarm_priority_#{priority.id}]", '1',
+                          @settings["alarm_priority_#{priority.id}"] %>
+        <label><%= priority.name %></label>
+      </li>
+
+    <% end %>
+  </ul>
+</div>
+<% %w(new working feedback).each do |notification_group| %>
+  <div class="box tabular settings">
+    <h4><%= l 'intouch.statuses.title' %> "<%= l "intouch.statuses.#{notification_group}" %>"</h4>
+    <ul class="inline-checkboxes">
+      <% IssueStatus.find_each do |status| %>
+        <li>
+          <%= check_box_tag "settings[#{notification_group}_status_#{status.id}]", '1',
+                            @settings["#{notification_group}_status_#{status.id}"] %>
+          <label><%= status.name %></label>
+        </li>
+
+      <% end %>
+    </ul>
+  </div>
+<% end %>

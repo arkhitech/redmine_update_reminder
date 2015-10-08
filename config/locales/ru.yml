@@ -7,6 +7,7 @@ ru:
       interval: "Интервал, после которого отправлять уведомления (в часах)"
     label:
       base: InTouch
+      common: Общие настройки
       email: E-mail
       enable_module: "Для этого проекта должeн быть включён модуль InTouch"
       settings: InTouch

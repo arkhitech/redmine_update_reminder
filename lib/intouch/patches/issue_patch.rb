@@ -2,7 +2,7 @@ module Intouch
   module IssuePatch
     def self.included(base) # :nodoc:
       base.class_eval do
-        unloadable
+        unloadable if Rails.env.production?
 
         before_save :check_alarm
         after_create :send_new_message
@@ -21,6 +21,51 @@ module Intouch
 
         def self.feedbacks
           Issue.where(status_id: IssueStatus.feedback_ids).where.not(priority_id: IssuePriority.alarm_ids)
+        end
+
+        def alarm?
+          IssuePriority.alarm_ids.include? priority_id
+        end
+
+        def new?
+          IssueStatus.new_ids.include? status_id and not alarm?
+        end
+
+        def working?
+          IssueStatus.working_ids.include? status_id and not alarm?
+        end
+
+        def feedback?
+          IssueStatus.feedback_ids.include? status_id and not alarm?
+        end
+
+        def overdue?
+          due_date && due_date < Date.today
+        end
+
+        def notification_status
+          %w(alarm new working feedback overdue).select { |s| send("#{s}?") }.try :first
+        end
+
+
+        def email_recipients
+          if notification_status
+            user_ids = project.email_settings[notification_status].map do |key, value|
+              case key
+                when 'author'
+                  author.id
+                when 'assigned_to'
+                  assigned_to.id
+                when 'watchers'
+                  watchers.pluck(:user_id)
+                when 'user_groups'
+                  Group.where(id: value.try(:keys)).map(&:users).flatten.map(&:id)
+                else
+                  nil
+              end
+            end.flatten.uniq
+            User.where(id: user_ids).pluck(:email)
+          end
         end
 
         private

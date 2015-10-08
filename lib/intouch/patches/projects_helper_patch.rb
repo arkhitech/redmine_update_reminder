@@ -26,7 +26,7 @@ module Intouch
         base.send(:include, InstanceMethods)
 
         base.class_eval do
-          unloadable
+          unloadable if Rails.env.production?
 
           alias_method_chain :project_settings_tabs, :intouch_settings
         end

@@ -23,7 +23,9 @@ namespace :intouch do
               project = Project.find project_id
               if project.module_enabled?(:intouch) and project.active?
                 project_issues.each do |issue|
-                  RemindingMailer.reminder_email(issue.assigned_to, issue).deliver unless issue.assigned_to.nil?
+                  issue.email_recipients.each do |user_id|
+                    RemindingMailer.reminder_email(user_id, issue).deliver if user_id.present?
+                  end
                 end
               end
             end

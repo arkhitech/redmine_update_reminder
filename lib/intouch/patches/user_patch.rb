@@ -2,9 +2,9 @@ module Intouch
   module UserPatch
     def self.included(base) # :nodoc:
 
-
       base.class_eval do
-        unloadable
+        unloadable if Rails.env.production?
+
         has_one :telegram_user, dependent: :destroy
 
         safe_attributes 'telegram_user_id'
