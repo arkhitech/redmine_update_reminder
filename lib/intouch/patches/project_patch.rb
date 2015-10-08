@@ -7,17 +7,25 @@ module Intouch
         # noinspection RubyArgCount
         store :intouch_settings,  accessors: %w(settings_template_id telegram_settings email_settings)
 
-        after_create :copy_settings_from_parent
+        before_create :copy_settings_from_parent
+
+        def active_telegram_settings
+          settings_template ? settings_template.telegram_settings : telegram_settings
+        end
+
+        def active_email_settings
+          settings_template ? settings_template.email_settings : email_settings
+        end
 
         def settings_template
-          SettingsTemplate.find_by id: settings_template_id
+          @settings_template ||= SettingsTemplate.find_by(id: settings_template_id)
         end
 
         private
 
         def copy_settings_from_parent
-          if parent_id.present? and parent.present?
-            ProjectSettingsCopier.perform_async(parent_id, id)
+          if parent.present?
+            self.intouch_settings = parent.intouch_settings
           end
         end
 

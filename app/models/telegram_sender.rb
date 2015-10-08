@@ -1,26 +1,16 @@
 class TelegramSender
   unloadable
 
-  def self.send_alarm_message(project_id, issue_id)
-    send_message('alarm', project_id, issue_id)
+  def self.send_message(issue_id)
+    TelegramSenderWorker.perform_in(5.seconds, issue_id)
   end
 
-  def self.send_new_message(project_id, issue_id)
-    send_message('new', project_id, issue_id)
-  end
-  def self.send_overdue_message(project_id, issue_id)
-    send_message('overdue', project_id, issue_id)
-  end
-
-  def self.send_working_message(project_id, issue_id)
-    send_message('working', project_id, issue_id)
-  end
-
-  def self.send_feedback_message(project_id, issue_id)
-    send_message('feedback', project_id, issue_id)
-  end
-
-  def self.send_message(notice, project_id, issue_id)
-    TelegramSenderWorker.perform_in(5.seconds, notice, project_id, issue_id)
+  def self.send_group_message(issue_id, status_id, priority_id)
+    issue = Issue.find issue_id
+    telegram_groups_settings = issue.project.telegram_settings.try(:[], 'groups')
+    if telegram_groups_settings
+      group_ids = telegram_groups_settings.select {|k,v| v.try(:[], status_id.to_s).try(:include?, priority_id.to_s)}.keys
+      TelegramGroupSenderWorker.perform_in(5.seconds, issue_id, group_ids)
+    end
   end
 end

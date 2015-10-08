@@ -48,9 +48,9 @@ module Intouch
         end
 
 
-        def email_recipients
+        def recipient_ids(protocol)
           if notification_status
-            user_ids = project.email_settings[notification_status].map do |key, value|
+            project.send("active_#{protocol}_settings")[notification_status].map do |key, value|
               case key
                 when 'author'
                   author.id
@@ -64,33 +64,32 @@ module Intouch
                   nil
               end
             end.flatten.uniq
-            User.where(id: user_ids).pluck(:email)
           end
+        end
+
+        def recipients(protocol)
+          User.where(id: recipient_ids(protocol))
+        end
+
+        def telegram_message
+          "[#{priority.try :name}] [#{status.try :name}] #{project.name}: #{subject} https://factory.southbridge.ru/issues/#{id}"
         end
 
         private
 
         def check_alarm
-          if changed_attributes
-            if changed_attributes['priority_id'] &&
-                IssuePriority.alarm_ids.include?(priority.id.to_s)
-              TelegramSender.send_alarm_message(project_id, id)
-            elsif changed_attributes['status_id']
-              if IssuePriority.alarm_ids.include?(priority.id.to_s)
-                TelegramSender.send_alarm_message(project_id, id)
-              elsif IssueStatus.new_ids.include?(status.id.to_s)
-                TelegramSender.send_new_message(project_id, id)
-              elsif IssueStatus.working_ids.include?(status.id.to_s)
-                TelegramSender.send_working_message(project_id, id)
-              elsif IssueStatus.feedback_ids.include?(status.id.to_s)
-                TelegramSender.send_feedback_message(project_id, id)
-              end
+          if changed_attributes and (changed_attributes['priority_id'] or changed_attributes['status_id'])
+            TelegramSender.send_group_message(id, status_id, priority_id)
+
+            if IssuePriority.alarm_ids.include?(priority.id) or IssueStatus.alarm_ids.include?(status.id)
+              TelegramSender.send_message(id)
             end
           end
         end
 
         def send_new_message
-          TelegramSender.send_new_message(project_id, id)
+          TelegramSender.send_message(id)
+          TelegramSender.send_group_message(id, status_id, priority_id)
         end
 
       end

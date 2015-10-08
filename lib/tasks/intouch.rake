@@ -23,8 +23,8 @@ namespace :intouch do
               project = Project.find project_id
               if project.module_enabled?(:intouch) and project.active?
                 project_issues.each do |issue|
-                  issue.email_recipients.each do |user_id|
-                    RemindingMailer.reminder_email(user_id, issue).deliver if user_id.present?
+                  issue.recipients('email').each do |user|
+                    RemindingMailer.reminder_email(user, issue).deliver if user.present?
                   end
                 end
               end
@@ -44,7 +44,7 @@ namespace :intouch do
           project = Project.find project_id
           if project.module_enabled?(:intouch) and project.active?
             issues.each do |issue|
-              TelegramSender.send_alarm_message(issue.project_id, issue.id) if issue.project.present?
+              TelegramSender.send_message(issue.id) if issue.project.present?
             end
           end
         end
@@ -57,7 +57,7 @@ namespace :intouch do
             project = Project.find project_id
             if project.module_enabled?(:intouch) and project.active?
               issues.each do |issue|
-                TelegramSender.send_new_message(issue.project_id, issue.id)
+                TelegramSender.send_message(issue.id)
               end
             end
           end
@@ -72,7 +72,7 @@ namespace :intouch do
             project = Project.find project_id
             if project.module_enabled?(:intouch) and project.active?
               issues.each do |issue|
-                TelegramSender.send_overdue_message(issue.project_id, issue.id)
+                TelegramSender.send_message(issue.id)
               end
             end
           end
@@ -86,7 +86,7 @@ namespace :intouch do
             project = Project.find project_id
             if project.module_enabled?(:intouch) and project.active?
               issues.each do |issue|
-                TelegramSender.send_working_message(issue.project_id, issue.id) if issue.updated_on < 2.hours.ago
+                TelegramSender.send_message(issue.id) if issue.updated_on < 2.hours.ago
               end
             end
           end
@@ -100,7 +100,7 @@ namespace :intouch do
             project = Project.find project_id
             if project.module_enabled?(:intouch) and project.active?
               issues.each do |issue|
-                TelegramSender.send_feedback_message(issue.project_id, issue.id) if issue.updated_on < 2.hours.ago
+                TelegramSender.send_message(issue.id) if issue.updated_on < 2.hours.ago
               end
             end
           end
