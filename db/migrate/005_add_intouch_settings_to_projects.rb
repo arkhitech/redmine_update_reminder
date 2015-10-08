@@ -20,7 +20,7 @@ class AddIntouchSettingsToProjects < ActiveRecord::Migration
         status = status_and_recipient[1]
         recipient = status_and_recipient[2]
 
-        if recipient == 'telegram_groups' and %w(alarm new working feedback).include? status
+        if recipient == 'telegram_groups' and %w(alarm new working feedback).include?(status) and v.present?
           if status == 'alarm'
             status_ids = IssueStatus.where(is_closed: false).pluck(:id).map(&:to_s)
             priority_ids = IssuePriority.alarm_ids.map(&:to_s)
