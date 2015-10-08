@@ -23,9 +23,7 @@ namespace :intouch do
               project = Project.find project_id
               if project.module_enabled?(:intouch) and project.active?
                 project_issues.each do |issue|
-                  issue.recipients('email').each do |user|
-                    RemindingMailer.reminder_email(user, issue).deliver if user.present?
-                  end
+                  RemindingMailer.reminder_email(issue.assigned_to, issue).deliver if issue.assigned_to.present?
                 end
               end
             end
@@ -44,7 +42,8 @@ namespace :intouch do
           project = Project.find project_id
           if project.module_enabled?(:intouch) and project.active?
             issues.each do |issue|
-              TelegramSender.send_message(issue.id) if issue.project.present?
+              IntouchSender.send_telegram_message(issue.id)
+              IntouchSender.send_email_message(issue.id)
             end
           end
         end
@@ -57,7 +56,8 @@ namespace :intouch do
             project = Project.find project_id
             if project.module_enabled?(:intouch) and project.active?
               issues.each do |issue|
-                TelegramSender.send_message(issue.id)
+                IntouchSender.send_telegram_message(issue.id)
+                IntouchSender.send_email_message(issue.id)
               end
             end
           end
@@ -72,7 +72,8 @@ namespace :intouch do
             project = Project.find project_id
             if project.module_enabled?(:intouch) and project.active?
               issues.each do |issue|
-                TelegramSender.send_message(issue.id)
+                IntouchSender.send_telegram_message(issue.id)
+                IntouchSender.send_email_message(issue.id)
               end
             end
           end
@@ -86,7 +87,10 @@ namespace :intouch do
             project = Project.find project_id
             if project.module_enabled?(:intouch) and project.active?
               issues.each do |issue|
-                TelegramSender.send_message(issue.id) if issue.updated_on < 2.hours.ago
+                if issue.updated_on < 2.hours.ago
+                  IntouchSender.send_telegram_message(issue.id)
+                  IntouchSender.send_email_message(issue.id)
+                end
               end
             end
           end
@@ -100,7 +104,10 @@ namespace :intouch do
             project = Project.find project_id
             if project.module_enabled?(:intouch) and project.active?
               issues.each do |issue|
-                TelegramSender.send_message(issue.id) if issue.updated_on < 2.hours.ago
+                if issue.updated_on < 2.hours.ago
+                  IntouchSender.send_telegram_message(issue.id)
+                  IntouchSender.send_email_message(issue.id)
+                end
               end
             end
           end

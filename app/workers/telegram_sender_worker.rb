@@ -9,7 +9,7 @@ class TelegramSenderWorker
     token = Setting.plugin_redmine_intouch['telegram_bot_token']
     bot = TelegramBot.new(token: token)
 
-    issue.recipients('telegram').each do |user|
+    issue.intouch_recipients('telegram').each do |user|
       telegram_user = user.telegram_user
       next unless telegram_user.present?
       reply = TelegramBot::OutMessage.new(chat: TelegramBot::Channel.new(id: telegram_user.tid))

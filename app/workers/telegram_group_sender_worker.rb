@@ -10,6 +10,7 @@ class TelegramGroupSenderWorker
     bot = TelegramBot.new(token: token)
 
     TelegramGroupChat.where(id: group_ids).uniq.each do |group|
+      next unless group.tid.present?
       reply = TelegramBot::OutMessage.new(chat: TelegramBot::Channel.new(id: -group.tid))
       reply.text = message
       bot.send_message(reply)

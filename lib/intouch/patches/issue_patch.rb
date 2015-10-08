@@ -67,7 +67,7 @@ module Intouch
           end
         end
 
-        def recipients(protocol)
+        def intouch_recipients(protocol)
           User.where(id: recipient_ids(protocol))
         end
 
@@ -79,17 +79,19 @@ module Intouch
 
         def check_alarm
           if changed_attributes and (changed_attributes['priority_id'] or changed_attributes['status_id'])
-            TelegramSender.send_group_message(id, status_id, priority_id)
+            IntouchSender.send_telegram_group_message(id, status_id, priority_id)
 
             if IssuePriority.alarm_ids.include?(priority.id) or IssueStatus.alarm_ids.include?(status.id)
-              TelegramSender.send_message(id)
+              IntouchSender.send_telegram_message(id)
+              IntouchSender.send_email_message(id)
             end
           end
         end
 
         def send_new_message
-          TelegramSender.send_message(id)
-          TelegramSender.send_group_message(id, status_id, priority_id)
+          IntouchSender.send_telegram_message(id)
+          IntouchSender.send_telegram_group_message(id, status_id, priority_id)
+          IntouchSender.send_email_message(id)
         end
 
       end
