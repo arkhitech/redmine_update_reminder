@@ -153,16 +153,20 @@ namespace :intouch do
         exit
       end
 
-      begin
+      LOG.info 'Telegram Bot: Connecting to telegram...'
+      bot = TelegramBot.new(token: token, logger: LOG)
+      bot_name = bot.get_me.username
+
+      until bot_name.present?
+
+        LOG.error 'Telegram Bot Token is invalid or Telegram API is in downtime. I will try again after minute'
+        sleep 60
 
         LOG.info 'Telegram Bot: Connecting to telegram...'
         bot = TelegramBot.new(token: token, logger: LOG)
         bot_name = bot.get_me.username
 
-        LOG.error 'Telegram Bot Token is invalid or Telegram API is in downtime. I will try again after minute'
-        sleep 60
-
-      end while bot_name.present?
+      end
 
       LOG.info "#{bot_name}: connected"
       LOG.info "#{bot_name}: waiting for new users and group chats..."
