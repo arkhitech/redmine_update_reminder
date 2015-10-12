@@ -1,0 +1,36 @@
+<p class="description">
+  Укажите, в какую группу какие уведомления посылать
+</p>
+
+<% TelegramGroupChat.find_each do |telegram_group| %>
+  <h5><%= telegram_group.title %></h5>
+  <table>
+    <thead>
+    <tr>
+      <th>Статус \ Приоритет</th>
+      <% IssuePriority.order(:position).each do |priority| %>
+        <th><%= priority.name %></th>
+      <% end %>
+    </tr>
+    </thead>
+    <tbody>
+    <% IssueStatus.order(:position).each do |status| %>
+      <tr>
+        <th>
+          <%= status.name %>
+        </th>
+        <% IssuePriority.order(:position).each do |priority| %>
+          <td>
+            <%= check_box_tag "intouch_settings[telegram_settings][groups][#{telegram_group.id}][#{status.id}][]", priority.id,
+                              @project.telegram_settings.try(:[], 'groups').try(:[], telegram_group.id.to_s).
+                                  try(:[], status.id.to_s).try(:include?, priority.id.to_s) %>
+          </td>
+
+        <% end %>
+      </tr>
+
+
+    <% end %>
+    </tbody>
+  </table>
+<% end %>

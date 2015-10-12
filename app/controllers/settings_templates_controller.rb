@@ -12,7 +12,7 @@ class SettingsTemplatesController < ApplicationController
 
     respond_to do |format|
       format.api
-      format.html { render :action => "index", :layout => false if request.xhr? }
+      format.html { render action: "index", layout: false if request.xhr? }
     end
 
   end
@@ -25,9 +25,9 @@ class SettingsTemplatesController < ApplicationController
     @settings_template = SettingsTemplate.new(params[:settings_template])
     if @settings_template.save
       flash[:notice] = l(:notice_successful_create)
-      redirect_to :action => "plugin", :id => "redmine_intouch", :controller => "settings", :tab => 'settings_templates'
+      redirect_to action: "plugin", id: "redmine_intouch", controller: "settings", tab: 'settings_templates'
     else
-      render :action => 'new'
+      render action: 'new'
     end
   end
 
@@ -39,18 +39,18 @@ class SettingsTemplatesController < ApplicationController
     @settings_template = SettingsTemplate.find(params[:id])
     if @settings_template.update_attributes(params[:settings_template])
       flash[:notice] = l(:notice_successful_update)
-      redirect_to :action => "plugin", :id => "redmine_intouch", :controller => "settings", :tab => 'settings_templates'
+      redirect_to action: "plugin", id: "redmine_intouch", controller: "settings", tab: 'settings_templates'
     else
-      render :action => 'edit'
+      render action: 'edit'
     end
   end
 
   def destroy
     SettingsTemplate.find(params[:id]).destroy
-    redirect_to :action => "plugin", :id => "redmine_intouch", :controller => "settings", :tab => 'settings_templates'
+    redirect_to action: "plugin", id: "redmine_intouch", controller: "settings", tab: 'settings_templates'
   rescue
     flash[:error] = l(:error_unable_delete_settings_template)
-    redirect_to :action => "plugin", :id => "redmine_intouch", :controller => "settings", :tab => 'settings_templates'
+    redirect_to action: "plugin", id: "redmine_intouch", controller: "settings", tab: 'settings_templates'
   end
 
 end

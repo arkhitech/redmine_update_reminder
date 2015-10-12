@@ -1,5 +1,8 @@
 ru:
   intouch:
+    protocol:
+      telegram: Telegram
+      email: E-mail
     email:
       cc_to: "Получатель скрытой копии"
       footer: "Футер"
@@ -13,6 +16,7 @@ ru:
       settings: InTouch
       settings_templates: "Шаблоны настроек"
       telegram: Telegram
+      issue_update: Мгновенные уведомления при смене статуса/приоритета задачи
     priorities:
       alarm: "Авария"
       title: "Приоритеты"

@@ -1,0 +1,38 @@
+<p class="description">
+  Укажите, в какую группу какие уведомления посылать
+</p>
+
+<% Group.find_each do |user_group| %>
+  <h5><%= user_group.name %></h5>
+  <table>
+    <thead>
+    <tr>
+      <th>Статус \ Приоритет</th>
+      <% IssuePriority.order(:position).each do |priority| %>
+        <th><%= priority.name %></th>
+      <% end %>
+    </tr>
+    </thead>
+    <tbody>
+    <% IssueStatus.order(:position).each do |status| %>
+      <tr>
+        <th>
+          <%= status.name %>
+        </th>
+        <% IssuePriority.order(:position).each do |priority| %>
+          <td>
+            <% %w(telegram email).each do |protocol| %>
+              <%= check_box_tag "intouch_settings[#{protocol}_settings][user_groups][#{user_group.id}][#{status.id}][]", priority.id,
+                                @project.send("#{protocol}_settings").try(:[], 'user_groups').try(:[], user_group.id.to_s).
+                                    try(:[], status.id.to_s).try(:include?, priority.id.to_s) %>
+              <%= label_tag l "intouch.protocol.#{protocol}" %><br>
+            <% end %>
+          </td>
+        <% end %>
+      </tr>
+
+
+    <% end %>
+    </tbody>
+  </table>
+<% end %>

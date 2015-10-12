@@ -1,9 +1,89 @@
 namespace :intouch do
+  namespace :regular_notification do
+    desc 'Notification  about alarm issues'
+    task :alarm => :environment do
+      Issue.joins(:project).alarms.group_by(&:project_id).each do |project_id, issues|
+        project = Project.find project_id
+        if project.module_enabled?(:intouch) and project.active?
+          issues.each do |issue|
+            IntouchSender.send_telegram_message(issue.id)
+            IntouchSender.send_email_message(issue.id)
+          end
+        end
+      end
+    end
+
+    desc 'Notification  about new issues'
+    task :new => :environment do
+      if Intouch.work_day?
+        Issue.joins(:project).news.group_by(&:project_id).each do |project_id, issues|
+          project = Project.find project_id
+          if project.module_enabled?(:intouch) and project.active?
+            issues.each do |issue|
+              IntouchSender.send_telegram_message(issue.id)
+              IntouchSender.send_email_message(issue.id)
+            end
+          end
+        end
+      end
+    end
+
+    desc 'Notification  about overdue issues'
+    task :overdue => :environment do
+      if Intouch.work_day?
+        Issue.joins(:project).where(status_id: IssueStatus.alarm_ids).where('due_date < ?', Date.today).
+            where.not(priority_id: IssuePriority.alarm_ids).group_by(&:project_id).each do |project_id, issues|
+          project = Project.find project_id
+          if project.module_enabled?(:intouch) and project.active?
+            issues.each do |issue|
+              IntouchSender.send_telegram_message(issue.id)
+              IntouchSender.send_email_message(issue.id)
+            end
+          end
+        end
+      end
+    end
+
+    desc 'Notification  about working issues'
+    task :work_in_progress => :environment do
+      if Intouch.work_time?
+        Issue.joins(:project).working.group_by(&:project_id).each do |project_id, issues|
+          project = Project.find project_id
+          if project.module_enabled?(:intouch) and project.active?
+            issues.each do |issue|
+              if issue.updated_on < 2.hours.ago
+                IntouchSender.send_telegram_message(issue.id)
+                IntouchSender.send_email_message(issue.id)
+              end
+            end
+          end
+        end
+      end
+    end
+
+    desc 'Notification  about feedback issues'
+    task :feedback => :environment do
+      if Intouch.work_time?
+        Issue.joins(:project).feedbacks.group_by(&:project_id).each do |project_id, issues|
+          project = Project.find project_id
+          if project.module_enabled?(:intouch) and project.active?
+            issues.each do |issue|
+              if issue.updated_on < 2.hours.ago
+                IntouchSender.send_telegram_message(issue.id)
+                IntouchSender.send_email_message(issue.id)
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+
   namespace :email do
 
     desc "Send reminders to issue assignee which not updated for a long time"
     task :send_reminders => :environment do
-      if work_day? and work_time?
+      if Intouch.work_time?
 
         trackers = Tracker.all
 
@@ -35,86 +115,6 @@ namespace :intouch do
 
 
   namespace :telegram do
-    namespace :notification do
-      desc 'Notification for telegram users about alarm issues'
-      task :alarm => :environment do
-        Issue.joins(:project).alarms.group_by(&:project_id).each do |project_id, issues|
-          project = Project.find project_id
-          if project.module_enabled?(:intouch) and project.active?
-            issues.each do |issue|
-              IntouchSender.send_telegram_message(issue.id)
-              IntouchSender.send_email_message(issue.id)
-            end
-          end
-        end
-      end
-
-      desc 'Notification for telegram users about new issues'
-      task :new => :environment do
-        if work_day? and work_time?
-          Issue.joins(:project).news.group_by(&:project_id).each do |project_id, issues|
-            project = Project.find project_id
-            if project.module_enabled?(:intouch) and project.active?
-              issues.each do |issue|
-                IntouchSender.send_telegram_message(issue.id)
-                IntouchSender.send_email_message(issue.id)
-              end
-            end
-          end
-        end
-      end
-
-      desc 'Notification for telegram users about overdue issues'
-      task :overdue => :environment do
-        if work_day? and work_time?
-          Issue.joins(:project).where(status_id: IssueStatus.alarm_ids).where('due_date < ?', Date.today).
-              where.not(priority_id: IssuePriority.alarm_ids).group_by(&:project_id).each do |project_id, issues|
-            project = Project.find project_id
-            if project.module_enabled?(:intouch) and project.active?
-              issues.each do |issue|
-                IntouchSender.send_telegram_message(issue.id)
-                IntouchSender.send_email_message(issue.id)
-              end
-            end
-          end
-        end
-      end
-
-      desc 'Notification for telegram users about working issues'
-      task :work_in_progress => :environment do
-        if work_day? and work_time?
-          Issue.joins(:project).working.group_by(&:project_id).each do |project_id, issues|
-            project = Project.find project_id
-            if project.module_enabled?(:intouch) and project.active?
-              issues.each do |issue|
-                if issue.updated_on < 2.hours.ago
-                  IntouchSender.send_telegram_message(issue.id)
-                  IntouchSender.send_email_message(issue.id)
-                end
-              end
-            end
-          end
-        end
-      end
-
-      desc 'Notification for telegram users about feedback issues'
-      task :feedback => :environment do
-        if work_day? and work_time?
-          Issue.joins(:project).feedbacks.group_by(&:project_id).each do |project_id, issues|
-            project = Project.find project_id
-            if project.module_enabled?(:intouch) and project.active?
-              issues.each do |issue|
-                if issue.updated_on < 2.hours.ago
-                  IntouchSender.send_telegram_message(issue.id)
-                  IntouchSender.send_email_message(issue.id)
-                end
-              end
-            end
-          end
-        end
-      end
-    end
-
     # bundle exec rake intouch:telegram:bot PID_DIR='/tmp'
     desc "Runs telegram bot process (options: PID_DIR='/pid/dir')"
     task :bot => :environment do
@@ -206,17 +206,4 @@ namespace :intouch do
       end
     end
   end
-end
-
-
-def work_day?
-  settings = Setting.plugin_redmine_intouch
-  work_days = settings.keys.select { |key| key.include?('work_days') }.map { |key| key.split('_').last.to_i }
-  work_days.include? Date.today.wday
-end
-
-def work_time?
-  from = Time.parse Setting.plugin_redmine_intouch['work_day_from']
-  to = Time.parse Setting.plugin_redmine_intouch['work_day_to']
-  from <= Time.now and Time.now <= to
 end

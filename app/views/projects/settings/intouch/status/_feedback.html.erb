@@ -1,0 +1,8 @@
+<div class="box">
+  <p class="description">
+    Каждый рабочий день, в рабоче время, в случае, если задача не обновлялась 2 часа и находится в статусе <strong>Обратная связь</strong>,
+    следующие пользователи будут получать сообщения.<br>
+    Рабочие дни, рабочее время, статусы, воспринимаемые как <strong>Обратная связь</strong>, указываются в <a href="/settings/plugin/redmine_intouch" target="_blank">настройках плагина</a>.
+  </p>
+  <%= render partial: 'projects/settings/intouch/status/common', locals: {status: 'feedback'} %>
+</div>

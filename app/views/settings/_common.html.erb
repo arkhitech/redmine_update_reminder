@@ -10,7 +10,7 @@
       <label for="settings_work_day_to"><%= l 'intouch.work_days.to' %></label>
       <%= time_field_tag "settings[work_day_to]", @settings["work_day_to"] %>
     </li>
-    <% Date::DAYNAMES.rotate.each_with_index do |day, i| %>
+    <% Date::DAYNAMES.each_with_index do |day, i| %>
       <li>
         <%= check_box_tag "settings[work_days_#{i}]", '1',
                           @settings["work_days_#{i}"] %>

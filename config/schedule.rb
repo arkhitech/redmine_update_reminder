@@ -3,18 +3,18 @@ every 1.hour do
 end
 
 every 30.minutes do
-  rake 'intouch:telegram:notification:alarm'
+  rake 'intouch:regular_notification:alarm'
 end
 
 every 1.day, at: '10:00' do
-  rake 'intouch:telegram:notification:new'
-  rake 'intouch:telegram:notification:overdue'
+  rake 'intouch:regular_notification:new'
+  rake 'intouch:regular_notification:overdue'
 end
 
 every 5.minutes do
-  rake 'intouch:telegram:notification:work_in_progress'
+  rake 'intouch:regular_notification:work_in_progress'
 end
 
 every 5.minutes do
-  rake 'intouch:telegram:notification:feedback'
+  rake 'intouch:regular_notification:feedback'
 end

@@ -43,10 +43,13 @@ module Intouch
           due_date && due_date < Date.today
         end
 
+        def without_due_date?
+          !due_date.present? and created_at < 1.day.ago
+        end
+
         def notification_status
           %w(alarm new working feedback overdue).select { |s| send("#{s}?") }.try :first
         end
-
 
         def recipient_ids(protocol)
           if notification_status
@@ -67,12 +70,45 @@ module Intouch
           end
         end
 
+        def live_recipient_ids(protocol)
+          recipients = project.send("active_#{protocol}_settings").select { |k, v| %w(author assigned_to watchers user_groups).include? k }
+
+          user_ids = []
+          recipients.each_pair do |key, value|
+            case key
+              when 'author'
+                user_ids << author.id if value.try(:[], status_id.to_s).try(:include?, priority_id.to_s)
+              when 'assigned_to'
+                user_ids << assigned_to.id if value.try(:[], status_id.to_s).try(:include?, priority_id.to_s)
+              when 'watchers'
+                user_ids << watchers.pluck(:user_id) if value.try(:[], status_id.to_s).try(:include?, priority_id.to_s)
+              when 'user_groups'
+                group_ids = value.select {|k,v| v.try(:[], status_id.to_s).try(:include?, priority_id.to_s)}.keys
+                user_ids += Group.where(id: group_ids).map(&:users).flatten.map(&:id)
+              else
+                nil
+            end
+          end
+          user_ids.flatten.uniq
+        end
+
         def intouch_recipients(protocol)
           User.where(id: recipient_ids(protocol))
         end
 
+        def intouch_live_recipients(protocol)
+          User.where(id: live_recipient_ids(protocol))
+        end
+
+        def performer
+          assigned_to.present? ? assigned_to.name : 'Не назначена'
+        end
+
         def telegram_message
-          "[#{priority.try :name}] [#{status.try :name}] #{project.name}: #{subject} https://factory.southbridge.ru/issues/#{id}"
+          message = "[#{priority.try :name}] [#{status.try :name}] #{performer} - #{project.name}: #{subject} https://factory.southbridge.ru/issues/#{id}"
+          message = "[Просроченная задача] #{message}" if overdue?
+          message = "[Не установлена дата выполнения] #{message}" if without_due_date?
+          message
         end
 
         private
@@ -80,18 +116,15 @@ module Intouch
         def check_alarm
           if changed_attributes and (changed_attributes['priority_id'] or changed_attributes['status_id'])
             IntouchSender.send_telegram_group_message(id, status_id, priority_id)
-
-            if IssuePriority.alarm_ids.include?(priority.id) or IssueStatus.alarm_ids.include?(status.id)
-              IntouchSender.send_telegram_message(id)
-              IntouchSender.send_email_message(id)
-            end
+            IntouchSender.send_live_telegram_message(id)
+            IntouchSender.send_live_email_message(id)
           end
         end
 
         def send_new_message
-          IntouchSender.send_telegram_message(id)
+          IntouchSender.send_live_telegram_message(id)
           IntouchSender.send_telegram_group_message(id, status_id, priority_id)
-          IntouchSender.send_email_message(id)
+          IntouchSender.send_live_email_message(id)
         end
 
       end

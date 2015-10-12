@@ -1,4 +1,5 @@
 require 'redmine'
+require_dependency 'intouch'
 require_dependency 'intouch/hook_listener'
 require_dependency 'intouch/patches/projects_helper_patch'
 require_dependency 'intouch/patches/project_patch'

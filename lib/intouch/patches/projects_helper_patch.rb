@@ -38,11 +38,23 @@ module Intouch
 
           tabs.push({name: 'intouch_settings',
                      action: :manage_intouch_settings,
-                     partial: 'projects/settings/intouch_settings',
+                     partial: 'projects/settings/intouch/settings',
                      label: 'intouch.label.settings'}) if User.current.allowed_to?(:manage_intouch_settings, @project)
 
           tabs
+        end
 
+        # Renders tabs and their content
+        def render_intouch_tabs(tabs, selected=params[:tab])
+          if tabs.any?
+            unless tabs.detect { |tab| tab[:name] == selected }
+              selected = nil
+            end
+            selected ||= tabs.first[:name]
+            render partial: 'projects/settings/intouch/common/tabs', locals: {tabs: tabs, selected_tab: selected}
+          else
+            content_tag 'p', l(:label_no_data), class: "nodata"
+          end
         end
       end
 
