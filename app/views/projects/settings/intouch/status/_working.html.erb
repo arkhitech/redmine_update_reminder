@@ -9,7 +9,7 @@
     <thead>
     <tr>
       <th>Приоритет</th>
-      <th></th>
+      <th>Уведомлять <br> с интервалом</th>
     </tr>
     </thead>
 
@@ -22,7 +22,7 @@
                           settings_source.intouch_settings.
                           try(:[], 'working').try(:[], 'priority_notification').
                           try(:[], "#{priority.id}").try(:[], 'active') %>
-        <%= label_tag 'уведомлять с интервалом' %>
+        <%#= label_tag 'уведомлять с интервалом' %>
         <%= number_field_tag "intouch_settings[working][priority_notification][#{priority.id}][interval]",
                               settings_source.intouch_settings.
                               try(:[], 'working').try(:[], 'priority_notification').
@@ -33,6 +33,7 @@
     <% end %>
 
   </table>
+  <br>
 
   <%= render partial: 'projects/settings/intouch/status/common', locals: {status: 'working', settings_source: settings_source } %>
 </div>
