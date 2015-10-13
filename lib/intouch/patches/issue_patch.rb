@@ -128,9 +128,11 @@ module Intouch
 
         def check_alarm
           if changed_attributes and (changed_attributes['priority_id'] or changed_attributes['status_id'])
-            IntouchSender.send_telegram_group_message(id, status_id, priority_id)
-            IntouchSender.send_live_telegram_message(id)
-            IntouchSender.send_live_email_message(id)
+            if alarm? or Intouch.work_time?
+              IntouchSender.send_telegram_group_message(id, status_id, priority_id)
+              IntouchSender.send_live_telegram_message(id)
+              IntouchSender.send_live_email_message(id)
+            end
           end
         end
 
