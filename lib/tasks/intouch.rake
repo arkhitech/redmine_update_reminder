@@ -49,9 +49,13 @@ namespace :intouch do
       if Intouch.work_time?
         Issue.joins(:project).working.group_by(&:project_id).each do |project_id, issues|
           project = Project.find project_id
-          if project.module_enabled?(:intouch) and project.active?
+          working_notification_settings = project.active_intouch_settings.try(:[], 'working').try(:[], 'priority_notification')
+          if project.module_enabled?(:intouch) and project.active? and working_notification_settings.present?
             issues.each do |issue|
-              if issue.updated_on < 2.hours.ago
+              priority = issue.priority_id.to_s
+              active = working_notification_settings[priority].try(:[], 'active')
+              interval = working_notification_settings[priority].try(:[], 'interval')
+              if active and interval.present? and issue.updated_on < interval.to_i.hours.ago
                 IntouchSender.send_telegram_message(issue.id)
                 IntouchSender.send_email_message(issue.id)
               end

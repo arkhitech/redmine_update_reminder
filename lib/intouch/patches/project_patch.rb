@@ -17,6 +17,10 @@ module Intouch
           settings_template ? settings_template.email_settings : email_settings
         end
 
+        def active_intouch_settings
+          settings_template ? settings_template.intouch_settings : intouch_settings
+        end
+
         def settings_template
           @settings_template ||= SettingsTemplate.find_by(id: settings_template_id)
         end

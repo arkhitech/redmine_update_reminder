@@ -37,3 +37,7 @@
 .intouch-settings h5 {
     margin: 0;
 }
+
+.intouch-settings .hours_input {
+  width: 30px;
+}

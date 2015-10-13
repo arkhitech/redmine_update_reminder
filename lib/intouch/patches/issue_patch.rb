@@ -104,10 +104,23 @@ module Intouch
           assigned_to.present? ? assigned_to.name : 'Не назначена'
         end
 
+        def inactive?
+          interval = project.active_intouch_settings.
+                              try(:[], 'working').try(:[], 'priority_notification').
+                              try(:[], "#{priority_id}").try(:[], 'interval')
+          interval.present? and updated_on < interval.to_i.hours.ago
+        end
+
+        def inactive_message
+          hours = ((Time.now - updated_on) / 3600).round(1)
+          "Бездействие #{hours} ч."
+        end
+
         def telegram_message
           message = "[#{priority.try :name}] [#{status.try :name}] #{performer} - #{project.name}: #{subject} https://factory.southbridge.ru/issues/#{id}"
           message = "[Просроченная задача] #{message}" if overdue?
           message = "[Не установлена дата выполнения] #{message}" if without_due_date?
+          message = "#{inactive_message} #{message}" if inactive?
           message
         end
 

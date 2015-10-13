@@ -1,8 +1,38 @@
 <div class="box">
   <p class="description">
-    Каждый рабочий день, в рабоче время, в случае, если задача не обновлялась 2 часа и находится в статусе <strong>В работе</strong>,
+    Каждый рабочий день, в рабоче время, в случае, если задача находится в статусе <strong>В работе</strong>,
+    с указанными интервалами для приоритетов
     следующие пользователи будут получать сообщения.<br>
     Рабочие дни, рабочее время, статусы, воспринимаемые как <strong>В работе</strong>, указываются в <a href="/settings/plugin/redmine_intouch" target="_blank">настройках плагина</a>.
   </p>
+  <table>
+    <thead>
+    <tr>
+      <th>Приоритет</th>
+      <th></th>
+    </tr>
+    </thead>
+
+    <% IssuePriority.order(:position).each do |priority| %>
+    <tr>
+      <th><%= priority.name %></th>
+
+      <td>
+        <%= check_box_tag "intouch_settings[working][priority_notification][#{priority.id}][active]", '1',
+                          settings_source.intouch_settings.
+                          try(:[], 'working').try(:[], 'priority_notification').
+                          try(:[], "#{priority.id}").try(:[], 'active') %>
+        <%= label_tag 'уведомлять с интервалом' %>
+        <%= number_field_tag "intouch_settings[working][priority_notification][#{priority.id}][interval]",
+                              settings_source.intouch_settings.
+                              try(:[], 'working').try(:[], 'priority_notification').
+                              try(:[], "#{priority.id}").try(:[], 'interval'), class: 'hours_input' %>
+        <%= label_tag 'ч.' %>
+      </td>
+      </tr>
+    <% end %>
+
+  </table>
+
   <%= render partial: 'projects/settings/intouch/status/common', locals: {status: 'working', settings_source: settings_source } %>
 </div>
