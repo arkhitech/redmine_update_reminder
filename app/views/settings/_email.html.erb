@@ -8,16 +8,23 @@
   <%= text_area_tag 'settings[footer]', @settings['footer'] %>
 </p>
 
+<p class="description">
+  В рабочее время, каждый час отправляются письма исполителям задач - в случае если задача не обновлялась указанное ниже количество часов для каждого треккера.<br>
+  Рабочие дни и рабочее время указываются в <a href="/settings/plugin/redmine_intouch" target="_blank">настройках плагина</a>.
+</p>
+
 <% Tracker.find_each do |tracker| %>
 
   <div class="box tabular settings">
-    <p>
-      <label><%= tracker.name %></label>
-    </p>
 
     <p>
-      <label for="settings_duration"><%= l 'intouch.email.interval' %></label>
-      <%= text_field_tag "settings[#{tracker.id}_update_duration]", @settings["#{tracker.id}_update_duration"] %></p>
+      <label>Треккер <%= tracker.name %></label>
+      уведомлять через
+      <%= number_field_tag "settings[#{tracker.id}_update_duration]",
+          @settings["#{tracker.id}_update_duration"],
+          class: 'hours_input' %>
+      ч.
+    </p>
   </div>
 
 <% end %>
