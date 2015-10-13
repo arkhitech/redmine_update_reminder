@@ -12,7 +12,7 @@
       <td>
         <% %w(telegram email).each do |protocol| %>
           <%= check_box_tag "intouch_settings[#{protocol}_settings][#{status}][#{receiver}]", '1',
-                            @project.send("#{protocol}_settings").try(:[], status).try(:[], receiver) %>
+                            settings_source.send("#{protocol}_settings").try(:[], status).try(:[], receiver) %>
           <%= label_tag l "intouch.protocol.#{protocol}" %><br>
         <% end %>
       </td>
@@ -23,7 +23,7 @@
         <%= user_group.name %><br>
         <% %w(telegram email).each do |protocol| %>
           <%= check_box_tag "intouch_settings[#{protocol}_settings][#{status}][user_groups][#{user_group.id}]", '1',
-                            @project.send("#{protocol}_settings").try(:[], status).try(:[], 'user_groups').try(:[], user_group.id.to_s) %>
+                            settings_source.send("#{protocol}_settings").try(:[], status).try(:[], 'user_groups').try(:[], user_group.id.to_s) %>
 
           <%= label_tag l "intouch.protocol.#{protocol}" %><br>
         <% end %>

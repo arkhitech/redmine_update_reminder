@@ -19,7 +19,7 @@
 </script>
 
 <% tabs.each do |tab| -%>
-  <%= content_tag('div', render(partial: tab[:partial], locals: {tab: tab}),
+  <%= content_tag('div', render(partial: tab[:partial], locals: {tab: tab, settings_source: settings_source}),
                   id: "intouch-tab-content-#{tab[:name]}",
                   style: (tab[:name] != selected_tab ? 'display:none' : nil),
                   class: 'intouch-tab-content') %>

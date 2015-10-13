@@ -20,29 +20,7 @@
     </div>
 
     <div class="intouch-settings" <%= raw('style="display: none;"') if @project.settings_template.present? %>>
-      <div>
-        <h3><%= l('intouch.label.issue_update') %></h3>
-
-        <div class="box">
-          <% issue_update_tabs = %w(author assigned_to watchers user_groups telegram_groups).map do |recipient|
-            {
-                name: recipient,
-                partial: "projects/settings/intouch/issue_update/#{recipient}",
-                label: "intouch.recipient.#{recipient}"
-            }
-          end %>
-
-          <%= render_intouch_tabs issue_update_tabs %>
-
-        </div>
-      </div>
-
-      <% %w( alarm new working feedback overdue).each do |status| %>
-        <div>
-          <h3><%= l("intouch.statuses.#{status}") %></h3>
-          <%= render partial: "projects/settings/intouch/status/#{status}" %>
-        </div>
-      <% end %>
+      <%= render partial: 'projects/settings/intouch/common/settings', locals: { settings_source: @project} %>
     </div>
 
     <div style="clear:both;"></div>

@@ -1,0 +1,23 @@
+<div>
+  <h3><%= l('intouch.label.issue_update') %></h3>
+
+  <div class="box">
+    <% issue_update_tabs = %w(author assigned_to watchers user_groups telegram_groups).map do |recipient|
+      {
+          name: recipient,
+          partial: "projects/settings/intouch/issue_update/#{recipient}",
+          label: "intouch.recipient.#{recipient}"
+      }
+    end %>
+
+    <%= render_intouch_tabs settings_source, issue_update_tabs %>
+
+  </div>
+</div>
+
+<% %w( alarm new working feedback overdue).each do |status| %>
+  <div>
+    <h3><%= l("intouch.statuses.#{status}") %></h3>
+    <%= render partial: "projects/settings/intouch/status/#{status}", locals: {settings_source: settings_source } %>
+  </div>
+<% end %>

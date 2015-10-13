@@ -21,7 +21,7 @@
         <td>
           <% %w(telegram email).each do |protocol| %>
             <%= check_box_tag "intouch_settings[#{protocol}_settings][assigned_to][#{status.id}][]", priority.id,
-                              @project.send("#{protocol}_settings").try(:[], 'assigned_to').
+                              settings_source.send("#{protocol}_settings").try(:[], 'assigned_to').
                                   try(:[], status.id.to_s).try(:include?, priority.id.to_s) %>
             <%= label_tag l "intouch.protocol.#{protocol}" %><br>
           <% end %>

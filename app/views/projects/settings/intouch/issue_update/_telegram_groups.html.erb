@@ -22,7 +22,7 @@
         <% IssuePriority.order(:position).each do |priority| %>
           <td>
             <%= check_box_tag "intouch_settings[telegram_settings][groups][#{telegram_group.id}][#{status.id}][]", priority.id,
-                              @project.telegram_settings.try(:[], 'groups').try(:[], telegram_group.id.to_s).
+                              settings_source.telegram_settings.try(:[], 'groups').try(:[], telegram_group.id.to_s).
                                   try(:[], status.id.to_s).try(:include?, priority.id.to_s) %>
           </td>
 
