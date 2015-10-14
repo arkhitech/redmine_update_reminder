@@ -1,7 +1,7 @@
 <table>
   <thead>
   <tr>
-    <% %w(author assigned_to watchers user_groups).each do |recipient| %>
+    <% %w(author assigned_to watchers).each do |recipient| %>
       <th><%= l "intouch.recipient.#{recipient}" %></th>
     <% end %>
   </tr>
@@ -18,17 +18,6 @@
       </td>
 
     <% end %>
-    <td>
-      <% Group.find_each do |user_group| %>
-        <%= user_group.name %><br>
-        <% %w(telegram email).each do |protocol| %>
-          <%= check_box_tag "intouch_settings[#{protocol}_settings][#{status}][user_groups][#{user_group.id}]", '1',
-                            settings_source.send("#{protocol}_settings").try(:[], status).try(:[], 'user_groups').try(:[], user_group.id.to_s) %>
-
-          <%= label_tag l "intouch.protocol.#{protocol}" %><br>
-        <% end %>
-      <% end %>
-    </td>
   </tr>
 
 </table>

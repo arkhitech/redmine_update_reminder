@@ -58,11 +58,9 @@ module Intouch
                 when 'author'
                   author.id
                 when 'assigned_to'
-                  assigned_to.id
+                  (assigned_to.class == Group) ? assigned_to.user_ids : assigned_to.id
                 when 'watchers'
                   watchers.pluck(:user_id)
-                when 'user_groups'
-                  Group.where(id: value.try(:keys)).map(&:users).flatten.map(&:id)
                 else
                   nil
               end
@@ -79,12 +77,15 @@ module Intouch
               when 'author'
                 user_ids << author.id if value.try(:[], status_id.to_s).try(:include?, priority_id.to_s)
               when 'assigned_to'
-                user_ids << assigned_to.id if value.try(:[], status_id.to_s).try(:include?, priority_id.to_s)
+                if value.try(:[], status_id.to_s).try(:include?, priority_id.to_s)
+                  if assigned_to.class == Group
+                    user_ids += assigned_to.user_ids
+                  else
+                    user_ids << assigned_to.id
+                  end
+                end
               when 'watchers'
                 user_ids << watchers.pluck(:user_id) if value.try(:[], status_id.to_s).try(:include?, priority_id.to_s)
-              when 'user_groups'
-                group_ids = value.select {|k,v| v.try(:[], status_id.to_s).try(:include?, priority_id.to_s)}.keys
-                user_ids += Group.where(id: group_ids).map(&:users).flatten.map(&:id)
               else
                 nil
             end
@@ -117,7 +118,7 @@ module Intouch
         end
 
         def telegram_message
-          message = "#{priority.try :name} [#{status.try :name}] #{performer} - #{project.name}: #{subject} https://factory.southbridge.ru/issues/#{id}"
+          message = "#{project.name}: #{priority.try :name} [#{status.try :name}] #{performer} -  #{subject} - ##{id}"
           message = "[Просроченная задача] #{message}" if overdue?
           message = "[Не установлена дата выполнения] #{message}" if without_due_date?
           message = "#{inactive_message}: #{message}" if inactive?

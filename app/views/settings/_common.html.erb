@@ -22,6 +22,9 @@
 
 <div class="box tabular settings alarm">
   <h4><%= l 'intouch.priorities.title' %> "<%= l 'intouch.priorities.alarm' %>"</h4>
+  <p class="description">Уведомления о задачах, с выбранными приоритетами, будут отправляться круглосуточно и без выходных. <br>
+    Уведомления для остальных приоритетов будут отправляться только в рабочее время.
+  </p>
   <ul class="inline-checkboxes">
     <% IssuePriority.find_each do |priority| %>
       <li>
