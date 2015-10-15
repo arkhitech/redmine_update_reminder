@@ -17,6 +17,7 @@ ru:
       settings_templates: "Шаблоны настроек"
       telegram: Telegram
       issue_update: Мгновенные уведомления при смене статуса/приоритета задачи
+      reminder: Периодические уведомления
     priorities:
       alarm: "Авария"
       title: "Приоритеты"
@@ -27,11 +28,12 @@ ru:
       title: "Получатель"
       user_groups: "Группа пользователей"
       watchers: "Наблюдатели"
-    statuses:
-      alarm: "Авария"
+    reminder:
+
+      intervals: "Общие настройки"
       feedback: "Обратная связь"
-      new: "Новая"
-      overdue: "Просроченная"
+      unassigned: "Неназначнные/Назначнные на группу"
+      overdue: "Просроченные/Без даты завершения"
       title: "Статусы"
       working: "В работе"
     work_days:

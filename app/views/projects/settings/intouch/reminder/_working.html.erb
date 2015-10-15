@@ -1,0 +1,8 @@
+<div class="box">
+  <p class="description">
+    Каждый рабочий день, в рабоче время, в случае, если задача не обновлялась указанное в общих настройках количество часов и находится в статусе <strong>В работе</strong>,
+    следующие пользователи будут получать сообщения.<br>
+    Рабочие дни, рабочее время, статусы, воспринимаемые как <strong>В работе</strong>, указываются в <a href="/settings/plugin/redmine_intouch" target="_blank">настройках плагина</a>.
+  </p>
+  <%= render partial: 'projects/settings/intouch/reminder/common', locals: {status: 'working', settings_source: settings_source } %>
+</div>

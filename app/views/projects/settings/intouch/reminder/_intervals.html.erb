@@ -1,0 +1,34 @@
+<div class="box">
+
+  <table style='display: inline-block'>
+    <thead>
+    <tr>
+      <th>Приоритет</th>
+      <th>Уведомлять <br> с интервалом</th>
+    </tr>
+    </thead>
+
+    <% IssuePriority.order(:position).each do |priority| %>
+    <tr>
+      <th><%= priority.name %></th>
+
+      <td>
+        <%= check_box_tag "intouch_settings[reminder_settings][#{priority.id}][active]", '1',
+                          settings_source.reminder_settings.
+                          try(:[], "#{priority.id}").try(:[], 'active') %>
+
+        <%= number_field_tag "intouch_settings[reminder_settings][#{priority.id}][interval]",
+                              settings_source.reminder_settings.
+                              try(:[], "#{priority.id}").try(:[], 'interval'), step: 0.1, class: 'hours_input' %>
+        <%= label_tag 'ч.' %>
+      </td>
+      </tr>
+    <% end %>
+
+  </table>
+  <p class="description" style='display: inline-block; vertical-align: top; width: 600px;'>
+    В таблице слева указывается длительность интрвалов периодических уведомлений для различных приоритетов.<br>
+    Уведомления будут отправляться только в рабочее время, за исключеним срочных задач. <br>
+    Рабочее время и приоритеты срочных задач указываются в <a href="/settings/plugin/redmine_intouch" target="_blank">настройках плагина</a>.
+  </p>
+</div>

@@ -5,9 +5,13 @@ module Intouch
         unloadable if Rails.env.production?
 
         # noinspection RubyArgCount
-        store :intouch_settings,  accessors: %w(settings_template_id telegram_settings email_settings)
+        store :intouch_settings,  accessors: %w(settings_template_id reminder_settings telegram_settings email_settings)
 
         before_create :copy_settings_from_parent
+
+        def active_reminder_settings
+          settings_template ? settings_template.reminder_settings : reminder_settings
+        end
 
         def active_telegram_settings
           settings_template ? settings_template.telegram_settings : telegram_settings

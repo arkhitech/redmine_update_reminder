@@ -4,39 +4,41 @@ module Intouch
       base.class_eval do
         unloadable if Rails.env.production?
 
+        store :intouch_data, accessors: %w(last_notification)
+
         before_save :check_alarm
         after_create :send_new_message
 
         def self.alarms
-          Issue.where(priority_id: IssuePriority.alarm_ids, status_id: IssueStatus.alarm_ids)
-        end
-
-        def self.news
-          Issue.where(status_id: IssueStatus.new_ids).where.not(priority_id: IssuePriority.alarm_ids)
+          Issue.where(priority_id: IssuePriority.alarm_ids)
         end
 
         def self.working
-          Issue.where(status_id: IssueStatus.working_ids).where.not(priority_id: IssuePriority.alarm_ids)
+          Issue.where(status_id: IssueStatus.working_ids)
         end
 
         def self.feedbacks
-          Issue.where(status_id: IssueStatus.feedback_ids).where.not(priority_id: IssuePriority.alarm_ids)
+          Issue.where(status_id: IssueStatus.feedback_ids)
         end
 
         def alarm?
           IssuePriority.alarm_ids.include? priority_id
         end
 
-        def new?
-          IssueStatus.new_ids.include? status_id and not alarm?
+        def unassigned?
+          assigned_to.nil?
+        end
+
+        def assigned_to_group?
+          assigned_to.class == Group
         end
 
         def working?
-          IssueStatus.working_ids.include? status_id and not alarm?
+          IssueStatus.working_ids.include? status_id
         end
 
         def feedback?
-          IssueStatus.feedback_ids.include? status_id and not alarm?
+          IssueStatus.feedback_ids.include? status_id
         end
 
         def overdue?
@@ -44,16 +46,16 @@ module Intouch
         end
 
         def without_due_date?
-          !due_date.present? and created_at < 1.day.ago
+          !due_date.present? and created_on < 1.day.ago
         end
 
-        def notification_status
-          %w(alarm new working feedback overdue).select { |s| send("#{s}?") }.try :first
+        def notification_state
+          %w(unassigned assigned_to_group overdue without_due_date working feedback).select { |s| send("#{s}?") }.try :first
         end
 
-        def recipient_ids(protocol)
-          if notification_status
-            project.send("active_#{protocol}_settings")[notification_status].map do |key, value|
+        def recipient_ids(protocol, state = notification_state)
+          if state
+            project.send("active_#{protocol}_settings")[state].map do |key, value|
               case key
                 when 'author'
                   author.id
@@ -102,7 +104,15 @@ module Intouch
         end
 
         def performer
-          assigned_to.present? ? assigned_to.name : 'Не назначена'
+          if assigned_to.present?
+            if assigned_to.class == Group
+              "Назанчена на группу: #{assigned_to.name}"
+            else
+              assigned_to.name
+            end
+          else
+            'Исполнитель не назначен'
+          end
         end
 
         def inactive?
@@ -130,7 +140,7 @@ module Intouch
         def check_alarm
           if changed_attributes and (changed_attributes['priority_id'] or changed_attributes['status_id'])
             if alarm? or Intouch.work_time?
-              IntouchSender.send_telegram_group_message(id, status_id, priority_id)
+              IntouchSender.send_live_telegram_group_message(id, status_id, priority_id)
               IntouchSender.send_live_telegram_message(id)
               IntouchSender.send_live_email_message(id)
             end
@@ -139,7 +149,7 @@ module Intouch
 
         def send_new_message
           IntouchSender.send_live_telegram_message(id)
-          IntouchSender.send_telegram_group_message(id, status_id, priority_id)
+          IntouchSender.send_live_telegram_group_message(id, status_id, priority_id)
           IntouchSender.send_live_email_message(id)
         end
 

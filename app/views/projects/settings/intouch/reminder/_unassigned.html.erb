@@ -1,0 +1,38 @@
+<div class="box">
+  <p class="description">
+    Если задача ни на кого не назначена, либо назначена на группу, отправлять уведомления снижеследующим адресатам.<br>
+    Уведомление отправляется каждые 3 часа.
+  </p>
+
+  <table>
+    <thead>
+    <tr>
+      <% %w(author watchers telegram_groups).each do |recipient| %>
+        <th><%= l "intouch.recipient.#{recipient}" %></th>
+      <% end %>
+    </tr>
+    </thead>
+
+    <tr>
+      <% %w(author watchers).each do |receiver| %>
+        <td>
+          <% %w(telegram email).each do |protocol| %>
+            <%= check_box_tag "intouch_settings[#{protocol}_settings][unassigned][#{receiver}]", '1',
+                              settings_source.send("#{protocol}_settings").try(:[], 'unassigned').try(:[], receiver) %>
+            <%= label_tag l "intouch.protocol.#{protocol}" %><br>
+          <% end %>
+        </td>
+      <% end %>
+      <td>
+        <% TelegramGroupChat.find_each do |group| %>
+          <%= check_box_tag "intouch_settings[telegram_settings][unassigned][groups][]", '1',
+                            settings_source.telegram_settings.try(:[], 'unassigned').
+                            try(:[], 'groups').try(:include?, group.id.to_s) %>
+          <%= label_tag group.title %><br>
+        <% end %>
+      </td>
+    </tr>
+
+  </table>
+
+</div>

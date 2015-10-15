@@ -15,9 +15,19 @@
   </div>
 </div>
 
-<% %w( new working feedback overdue).each do |status| %>
-  <div>
-    <h3><%= l("intouch.statuses.#{status}") %></h3>
-    <%= render partial: "projects/settings/intouch/status/#{status}", locals: {settings_source: settings_source } %>
+<div>
+  <h3><%= l('intouch.label.reminder') %></h3>
+
+  <div class="box">
+    <% reminder_tabs = %w(intervals working feedback unassigned overdue).map do |tab|
+      {
+          name: tab,
+          partial: "projects/settings/intouch/reminder/#{tab}",
+          label: "intouch.reminder.#{tab}"
+      }
+    end %>
+
+    <%= render_intouch_tabs settings_source, reminder_tabs %>
+
   </div>
-<% end %>
+</div>

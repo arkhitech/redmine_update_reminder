@@ -3,7 +3,7 @@
     <% tabs.each do |tab| -%>
       <li><%= link_to l(tab[:label]), "#{tab[:name]}",
                       id: "intouch-tab-#{tab[:name]}",
-                      class: (tab[:name] != selected_tab ? nil : 'selected'),
+                      class: (tab[:name] != selected_tab ? 'intouch-tab' : 'intouch-tab selected'),
                       onclick: "showIntouchTab('#{tab[:name]}'); this.blur(); return false;" %></li>
     <% end -%>
   </ul>

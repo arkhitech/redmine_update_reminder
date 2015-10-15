@@ -1,85 +1,28 @@
 namespace :intouch do
   namespace :regular_notification do
-    desc 'Notification  about alarm issues'
-    task :alarm => :environment do
-      Issue.joins(:project).alarms.group_by(&:project_id).each do |project_id, issues|
-        project = Project.find project_id
-        if project.module_enabled?(:intouch) and project.active?
-          issues.each do |issue|
-            IntouchSender.send_telegram_message(issue.id)
-            IntouchSender.send_email_message(issue.id)
-          end
-        end
-      end
+
+    task :unassigned => :environment do
+      # Unassigned
+      Intouch.send_notifications Issue.joins(:project).where(assigned_to_id: nil), 'unassigned'
+
+      # Assigned to Group
+      Intouch.send_notifications Issue.joins(:project, :assigned_to).where(users: {type: 'Group'}), 'assigned_to_group'
     end
 
-    desc 'Notification  about new issues'
-    task :new => :environment do
-      if Intouch.work_day?
-        Issue.joins(:project).news.group_by(&:project_id).each do |project_id, issues|
-          project = Project.find project_id
-          if project.module_enabled?(:intouch) and project.active?
-            issues.each do |issue|
-              IntouchSender.send_telegram_message(issue.id)
-              IntouchSender.send_email_message(issue.id)
-            end
-          end
-        end
-      end
-    end
-
-    desc 'Notification  about overdue issues'
     task :overdue => :environment do
-      if Intouch.work_day?
-        Issue.joins(:project).where(status_id: IssueStatus.alarm_ids).where('due_date < ?', Date.today).
-            where.not(priority_id: IssuePriority.alarm_ids).group_by(&:project_id).each do |project_id, issues|
-          project = Project.find project_id
-          if project.module_enabled?(:intouch) and project.active?
-            issues.each do |issue|
-              IntouchSender.send_telegram_message(issue.id)
-              IntouchSender.send_email_message(issue.id)
-            end
-          end
-        end
-      end
+      # Overdue
+      Intouch.send_notifications Issue.joins(:project).where('due_date < ?', Date.today), 'overdue'
+
+      # Without due date
+      Intouch.send_notifications Issue.where(due_date: nil).
+                                        where('created_on < ?', 1.day.ago), 'without_due_date'
     end
 
-    desc 'Notification  about working issues'
-    task :work_in_progress => :environment do
-      if Intouch.work_time?
-        Issue.joins(:project).working.group_by(&:project_id).each do |project_id, issues|
-          project = Project.find project_id
-          working_notification_settings = project.active_intouch_settings.try(:[], 'working').try(:[], 'priority_notification')
-          if project.module_enabled?(:intouch) and project.active? and working_notification_settings.present?
-            issues.each do |issue|
-              priority = issue.priority_id.to_s
-              active = working_notification_settings[priority].try(:[], 'active')
-              interval = working_notification_settings[priority].try(:[], 'interval')
-              if active and interval.present? and issue.updated_on < interval.to_i.hours.ago
-                IntouchSender.send_telegram_message(issue.id)
-                IntouchSender.send_email_message(issue.id)
-              end
-            end
-          end
-        end
-      end
-    end
-
-    desc 'Notification  about feedback issues'
-    task :feedback => :environment do
-      if Intouch.work_time?
-        Issue.joins(:project).feedbacks.group_by(&:project_id).each do |project_id, issues|
-          project = Project.find project_id
-          if project.module_enabled?(:intouch) and project.active?
-            issues.each do |issue|
-              if issue.updated_on < 2.hours.ago
-                IntouchSender.send_telegram_message(issue.id)
-                IntouchSender.send_email_message(issue.id)
-              end
-            end
-          end
-        end
-      end
+    task :working_and_feedback => :environment do
+      # Working
+      Intouch.send_notifications Issue.joins(:project).working, 'working'
+      # Feedback
+      Intouch.send_notifications Issue.joins(:project).feedbacks, 'feedback'
     end
   end
 

@@ -1,12 +1,16 @@
 class IntouchSender
   unloadable
 
-  def self.send_email_message(issue_id)
-    EmailSenderWorker.perform_in(5.seconds, issue_id)
+  def self.send_email_message(issue_id, state)
+    EmailSenderWorker.perform_in(5.seconds, issue_id, state)
   end
 
-  def self.send_telegram_message(issue_id)
-    TelegramSenderWorker.perform_in(5.seconds, issue_id)
+  def self.send_telegram_message(issue_id, state)
+    TelegramSenderWorker.perform_in(5.seconds, issue_id, state)
+  end
+
+  def self.send_telegram_group_message(issue_id, group_ids)
+    TelegramGroupSenderWorker.perform_in(5.seconds, issue_id, group_ids)
   end
 
   def self.send_live_email_message(issue_id)
@@ -17,7 +21,7 @@ class IntouchSender
     TelegramLiveSenderWorker.perform_in(5.seconds, issue_id)
   end
 
-  def self.send_telegram_group_message(issue_id, status_id, priority_id)
+  def self.send_live_telegram_group_message(issue_id, status_id, priority_id)
     issue = Issue.find issue_id
     telegram_groups_settings = issue.project.telegram_settings.try(:[], 'groups')
     if telegram_groups_settings

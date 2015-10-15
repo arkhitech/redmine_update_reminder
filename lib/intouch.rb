@@ -1,5 +1,50 @@
 module Intouch
 
+  def self.send_notifications(issues, state)
+    issues.group_by(&:project_id).each do |project_id, project_issues|
+
+      project = Project.find_by id: project_id
+      next unless project.present?
+
+      reminder_settings = project.active_reminder_settings
+      telegram_settings = project.active_telegram_settings
+
+      if project.module_enabled?(:intouch) and project.active? and reminder_settings.present?
+
+        project_issues.each do |issue|
+
+          if issue.alarm? or Intouch.work_time?
+
+            priority = issue.priority_id.to_s
+            active = reminder_settings[priority].try(:[], 'active')
+            interval = if %w(unassigned assigned_to_group).include? state
+                3
+              else
+                reminder_settings[priority].try(:[], 'interval')
+              end
+            last_notification = issue.last_notification.try(:[], state)
+
+            if active and
+                interval.present? and
+                issue.updated_on < interval.to_i.hours.ago and
+                (last_notification.nil? or last_notification < interval.to_i.hours.ago)
+
+              IntouchSender.send_telegram_message(issue.id, state)
+              IntouchSender.send_email_message(issue.id, state)
+
+              group_ids = telegram_settings.try(:[], state).try(:[], 'groups')
+              IntouchSender.send_telegram_group_message(issue_id, group_ids) if group_ids.present?
+
+              issue.last_notification = {} unless issue.last_notification.present?
+              issue.last_notification[state] = Time.now
+            end
+          end
+        end
+      end
+    end
+  end
+
+
   def self.work_day?
     settings = Setting.plugin_redmine_intouch
     work_days = settings.keys.select { |key| key.include?('work_days') }.map { |key| key.split('_').last.to_i }
