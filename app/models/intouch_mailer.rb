@@ -9,12 +9,16 @@ class IntouchMailer < ActionMailer::Base
     @user = user
     @issue = issue
 
-    email_cc = @issue.project.active_email_settings['cc']
+    mail to: @user.mail, subject: @issue.subject
+  end
 
-    if email_cc.present?
-      mail(to: @user.mail, subject: @issue.subject, cc: email_cc)
-    else
-      mail to: @user.mail, subject: @issue.subject
-    end
+  def overdue_issues_email(user_id, issue_ids)
+    @user = User.find user_id
+    @issues = Issue.open.where(id: issue_ids).includes(:project)
+
+    @overdue_issues = @issues.where('due_date < ?', Date.today)
+    @without_due_date_issue_ids = @issues.where(due_date: nil).where('created_on < ?', 1.day.ago)
+
+    mail to: @user.mail, subject: "Просроченные задачи по состоянию на #{Date.today}"
   end
 end

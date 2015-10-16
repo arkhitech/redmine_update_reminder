@@ -41,10 +41,6 @@ module Intouch
           IssueStatus.feedback_ids.include? status_id
         end
 
-        def overdue?
-          due_date && due_date < Date.today
-        end
-
         def without_due_date?
           !due_date.present? and created_on < 1.day.ago
         end
@@ -54,7 +50,7 @@ module Intouch
         end
 
         def recipient_ids(protocol, state = notification_state)
-          if state
+          if project.send("active_#{protocol}_settings") && state && project.send("active_#{protocol}_settings")[state]
             project.send("active_#{protocol}_settings")[state].map do |key, value|
               case key
                 when 'author'
@@ -152,7 +148,7 @@ module Intouch
             IntouchSender.send_live_telegram_message(id)
             IntouchSender.send_live_telegram_group_message(id, status_id, priority_id)
             IntouchSender.send_live_email_message(id)
-          end  
+          end
         end
 
       end

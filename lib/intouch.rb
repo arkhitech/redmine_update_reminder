@@ -18,10 +18,10 @@ module Intouch
             priority = issue.priority_id.to_s
             active = reminder_settings[priority].try(:[], 'active')
             interval = if %w(unassigned assigned_to_group).include? state
-                3
-              else
-                reminder_settings[priority].try(:[], 'interval')
-              end
+                         3
+                       else
+                         reminder_settings[priority].try(:[], 'interval')
+                       end
             last_notification = issue.last_notification.try(:[], state)
 
             if active and
@@ -30,7 +30,7 @@ module Intouch
                 (last_notification.nil? or last_notification < interval.to_i.hours.ago)
 
               IntouchSender.send_telegram_message(issue.id, state)
-              IntouchSender.send_email_message(issue.id, state)
+              IntouchSender.send_email_message(issue.id, state) unless %w(overdue without_due_date).include? state
 
               group_ids = telegram_settings.try(:[], state).try(:[], 'groups')
               IntouchSender.send_telegram_group_message(issue_id, group_ids) if group_ids.present?
@@ -40,6 +40,34 @@ module Intouch
             end
           end
         end
+      end
+    end
+  end
+
+  def self.send_bulk_email_notifications(issues, state)
+    if Intouch.work_day? or true
+      user_issues_ids = {}
+      issues.group_by(&:project_id).each do |project_id, project_issues|
+
+        project = Project.find_by id: project_id
+        next unless project.present?
+
+        if project.module_enabled?(:intouch) and project.active?
+
+          project_issues.each do |issue|
+
+            user_ids = issue.recipient_ids('email', state)
+            user_ids && user_ids.each do |user_id|
+              user_issues_ids[user_id] = [] if user_issues_ids[user_id].nil?
+              user_issues_ids[user_id] << issue.id
+            end
+
+          end
+        end
+      end
+
+      user_issues_ids.each do |user_id, issue_ids|
+        IntouchMailer.overdue_issues_email(user_id, issue_ids).deliver
       end
     end
   end

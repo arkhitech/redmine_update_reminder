@@ -6,7 +6,7 @@ every 1.day, at: '10:00' do
   rake 'intouch:regular_notification:overdue'
 end
 
-every 3.hours do
+every 15.minutes do
   rake 'intouch:regular_notification:unassigned'
 end
 
