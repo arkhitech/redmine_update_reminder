@@ -18,7 +18,8 @@
         <td>
           <% %w(telegram email).each do |protocol| %>
             <%= check_box_tag "intouch_settings[#{protocol}_settings][unassigned][#{receiver}]", '1',
-                              settings_source.send("#{protocol}_settings").try(:[], 'unassigned').try(:[], receiver) %>
+                              settings_source.send("#{protocol}_settings").try(:[], 'unassigned').try(:[], receiver),
+                              class: "#{protocol}_#{receiver}" %>
             <%= label_tag l "intouch.protocol.#{protocol}" %><br>
           <% end %>
         </td>
@@ -27,12 +28,13 @@
         <% TelegramGroupChat.find_each do |group| %>
           <%= check_box_tag "intouch_settings[telegram_settings][unassigned][groups][]", '1',
                             settings_source.telegram_settings.try(:[], 'unassigned').
-                            try(:[], 'groups').try(:include?, group.id.to_s) %>
+                            try(:[], 'groups').try(:include?, group.id.to_s),
+                            class: "groups_#{group.id}" %>
           <%= label_tag group.title %><br>
         <% end %>
       </td>
     </tr>
 
   </table>
-
+  <a href="#" class='copyIssueUpdateSettings'>Копировать отмеченные значения на другие вкладки</a>
 </div>
