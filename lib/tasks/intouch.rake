@@ -3,26 +3,26 @@ namespace :intouch do
 
     task :unassigned => :environment do
       # Unassigned
-      Intouch.send_notifications Issue.joins(:project).where(assigned_to_id: nil), 'unassigned'
+      Intouch.send_notifications Issue.open.joins(:project).where(assigned_to_id: nil), 'unassigned'
 
       # Assigned to Group
-      Intouch.send_notifications Issue.joins(:project, :assigned_to).where(users: {type: 'Group'}), 'assigned_to_group'
+      Intouch.send_notifications Issue.open.joins(:project, :assigned_to).where(users: {type: 'Group'}), 'assigned_to_group'
     end
 
     task :overdue => :environment do
       # Overdue
-      Intouch.send_notifications Issue.joins(:project).where('due_date < ?', Date.today), 'overdue'
+      Intouch.send_notifications Issue.open.joins(:project).where('due_date < ?', Date.today), 'overdue'
 
       # Without due date
-      Intouch.send_notifications Issue.where(due_date: nil).
+      Intouch.send_notifications Issue.open.where(due_date: nil).
                                         where('created_on < ?', 1.day.ago), 'without_due_date'
     end
 
     task :working_and_feedback => :environment do
       # Working
-      Intouch.send_notifications Issue.joins(:project).working, 'working'
+      Intouch.send_notifications Issue.open.joins(:project).working, 'working'
       # Feedback
-      Intouch.send_notifications Issue.joins(:project).feedbacks, 'feedback'
+      Intouch.send_notifications Issue.open.joins(:project).feedbacks, 'feedback'
     end
   end
 
