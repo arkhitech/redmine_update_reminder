@@ -101,8 +101,8 @@ namespace :intouch do
       end
 
       LOG.info 'Telegram Bot: Connecting to telegram...'
-      bot = TelegramBot.new(token: token, logger: LOG)
-      bot_name = bot.get_me.username
+      bot = Telegrammer::Bot.new(token)
+      bot_name = bot.me.username
 
       until bot_name.present?
 
@@ -110,44 +110,36 @@ namespace :intouch do
         sleep 60
 
         LOG.info 'Telegram Bot: Connecting to telegram...'
-        bot = TelegramBot.new(token: token, logger: LOG)
-        bot_name = bot.get_me.username
+        bot = Telegrammer::Bot.new(token)
+        bot_name = bot.me.username
 
       end
 
       LOG.info "#{bot_name}: connected"
       LOG.info "#{bot_name}: waiting for new users and group chats..."
 
-      bot.get_updates(fail_silently: true) do |message|
+      bot.get_updates(fail_silently: false) do |message|
         if message.text == '/start'
-          # create telegram user
-          user = message.user
+          user = message.from
           t_user = TelegramUser.where(tid: user.id).first_or_initialize(username: user.username,
                                                                         first_name: user.first_name,
                                                                         last_name: user.last_name)
-          reply = message.reply
           if t_user.new_record?
             t_user.save
-            reply.text = "Hello, #{user.first_name}! I'm added your profile for Redmine notifications."
-            bot.send_message(reply)
+            bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! I'm added your profile for Redmine notifications.")
             LOG.info "#{bot_name}: new user #{user.first_name} #{user.last_name} @#{user.username} added!"
           else
             reply.text = "Hello, #{user.first_name}! You are already connected for Redmine notifications."
             bot.send_message(reply)
           end
         elsif message.chat.id < 0
-          # create telegram group
           chat = message.chat
           t_chat = TelegramGroupChat.where(tid: chat.id.abs).first_or_initialize(title: chat.title)
-          reply = message.reply
           if t_chat.new_record?
             t_chat.save
-            reply.text = "Hello, people! I'm added this group chat for Redmine notifications."
-            bot.send_message(reply)
+            bot.send_message(chat_id: message.chat.id, text: "Hello, people! I'm added this group chat for Redmine notifications.")
             LOG.info "#{bot_name}: new group #{chat.title} added!"
           else
-            # reply.text = 'Hello, again!'
-            # bot.send_message(reply)
           end
         end
       end

@@ -1,3 +1,3 @@
 gem 'whenever'
-gem 'telegram_bot'
+gem 'telegrammer'
 gem 'pidfile'
