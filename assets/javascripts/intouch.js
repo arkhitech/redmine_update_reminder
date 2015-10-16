@@ -6,6 +6,16 @@ $(function () {
             $('.intouch-settings').hide()
         }
     });
+    $('.copyIssueUpdateSettings').click(function () {
+      var currentTabContent = $(this).parents('.intouch-tab-content');
+      var otherTabContents = currentTabContent.siblings('.intouch-tab-content');
+
+      currentTabContent.find('input[type="checkbox"]:checked').each(function(index, element){
+        otherTabContents.find( 'input[type="checkbox"].' + $(element).attr('class') ).prop('checked',true);
+      });
+
+      return false;
+    })
 });
 
 function showIntouchTab(name) {

@@ -22,7 +22,8 @@
           <% %w(telegram email).each do |protocol| %>
             <%= check_box_tag "intouch_settings[#{protocol}_settings][assigned_to][#{status.id}][]", priority.id,
                               settings_source.send("#{protocol}_settings").try(:[], 'assigned_to').
-                                  try(:[], status.id.to_s).try(:include?, priority.id.to_s) %>
+                                  try(:[], status.id.to_s).try(:include?, priority.id.to_s),
+                                  class: "#{protocol}_#{status.id}_#{priority.id}" %>
             <%= label_tag l "intouch.protocol.#{protocol}" %><br>
           <% end %>
         </td>
@@ -33,3 +34,4 @@
   <% end %>
   </tbody>
 </table>
+<a href="#" class='copyIssueUpdateSettings'>Копировать отмеченные значения на другие вкладки</a>
