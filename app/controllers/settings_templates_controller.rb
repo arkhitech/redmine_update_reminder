@@ -1,5 +1,5 @@
 class SettingsTemplatesController < ApplicationController
-  unloadable
+  unloadable if Rails.env.production?
 
   layout 'admin'
 

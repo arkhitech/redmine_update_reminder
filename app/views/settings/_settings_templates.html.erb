@@ -1,5 +1,5 @@
 <div class="contextual">
-  <%= link_to l(:label_intouch_settings_template_new), {:controller => "settings_templates", :action => 'new'}, :class => 'icon icon-add' %>
+  <%= link_to l(:label_intouch_settings_template_new), {controller: "settings_templates", action: 'new'}, class: 'icon icon-add' %>
 </div>
 
 <h3><%=l(:label_intouch_settings_template_plural)%></h3>
@@ -12,7 +12,7 @@
   <tbody>
   <% for settings_template in SettingsTemplate.order(:name)  %>
     <tr class="<%= cycle("odd", "even") %>">
-      <td class="name"><%= link_to settings_template.name, :controller => "settings_templates", :action => 'edit', :id => settings_template %></td>
+      <td class="name"><%= link_to settings_template.name, controller: "settings_templates", action: 'edit', id: settings_template %></td>
       <td class="buttons">
         <%= delete_link settings_template_path(settings_template) %>
       </td>

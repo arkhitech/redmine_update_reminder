@@ -1,5 +1,11 @@
 ru:
   intouch:
+    cron:
+      cron_email_reminder_sender: Уведомление по почте исполнителю задач, которые давно не обновлялись
+      cron_feedback_regular_notification: 'Уведомления о задачах со статусом "Обратная связь"'
+      cron_overdue_regular_notification: Уведомления о просроченных задачах
+      cron_unassigned_regular_notification: Уведомления о неназначенных задачах
+      cron_working_regular_notification: 'Уведомления о задачах со статусом  "В работе"'
     protocol:
       telegram: Telegram
       email: E-mail
@@ -18,6 +24,7 @@ ru:
       telegram: Telegram
       issue_update: Мгновенные уведомления при смене статуса/приоритета задачи
       reminder: Периодические уведомления
+      sidekiq_cron_jobs: Расписание периодических задач
     priorities:
       alarm: "Авария"
       title: "Приоритеты"
@@ -43,4 +50,5 @@ ru:
   label_intouch_settings_template_edit: "Редактировать"
   label_intouch_settings_template_new: "Новый"
   label_intouch_settings_template_plural: "Шаблоны настроек"
+  label_intouch_sidekiq_cron_job_plural: Периодические задачи
   name: "Название"
