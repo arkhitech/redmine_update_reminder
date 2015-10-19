@@ -67,28 +67,33 @@ module Intouch
         end
 
         def live_recipient_ids(protocol)
-          recipients = project.send("active_#{protocol}_settings").select { |k, v| %w(author assigned_to watchers user_groups).include? k }
+          settings = project.send("active_#{protocol}_settings")
+          if settings.present?
+            recipients = settings.select { |k, v| %w(author assigned_to watchers user_groups).include? k }
 
-          user_ids = []
-          recipients.each_pair do |key, value|
-            case key
-              when 'author'
-                user_ids << author.id if value.try(:[], status_id.to_s).try(:include?, priority_id.to_s)
-              when 'assigned_to'
-                if value.try(:[], status_id.to_s).try(:include?, priority_id.to_s)
-                  if assigned_to.class == Group
-                    user_ids += assigned_to.user_ids
-                  else
-                    user_ids << assigned_to.id
+            user_ids = []
+            recipients.each_pair do |key, value|
+              case key
+                when 'author'
+                  user_ids << author.id if value.try(:[], status_id.to_s).try(:include?, priority_id.to_s)
+                when 'assigned_to'
+                  if value.try(:[], status_id.to_s).try(:include?, priority_id.to_s)
+                    if assigned_to.class == Group
+                      user_ids += assigned_to.user_ids
+                    else
+                      user_ids << assigned_to.id
+                    end
                   end
-                end
-              when 'watchers'
-                user_ids << watchers.pluck(:user_id) if value.try(:[], status_id.to_s).try(:include?, priority_id.to_s)
-              else
-                nil
+                when 'watchers'
+                  user_ids << watchers.pluck(:user_id) if value.try(:[], status_id.to_s).try(:include?, priority_id.to_s)
+                else
+                  nil
+              end
             end
-          end
-          user_ids.flatten.uniq
+            user_ids.flatten.uniq
+          else
+            []
+          end    
         end
 
         def intouch_recipients(protocol)
