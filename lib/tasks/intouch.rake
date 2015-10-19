@@ -67,8 +67,7 @@ namespace :intouch do
             bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! I'm added your profile for Redmine notifications.")
             LOG.info "#{bot_name}: new user #{user.first_name} #{user.last_name} @#{user.username} added!"
           else
-            reply.text = "Hello, #{user.first_name}! You are already connected for Redmine notifications."
-            bot.send_message(reply)
+            bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! You are already connected for Redmine notifications.")
           end
         elsif message.chat.id < 0
           chat = message.chat
