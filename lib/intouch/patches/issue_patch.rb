@@ -93,7 +93,7 @@ module Intouch
             user_ids.flatten.uniq
           else
             []
-          end    
+          end
         end
 
         def intouch_recipients(protocol)
@@ -139,7 +139,8 @@ module Intouch
         private
 
         def check_alarm
-          if !closed? and changed_attributes and (changed_attributes['priority_id'] or changed_attributes['status_id'])
+          if project.module_enabled?(:intouch) and project.active? and
+            !closed? and changed_attributes and (changed_attributes['priority_id'] or changed_attributes['status_id'])
             if alarm? or Intouch.work_time?
               IntouchSender.send_live_telegram_group_message(id, status_id, priority_id)
               IntouchSender.send_live_telegram_message(id)
@@ -149,7 +150,7 @@ module Intouch
         end
 
         def send_new_message
-          if !closed?
+          if project.module_enabled?(:intouch) and project.active? and !closed?
             IntouchSender.send_live_telegram_message(id)
             IntouchSender.send_live_telegram_group_message(id, status_id, priority_id)
             IntouchSender.send_live_email_message(id)
