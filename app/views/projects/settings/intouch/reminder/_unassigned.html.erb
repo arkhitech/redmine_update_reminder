@@ -3,7 +3,12 @@
     Если задача ни на кого не назначена, либо назначена на группу, отправлять уведомления снижеследующим адресатам.<br>
     Уведомление отправляется каждые 3 часа.
   </p>
-
+  <div>
+    Скопировать занения со вкладки
+    <%= select_tag 'r', options_for_select(%w(working feedback overdue).collect{ |r| [l("intouch.reminder.#{r}"), r] }) %>
+    <%= button_tag 'Скопировать', class: 'copySettingsFromOtherTab' %>
+  </div>
+  <br>
   <table>
     <thead>
     <tr>

@@ -9,10 +9,6 @@ class SidekiqCronJobsController < ApplicationController
 
   def init
     hash = {
-      'cron_email_reminder_sender' => {
-        'class' => 'CronEmailReminderSender',
-        'cron'  => '0 * * * *'
-      },
       'cron_feedback_regular_notification' => {
         'class' => 'CronFeedbackRegularNotification',
         'cron'  => '*/5 * * * *'
@@ -31,7 +27,7 @@ class SidekiqCronJobsController < ApplicationController
       }
     }
 
-    Sidekiq::Cron::Job.load_from_hash hash
+    Sidekiq::Cron::Job.load_from_hash! hash
 
     redirect_to action: "plugin", id: "redmine_intouch", controller: "settings", tab: 'sidekiq_cron_jobs'
   end

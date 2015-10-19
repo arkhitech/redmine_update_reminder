@@ -1,3 +1,3 @@
 class TelegramGroupChat < ActiveRecord::Base
-  unloadable
+  unloadable if Rails.env.production?
 end

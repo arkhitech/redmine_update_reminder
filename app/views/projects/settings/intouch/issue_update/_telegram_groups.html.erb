@@ -2,6 +2,12 @@
   Укажите, в какую группу какие уведомления посылать
 </p>
 
+<div>
+  Скопировать занения со вкладки
+  <%= select_tag 'r', options_for_select(%w(author assigned_to watchers).collect{ |r| [l("intouch.recipient.#{r}"), r] }) %>
+  <%= button_tag 'Скопировать', class: 'copySettingsFromOtherTab' %>
+</div>
+
 <% TelegramGroupChat.find_each do |telegram_group| %>
   <h5><%= telegram_group.title %></h5>
   <table>

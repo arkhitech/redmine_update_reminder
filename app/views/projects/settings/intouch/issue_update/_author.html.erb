@@ -2,6 +2,12 @@
   Укажите, какие уведомления отправлять автору задачи
 </p>
 
+<div>
+  Скопировать занения со вкладки
+  <%= select_tag 'r', options_for_select(%w(assigned_to watchers telegram_groups).collect{ |r| [l("intouch.recipient.#{r}"), r] }) %>
+  <%= button_tag 'Скопировать', class: 'copySettingsFromOtherTab' %>
+</div>
+<br>
 <table>
   <thead>
   <tr>
@@ -34,4 +40,3 @@
   <% end %>
   </tbody>
 </table>
-<a href="#" class='copyIssueUpdateSettings'>Копировать отмеченные значения на другие вкладки</a>

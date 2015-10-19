@@ -1,5 +1,5 @@
 class TelegramSender
-  unloadable
+  unloadable if Rails.env.production?
 
   def self.send_message(issue_id)
     TelegramSenderWorker.perform_in(5.seconds, issue_id)

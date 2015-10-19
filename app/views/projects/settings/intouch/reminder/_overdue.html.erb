@@ -4,6 +4,11 @@
     о <strong>просроченных</strong> задачах, а также задачах <strong>без указанной даты завершения</strong>.<br>
     Какие дни недели считать рабочими, указывается в <a href="/settings/plugin/redmine_intouch" target="_blank">настройках плагина</a>.
   </p>
+  <div>
+    Скопировать занения со вкладки
+    <%= select_tag 'r', options_for_select(%w(working feedback unassigned).collect{ |r| [l("intouch.reminder.#{r}"), r] }) %>
+    <%= button_tag 'Скопировать', class: 'copySettingsFromOtherTab' %>
+  </div>
+  <br>
   <%= render partial: 'projects/settings/intouch/reminder/common', locals: {status: 'overdue', settings_source: settings_source } %>
-  <a href="#" class='copyIssueUpdateSettings'>Копировать отмеченные значения на другие вкладки</a>
 </div>

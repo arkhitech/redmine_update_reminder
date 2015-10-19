@@ -4,6 +4,11 @@
     следующие пользователи будут получать сообщения.<br>
     Рабочие дни, рабочее время, статусы, воспринимаемые как <strong>Обратная связь</strong>, указываются в <a href="/settings/plugin/redmine_intouch" target="_blank">настройках плагина</a>.
   </p>
+  <div>
+    Скопировать занения со вкладки
+    <%= select_tag 'r', options_for_select(%w(working unassigned overdue).collect{ |r| [l("intouch.reminder.#{r}"), r] }) %>
+    <%= button_tag 'Скопировать', class: 'copySettingsFromOtherTab' %>
+  </div>
+  <br>
   <%= render partial: 'projects/settings/intouch/reminder/common', locals: {status: 'feedback', settings_source: settings_source } %>
-  <a href="#" class='copyIssueUpdateSettings'>Копировать отмеченные значения на другие вкладки</a>
 </div>

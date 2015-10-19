@@ -28,6 +28,9 @@
   <% end %>
   </tbody>
 </table>
+<p>
+  <%= link_to 'Установить расписание по-умолчанию', init_sidekiq_cron_jobs_path %>
+</p>
 <% else %>
 <p>
   <%= link_to 'Инициализировать периодические задачи', init_sidekiq_cron_jobs_path %>
