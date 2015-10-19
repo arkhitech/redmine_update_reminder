@@ -102,7 +102,7 @@ module Intouch
         def performer
           if assigned_to.present?
             if assigned_to.class == Group
-              "Назначена на группу: #{assigned_to.name}"
+              "Назначьте исполнителя, назначена на группу: #{assigned_to.name}"
             else
               assigned_to.name
             end
@@ -125,7 +125,7 @@ module Intouch
 
         def telegram_message
           message = "#{project.name}: #{priority.try :name} [#{status.try :name}] #{performer} -  #{subject} - ##{id}"
-          message = "[Просроченная задача] #{message}" if overdue?
+          message = "Возьмите в работу [Просроченная задача] #{message}" if overdue?
           message = "[Установите дату выполнения] #{message}" if without_due_date?
           message = "#{inactive_message}: #{message}" if inactive?
           message
