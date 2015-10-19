@@ -28,7 +28,10 @@ $(function () {
       });
 
       return false;
-    })
+    });
+    $( ".accordion" ).accordion({
+      heightStyle: "content"
+    });
 });
 
 function showIntouchTab(name) {
