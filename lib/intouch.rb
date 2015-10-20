@@ -17,11 +17,7 @@ module Intouch
 
             priority = issue.priority_id.to_s
             active = reminder_settings[priority].try(:[], 'active')
-            interval = if %w(unassigned assigned_to_group).include? state
-                         3
-                       else
-                         reminder_settings[priority].try(:[], 'interval')
-                       end
+            interval = reminder_settings[priority].try(:[], 'interval')
             last_notification = issue.last_notification.try(:[], state)
 
             if active and
