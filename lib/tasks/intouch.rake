@@ -5,7 +5,7 @@ namespace :intouch do
     task :bot => :environment do
       LOG = Logger.new(Rails.root.join('log', 'telegram-bot.log'))
 
-      Process.daemon(true, true)
+      Process.daemon(true, true) if Rails.env.production?
 
       if ENV['PID_DIR']
         pid_dir = ENV['PID_DIR']
@@ -76,7 +76,11 @@ namespace :intouch do
             t_chat.save
             bot.send_message(chat_id: message.chat.id, text: "Hello, people! I'm added this group chat for Redmine notifications.")
             LOG.info "#{bot_name}: new group #{chat.title} added!"
-          else
+          elsif message.text == '/rename'
+            user = message.from
+            t_chat.update title: chat.title
+            bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! I'm updated this group chat title in Redmine.")
+            LOG.info "#{bot_name}: rename group title #{chat.title}"
           end
         end
       end
