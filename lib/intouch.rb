@@ -29,7 +29,7 @@ module Intouch
               IntouchSender.send_email_message(issue.id, state) unless %w(overdue without_due_date).include? state
 
               group_ids = telegram_settings.try(:[], state).try(:[], 'groups')
-              IntouchSender.send_telegram_group_message(issue_id, group_ids) if group_ids.present?
+              IntouchSender.send_telegram_group_message(issue.id, group_ids) if group_ids.present?
 
               issue.last_notification = {} unless issue.last_notification.present?
               issue.last_notification[state] = Time.now
