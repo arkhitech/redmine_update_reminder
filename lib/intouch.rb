@@ -45,7 +45,7 @@ module Intouch
   end
 
   def self.send_bulk_email_notifications(issues, state)
-    if Intouch.work_day? or true
+    if Intouch.work_day?
       user_issues_ids = {}
       issues.group_by(&:project_id).each do |project_id, project_issues|
 
