@@ -4,8 +4,6 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-
-
     Доброе утро, <%= @user.name %>!
     <% if @issues.present? %>
       <% if @overdue_issues.present? %>
@@ -18,10 +16,10 @@
           <% end %>
         </ul>
       <% end %>
-      <% if @without_due_date_issue_ids.present? %>
+      <% if @without_due_date_issues.present? %>
         <h2>Не указана дата завершения</h2>
         <ul>
-          <% @without_due_date_issue_ids.each do |issue| %>
+          <% @without_due_date_issues.each do |issue| %>
             <li>
               <%= link_to issue.to_s, issue_url(issue) %>
             </li>
@@ -33,10 +31,5 @@
         На сегодня просроченных задач нет.
       </p>
     <% end %>
-
-    <span class="header">
-      <%= Redmine::WikiFormatting.to_html(Setting.text_formatting,
-          Setting.plugin_redmine_intouch['footer']).html_safe %>
-    </span>
   </body>
 </html>

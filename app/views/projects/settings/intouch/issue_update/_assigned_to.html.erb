@@ -3,7 +3,7 @@
 </p>
 
 <div>
-  Скопировать занения со вкладки
+  Скопировать значения со вкладки
   <%= select_tag 'r', options_for_select(%w(author watchers telegram_groups).collect{ |r| [l("intouch.recipient.#{r}"), r] }) %>
   <%= button_tag 'Скопировать', class: 'copySettingsFromOtherTab' %>
 </div>

@@ -26,7 +26,7 @@ class SettingsTemplatesController < ApplicationController
     @settings_template.intouch_settings = params[:intouch_settings]
     if @settings_template.save
       flash[:notice] = l(:notice_successful_create)
-      redirect_to action: "plugin", id: "redmine_intouch", controller: "settings", tab: 'settings_templates'
+      redirect_to controller: "settings_templates", action: 'edit', id: @settings_template
     else
       render action: 'new'
     end
@@ -41,7 +41,7 @@ class SettingsTemplatesController < ApplicationController
     @settings_template.intouch_settings = params[:intouch_settings]
     if @settings_template.update_attributes(params[:settings_template])
       flash[:notice] = l(:notice_successful_update)
-      redirect_to action: "plugin", id: "redmine_intouch", controller: "settings", tab: 'settings_templates'
+      redirect_to controller: "settings_templates", action: 'edit', id: @settings_template
     else
       render action: 'edit'
     end

@@ -30,7 +30,11 @@ $(function () {
       return false;
     });
     $( ".accordion" ).accordion({
-      heightStyle: "content"
+      heightStyle: "content",
+      activate: displayIntouchTabsButtons,
+      beforeActivate: function( event, ui ) {
+        $('div.tabs-buttons').hide();
+      }
     });
 });
 
@@ -43,4 +47,49 @@ function showIntouchTab(name) {
   selectedTab.addClass('selected');
 
   return false;
+}
+
+function displayIntouchTabsButtons() {
+  var lis;
+  var tabsWidth = 0;
+  var el;
+  $('div.intouch-tabs').each(function() {
+    el = $(this);
+    lis = el.find('ul').children();
+    lis.each(function(){
+      if ($(this).is(':visible')) {
+        tabsWidth += $(this).width() + 6;
+      }
+    });
+    if ((tabsWidth < el.width() - 60) && (lis.first().is(':visible'))) {
+      el.find('div.tabs-buttons').hide();
+    } else {
+      el.find('div.tabs-buttons').show();
+    }
+  });
+}
+$(document).ready(displayIntouchTabsButtons);
+$(window).resize(displayIntouchTabsButtons);
+
+function moveIntouchTabRight(el) {
+  var lis = $(el).parents('div.intouch-tabs').first().find('ul').children();
+  var tabsWidth = 0;
+  var i = 0;
+  lis.each(function() {
+    if ($(this).is(':visible')) {
+      tabsWidth += $(this).width() + 6;
+    }
+  });
+  if (tabsWidth < $(el).parents('div.intouch-tabs').first().width() - 60) { return; }
+  while (i<lis.length && !lis.eq(i).is(':visible')) { i++; }
+  lis.eq(i).hide();
+}
+
+function moveIntouchTabLeft(el) {
+  var lis = $(el).parents('div.intouch-tabs').first().find('ul').children();
+  var i = 0;
+  while (i < lis.length && !lis.eq(i).is(':visible')) { i++; }
+  if (i > 0) {
+    lis.eq(i-1).show();
+  }
 }
