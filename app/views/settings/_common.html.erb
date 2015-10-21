@@ -1,15 +1,4 @@
 <div class="box tabular settings">
-  <h4>Адрес сайта</h4>
-  <%= text_field_tag 'settings[site_url]', @settings['site_url'], size: 50 %>
-  <br>
-  используется при формировании ссылки на задачу
-  <br>
-  При текущих настройках ссылка выглядит так:
-  <%= link_to Intouch.issue_url(Issue.last.id), Intouch.issue_url(Issue.last.id), target: '_blank' %>
-
-</div>
-
-<div class="box tabular settings">
   <h4><%= l 'intouch.work_days.title' %></h4>
 
   <ul class="inline-checkboxes">
