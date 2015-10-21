@@ -6,10 +6,12 @@ module Intouch
       project = Project.find_by id: project_id
       next unless project.present?
 
-      reminder_settings = project.active_reminder_settings
-      telegram_settings = project.active_telegram_settings
+      if project.module_enabled?(:intouch) and project.active?
+        reminder_settings = project.active_reminder_settings
 
-      if project.module_enabled?(:intouch) and project.active? and reminder_settings.present?
+        next unless reminder_settings.present?
+
+        telegram_settings = project.active_telegram_settings
 
         project_issues.each do |issue|
 
