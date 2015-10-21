@@ -96,8 +96,8 @@ module Intouch
           end
         end
 
-        def intouch_recipients(protocol)
-          User.where(id: recipient_ids(protocol))
+        def intouch_recipients(protocol, state = notification_state)
+          User.where(id: recipient_ids(protocol, state))
         end
 
         def intouch_live_recipients(protocol)
