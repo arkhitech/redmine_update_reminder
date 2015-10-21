@@ -126,6 +126,10 @@ module Intouch
           "Бездействие #{hours} ч."
         end
 
+        def updated_by
+          journals.last.user.to_s if journals.present?
+        end
+
         def telegram_message
           message = "#{project.name}: #{priority.try :name} [#{status.try :name}] #{performer} -  #{subject} - #{Intouch.issue_url(id)}"
           message = "[Просроченная задача] #{message}" if overdue?
@@ -133,6 +137,7 @@ module Intouch
           message = "*** Установите дату выполнения *** \n#{message}" if without_due_date?
           message = "*** Возьмите в работу *** \n#{message}" if overdue?
           message = "*** Назначьте исполнителя *** \n#{message}" if unassigned? or assigned_to_group?
+          message = "#{message}\nОбновил #{updated_by}" if updated_by.present?
           message
         end
 
