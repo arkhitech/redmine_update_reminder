@@ -1,5 +1,6 @@
 class TelegramSenderWorker
   include Sidekiq::Worker
+  TELEGRAM_SENDER_LOG = Logger.new(Rails.root.join('log', 'telegram-sender.log'))
 
   def perform(issue_id, state)
     issue = Issue.find issue_id
@@ -12,7 +13,14 @@ class TelegramSenderWorker
     issue.intouch_recipients('telegram', state).each do |user|
       telegram_user = user.telegram_user
       next unless telegram_user.present?
-      bot.send_message(chat_id: telegram_user.tid, text: message)
+      begin
+        bot.send_message(chat_id: telegram_user.tid, text: message)
+      rescue Telegrammer::Errors::BadRequestError => e
+        TELEGRAM_SENDER_LOG.error "#{e.class}: #{e.message}"
+        TELEGRAM_SENDER_LOG.debug "#{issue.inspect}"
+        TELEGRAM_SENDER_LOG.debug "#{user.inspect}"
+        TELEGRAM_SENDER_LOG.debug "#{telegram_user.inspect}"
+      end
     end
   end
 
