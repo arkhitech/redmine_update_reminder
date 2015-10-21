@@ -127,7 +127,7 @@ module Intouch
         end
 
         def telegram_message
-          message = "#{project.name}: #{priority.try :name} [#{status.try :name}] #{performer} -  #{subject} - ##{id}"
+          message = "#{project.name}: #{priority.try :name} [#{status.try :name}] #{performer} -  #{subject} - #{Intouch.issue_url(id)}"
           message = "[Просроченная задача] #{message}" if overdue?
           message = "#{inactive_message}: #{message}" if inactive?
           message = "*** Установите дату выполнения *** \n#{message}" if without_due_date?

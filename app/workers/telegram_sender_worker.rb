@@ -14,7 +14,7 @@ class TelegramSenderWorker
       telegram_user = user.telegram_user
       next unless telegram_user.present?
       begin
-        bot.send_message(chat_id: telegram_user.tid, text: message)
+        bot.send_message(chat_id: telegram_user.tid, text: message, disable_web_page_preview: true)
       rescue Telegrammer::Errors::BadRequestError => e
         TELEGRAM_SENDER_LOG.error "#{e.class}: #{e.message}"
         TELEGRAM_SENDER_LOG.debug "#{issue.inspect}"

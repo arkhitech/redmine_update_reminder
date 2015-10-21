@@ -83,4 +83,9 @@ module Intouch
     work_day? and from <= Time.now and Time.now <= to
   end
 
+  def self.issue_url(issue_id)
+    site_url = Setting.plugin_redmine_intouch['site_url']
+    "#{site_url}/issues/#{issue_id}"
+  end
+
 end
