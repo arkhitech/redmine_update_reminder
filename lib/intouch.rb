@@ -24,7 +24,7 @@ module Intouch
 
             if active and
                 interval.present? and
-                issue.updated_on < interval.to_i.hours.ago and
+                issue.assigners_updated_on < interval.to_i.hours.ago and
                 (last_notification.nil? or last_notification < interval.to_i.hours.ago)
 
               IntouchSender.send_telegram_message(issue.id, state)

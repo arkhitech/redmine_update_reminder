@@ -4,6 +4,7 @@ module Intouch
       base.class_eval do
         unloadable if Rails.env.production?
 
+        # noinspection RubyArgCount
         store :intouch_data, accessors: %w(last_notification)
 
         before_save :check_alarm
@@ -19,6 +20,14 @@ module Intouch
 
         def self.feedbacks
           Issue.where(status_id: IssueStatus.feedback_ids)
+        end
+
+        def last_assigner_id
+          journals.where(user_id: project.assigner_ids).last.try :user_id
+        end
+
+        def assigners_updated_on
+          journals.where(user_id: project.assigner_ids).last.try :created_on
         end
 
         def alarm?
@@ -66,7 +75,7 @@ module Intouch
                 else
                   nil
               end
-            end.flatten.uniq
+            end.flatten.uniq + [last_assigner_id]
           end
         end
 
@@ -94,7 +103,7 @@ module Intouch
                 end
               end
             end
-            user_ids.flatten.uniq - [updated_by.try(:id)] # Не отправляем сообщение тому, то обновил задачу
+            user_ids.flatten.uniq + [last_assigner_id] - [updated_by.try(:id)] # Не отправляем сообщение тому, то обновил задачу
           else
             []
           end
