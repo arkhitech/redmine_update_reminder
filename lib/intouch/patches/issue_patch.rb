@@ -130,14 +130,33 @@ module Intouch
           journals.last.user if journals.present?
         end
 
-        def telegram_message
-          message = "#{project.name}: #{priority.try :name} [#{status.try :name}] #{performer} -  #{subject} - #{Intouch.issue_url(id)}"
-          message = "[Просроченная задача] #{message}" if overdue?
-          message = "#{inactive_message}: #{message}" if inactive?
+        def telegram_live_message
+          message = <<TEXT
+Приоритет: #{priority.try :name}
+Статус: #{status.try :name}
+Исполнитель: #{performer}
+#{project.name}: #{subject}
+#{Intouch.issue_url(id)}
+TEXT
+          message = "Обновил #{updated_by}\n#{message}" if updated_by.present?
           message = "*** Установите дату выполнения *** \n#{message}" if without_due_date?
-          message = "*** Возьмите в работу *** \n#{message}" if overdue?
+          message = "*** Возьмите в работу (просроченная задача) ***  \n#{message}" if overdue?
           message = "*** Назначьте исполнителя *** \n#{message}" if unassigned? or assigned_to_group?
-          message = "#{message}\nОбновил #{updated_by}" if updated_by.present?
+          message
+        end
+
+        def telegram_message
+          message = <<TEXT
+Приоритет: #{priority.try :name}
+Статус: #{status.try :name}
+Исполнитель: #{performer}
+#{project.name}: #{subject}
+#{Intouch.issue_url(id)}
+TEXT
+          message = "#{inactive_message}\n#{message}" if inactive?
+          message = "*** Установите дату выполнения *** \n#{message}" if without_due_date?
+          message = "*** Возьмите в работу (просроченная задача) ***  \n#{message}" if overdue?
+          message = "*** Назначьте исполнителя *** \n#{message}" if unassigned? or assigned_to_group?
           message
         end
 

@@ -11,7 +11,7 @@ class TelegramGroupSenderWorker
 
     TelegramGroupChat.where(id: group_ids).uniq.each do |group|
       next unless group.tid.present?
-      bot.send_message(chat_id: -group.tid, text: message, disable_web_page_preview: true))
+      bot.send_message(chat_id: -group.tid, text: message, disable_web_page_preview: true)
     end
   end
 end
