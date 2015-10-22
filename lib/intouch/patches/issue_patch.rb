@@ -56,7 +56,11 @@ module Intouch
                 when 'author'
                   author.id
                 when 'assigned_to'
-                  (assigned_to.class == Group) ? assigned_to.user_ids : assigned_to.id
+                  if assigned_to.class == Group
+                    assigned_to.user_ids
+                  else
+                    assigned_to.id if project.assigner_ids.include?(assigned_to.id)
+                  end
                 when 'watchers'
                   watchers.pluck(:user_id)
                 else
@@ -81,7 +85,7 @@ module Intouch
                     if assigned_to.class == Group
                       user_ids += assigned_to.user_ids
                     else
-                      user_ids << assigned_to.id
+                      user_ids << assigned_to.id if project.assigner_ids.include?(assigned_to.id)
                     end
                   when 'watchers'
                     user_ids += watchers.pluck(:user_id)

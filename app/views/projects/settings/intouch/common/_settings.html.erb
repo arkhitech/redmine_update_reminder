@@ -28,5 +28,11 @@
     <%= render_intouch_tabs settings_source, reminder_tabs %>
 
   </div>
+
+  <h3><%= l('intouch.label.assigner_groups') %></h3>
+
+  <div class="box">
+    <%= render partial: 'projects/settings/intouch/common/assigner_groups', locals: { settings_source: settings_source} %>
+  </div>
 </div>
 <br>

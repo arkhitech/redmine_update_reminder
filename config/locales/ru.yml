@@ -24,6 +24,7 @@ ru:
       telegram: Telegram
       issue_update: Мгновенные уведомления при смене статуса/приоритета задачи
       reminder: Периодические уведомления
+      assigner_groups: Группы исполнителей
       sidekiq_cron_jobs: Расписание периодических задач
     priorities:
       alarm: "Авария"
@@ -33,7 +34,6 @@ ru:
       author: "Автор"
       telegram_groups: "Групповые чаты Telegram"
       title: "Получатель"
-      user_groups: "Группа пользователей"
       watchers: "Наблюдатели"
     reminder:
 

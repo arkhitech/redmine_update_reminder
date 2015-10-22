@@ -1,0 +1,16 @@
+<div class="box">
+  <p class="description">
+    Уведомления, адресованные <strong>Исполнителю</strong>, будут отправлены только, если <strong>Исполнитель</strong>
+    входит в одну из отмеченных ниже групп.
+  </p>
+
+  <% Group.find_each do |group| %>
+    <%= check_box_tag "intouch_settings[assigner_groups][]", group.id,
+                      settings_source.assigner_groups.try(:include?, "#{group.id}"),
+                      id: "intouch_settings_assigner_groups_#{group.id}"
+    %>
+
+    <%= label_tag "intouch_settings_assigner_groups_#{group.id}", group.name %><br>
+  <% end %>
+
+</div>
