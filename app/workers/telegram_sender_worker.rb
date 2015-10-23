@@ -20,6 +20,8 @@ class TelegramSenderWorker
                   "Автору\n#{message}"
                 elsif issue.watchers.pluck(:user_id).include? user.id
                   "Наблюдателю\n#{message}"
+                else
+                  message
                 end
 
       begin

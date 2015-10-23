@@ -27,7 +27,8 @@ module Intouch
         end
 
         def assigners_updated_on
-          journals.where(user_id: project.assigner_ids).last.try :created_on
+          assigners_updated_on = journals.where(user_id: project.assigner_ids).last.try :created_on
+          updated_on unless assigners_updated_on.present?
         end
 
         def alarm?
@@ -68,7 +69,7 @@ module Intouch
                   if assigned_to.class == Group
                     assigned_to.user_ids
                   else
-                    assigned_to.id if project.assigner_ids.include?(assigned_to.id)
+                    assigned_to_id if project.assigner_ids.include?(assigned_to_id)
                   end
                 when 'watchers'
                   watchers.pluck(:user_id)
@@ -94,7 +95,7 @@ module Intouch
                     if assigned_to.class == Group
                       user_ids += assigned_to.user_ids
                     else
-                      user_ids << assigned_to.id if project.assigner_ids.include?(assigned_to.id)
+                      user_ids << assigned_to_id if project.assigner_ids.include?(assigned_to_id)
                     end
                   when 'watchers'
                     user_ids += watchers.pluck(:user_id)

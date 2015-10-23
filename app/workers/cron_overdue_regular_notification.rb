@@ -4,7 +4,7 @@ class CronOverdueRegularNotification
   def perform
     # Overdue and Without due date  (email only)
     overdue_issue_ids = Issue.open.joins(:project).where('due_date < ?', Date.today).pluck :id
-    without_due_date_issue_ids = Issue.open.where(due_date: nil).where('created_on < ?', 1.day.ago)
+    without_due_date_issue_ids = Issue.open.where(due_date: nil).where('created_on < ?', 1.day.ago).pluck :id
 
     issue_ids = overdue_issue_ids + without_due_date_issue_ids
 
