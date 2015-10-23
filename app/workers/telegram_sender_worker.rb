@@ -13,6 +13,15 @@ class TelegramSenderWorker
     issue.intouch_recipients('telegram', state).each do |user|
       telegram_user = user.telegram_user
       next unless telegram_user.present?
+
+      message = if issue.assigned_to_id == user.id
+                  "Исполнителю\n#{message}"
+                elsif issue.author_id == user.id
+                  "Автору\n#{message}"
+                elsif issue.watchers.pluck(:user_id).include? user.id
+                  "Наблюдателю\n#{message}"
+                end
+
       begin
         bot.send_message(chat_id: telegram_user.tid, text: message, disable_web_page_preview: true)
       rescue Telegrammer::Errors::BadRequestError => e

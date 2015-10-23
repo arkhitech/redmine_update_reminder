@@ -143,6 +143,14 @@ module Intouch
           journals.last.user if journals.present?
         end
 
+        def updated_details
+          journals.last.visible_details.map{|detail| detail.prop_key.to_s.gsub(/\_id$/, "")}
+        end
+
+        def updated_details_text
+          updated_details.map {|field| I18n.t(("field_" + field).to_sym)}.join(', ') if updated_details
+        end
+
         def telegram_live_message
           message = <<TEXT
 Приоритет: #{priority.try :name}
@@ -151,10 +159,8 @@ module Intouch
 #{project.name}: #{subject}
 #{Intouch.issue_url(id)}
 TEXT
-          message = "Обновил #{updated_by}\n#{message}" if updated_by.present?
-          message = "*** Установите дату выполнения *** \n#{message}" if without_due_date?
-          message = "*** Возьмите в работу (просроченная задача) ***  \n#{message}" if overdue?
-          message = "*** Назначьте исполнителя *** \n#{message}" if unassigned? or assigned_to_group?
+          message = "Обновлено: #{updated_details_text}\n#{message}" if updated_details.present?
+          message = "Обновил: #{updated_by}\n#{message}" if updated_by.present?
           message
         end
 

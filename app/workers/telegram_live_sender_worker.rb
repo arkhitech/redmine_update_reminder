@@ -11,16 +11,18 @@ class TelegramLiveSenderWorker
     bot = Telegrammer::Bot.new(token)
 
     issue.intouch_live_recipients('telegram').each do |user|
-      message = if issue.assigned_to_id == user.id
-                  "#{message}\n(Исполнителю)"
-                elsif issue.author_id == user.id
-                  "#{message}\n(Автору)"
-                elsif issue.watchers.pluck(:user_id).include? user.id
-                  "#{message}\n(Наблюдателю)"
-                end
 
       telegram_user = user.telegram_user
       next unless telegram_user.present?
+
+      message = if issue.assigned_to_id == user.id
+                  "Исполнителю\n#{message}"
+                elsif issue.author_id == user.id
+                  "Автору\n#{message}"
+                elsif issue.watchers.pluck(:user_id).include? user.id
+                  "Наблюдателю\n#{message}"
+                end
+
       begin
         bot.send_message(chat_id: telegram_user.tid, text: message, disable_web_page_preview: true)
       rescue Telegrammer::Errors::BadRequestError => e

@@ -15,8 +15,7 @@
   <%= submit_tag l(:button_create) %>
 <% end %>
 
-
 <% content_for :header_tags do %>
-  <%= stylesheet_link_tag 'intouch', plugin: 'redmine_intouch' %>
-  <%= javascript_include_tag 'intouch', plugin: 'redmine_intouch' %>
+  <%= stylesheet_link_tag "intouch?#{SecureRandom.hex(3)}", plugin: 'redmine_intouch' %>
+  <%= javascript_include_tag "intouch?#{SecureRandom.hex(3)}", plugin: 'redmine_intouch' %>
 <% end %>
