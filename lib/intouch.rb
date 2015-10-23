@@ -1,4 +1,9 @@
 module Intouch
+  INTOUCH_COMMIT_HASH = `cd #{Rails.root}/plugins/redmine_intouch && git rev-parse --short HEAD`.chomp
+
+  def self.commit_hash
+    INTOUCH_COMMIT_HASH
+  end
 
   def self.send_notifications(issues, state)
     issues.group_by(&:project_id).each do |project_id, project_issues|
