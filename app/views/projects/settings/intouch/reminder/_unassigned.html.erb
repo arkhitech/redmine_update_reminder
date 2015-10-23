@@ -1,18 +1,20 @@
 <div class="box">
   <p class="description">
     Если задача ни на кого не назначена, либо назначена на группу, отправлять уведомления нижеследующим адресатам.<br>
-    Уведомления отправляются каждый рабочий день, в рабочее время, в случае, если задача не обновлялась указанное в общих настройках количество часов.
+    Уведомления отправляются каждый рабочий день, в рабочее время, в случае, если задача не обновлялась указанное в
+    общих настройках количество часов.
   </p>
+
   <div>
     Скопировать значения со вкладки
-    <%= select_tag 'r', options_for_select(%w(working feedback overdue).collect{ |r| [l("intouch.reminder.#{r}"), r] }) %>
+    <%= select_tag 'r', options_for_select(%w(working feedback overdue).collect { |r| [l("intouch.reminder.#{r}"), r] }) %>
     <%= button_tag 'Скопировать', class: 'copySettingsFromOtherTab' %>
   </div>
   <br>
   <table>
     <thead>
     <tr>
-      <% %w(author watchers telegram_groups).each do |recipient| %>
+      <% Intouch.available_recipients_without('assigned_to').each do |recipient| %>
         <th><%= l "intouch.recipient.#{recipient}" %></th>
       <% end %>
     </tr>
@@ -21,23 +23,25 @@
     <tr>
       <% %w(author watchers).each do |receiver| %>
         <td>
-          <% %w(telegram email).each do |protocol| %>
+          <% Intouch.active_protocols.each do |protocol| %>
             <%= check_box_tag "intouch_settings[#{protocol}_settings][unassigned][#{receiver}]", '1',
                               settings_source.send("#{protocol}_settings").try(:[], 'unassigned').try(:[], receiver),
                               class: "#{protocol}_#{receiver}" %>
-            <%= label_tag l "intouch.protocol.#{protocol}" %><br>
+            <%= label_tag l "intouch.protocols.#{protocol}" %><br>
           <% end %>
         </td>
       <% end %>
-      <td>
-        <% TelegramGroupChat.find_each do |group| %>
-          <%= check_box_tag "intouch_settings[telegram_settings][unassigned][groups][]", '1',
-                            settings_source.telegram_settings.try(:[], 'unassigned').
-                            try(:[], 'groups').try(:include?, group.id.to_s),
-                            class: "groups_#{group.id}" %>
-          <%= label_tag group.title %><br>
-        <% end %>
-      </td>
+      <% if Intouch.available_recipients_without('assigned_to').include? 'telegram_groups' %>
+        <td>
+          <% TelegramGroupChat.find_each do |group| %>
+            <%= check_box_tag "intouch_settings[telegram_settings][unassigned][groups][]", '1',
+                              settings_source.telegram_settings.try(:[], 'unassigned').
+                                  try(:[], 'groups').try(:include?, group.id.to_s),
+                              class: "groups_#{group.id}" %>
+            <%= label_tag group.title %><br>
+          <% end %>
+        </td>
+      <% end %>
     </tr>
   </table>
 </div>

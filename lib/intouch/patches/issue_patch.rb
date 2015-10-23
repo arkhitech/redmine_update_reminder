@@ -145,11 +145,11 @@ module Intouch
         end
 
         def updated_details
-          journals.last.visible_details.map{|detail| detail.prop_key.to_s.gsub(/\_id$/, "")}
+          journals.last.visible_details.map{|detail| detail.prop_key.to_s.gsub(/_id$/, '')}
         end
 
         def updated_details_text
-          updated_details.map {|field| I18n.t(("field_" + field).to_sym)}.join(', ') if updated_details
+          updated_details.map {|field| I18n.t(('field_' + field).to_sym)}.join(', ') if updated_details
         end
 
         def telegram_live_message
@@ -185,21 +185,29 @@ TEXT
         def check_alarm
           if project.module_enabled?(:intouch) and project.active? and !closed?
             if alarm? or Intouch.work_time?
-              if changed_attributes and (changed_attributes['priority_id'] or changed_attributes['status_id'])
-                # Send to group only on changed status on priority
-                IntouchSender.send_live_telegram_group_message(id, status_id, priority_id)
+              if Intouch.active_protocols.include? 'telegram'
+
+                if changed_attributes and (changed_attributes['priority_id'] or changed_attributes['status_id'])
+                  IntouchSender.send_live_telegram_group_message(id, status_id, priority_id)
+                end
+
+                IntouchSender.send_live_telegram_message(id)
               end
-              IntouchSender.send_live_telegram_message(id)
-              IntouchSender.send_live_email_message(id)
+
+              IntouchSender.send_live_email_message(id) if Intouch.active_protocols.include? 'email'
             end
           end
         end
 
         def send_new_message
           if project.module_enabled?(:intouch) and project.active? and !closed?
-            IntouchSender.send_live_telegram_message(id)
-            IntouchSender.send_live_telegram_group_message(id, status_id, priority_id)
-            IntouchSender.send_live_email_message(id)
+
+            if Intouch.active_protocols.include? 'telegram'
+              IntouchSender.send_live_telegram_message(id)
+              IntouchSender.send_live_telegram_group_message(id, status_id, priority_id)
+            end
+
+            IntouchSender.send_live_email_message(id) if Intouch.active_protocols.include? 'email'
           end
         end
 

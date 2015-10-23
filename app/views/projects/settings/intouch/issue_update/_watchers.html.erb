@@ -4,7 +4,7 @@
 
 <div>
   Скопировать значения со вкладки
-  <%= select_tag 'r', options_for_select(%w(author assigned_to telegram_groups).collect{ |r| [l("intouch.recipient.#{r}"), r] }) %>
+  <%= select_tag 'r', options_for_select(Intouch.available_recipients_without('watchers').collect{ |r| [l("intouch.recipient.#{r}"), r] }) %>
   <%= button_tag 'Скопировать', class: 'copySettingsFromOtherTab' %>
 </div>
 <br>
@@ -25,12 +25,12 @@
       </th>
       <% IssuePriority.order(:position).each do |priority| %>
         <td>
-          <% %w(telegram email).each do |protocol| %>
+          <% Intouch.active_protocols.each do |protocol| %>
             <%= check_box_tag "intouch_settings[#{protocol}_settings][watchers][#{status.id}][]", priority.id,
                               settings_source.send("#{protocol}_settings").try(:[], 'watchers').
                                   try(:[], status.id.to_s).try(:include?, priority.id.to_s),
                                   class: "#{protocol}_#{status.id}_#{priority.id}" %>
-            <%= label_tag l "intouch.protocol.#{protocol}" %><br>
+            <%= label_tag l "intouch.protocols.#{protocol}" %><br>
           <% end %>
         </td>
       <% end %>

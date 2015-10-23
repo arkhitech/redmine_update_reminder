@@ -1,4 +1,21 @@
 <div class="box tabular settings">
+  <h4><%= l 'intouch.protocols.title' %></h4>
+
+  <p class="description">Выберите протоколы отправки сообщений, которые желаете использовать
+  </p>
+  <ul class="inline-checkboxes">
+    <% Intouch::AVAILABLE_PROTOCOLS.each do |protocol| %>
+      <li>
+        <%= check_box_tag "settings[active_protocols][]", protocol,
+                          @settings["active_protocols"].try(:include?, protocol),
+                          id: "settings_active_protocols_#{protocol}"
+        %>
+        <%= label_tag "settings_active_protocols_#{protocol}", l("intouch.protocols.#{protocol}") %>
+      </li>
+    <% end %>
+  </ul>
+</div>
+<div class="box tabular settings">
   <h4><%= l 'intouch.work_days.title' %></h4>
 
   <ul class="inline-checkboxes">

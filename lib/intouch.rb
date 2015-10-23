@@ -1,8 +1,25 @@
 module Intouch
+  AVAILABLE_PROTOCOLS = %w(telegram email)
   INTOUCH_COMMIT_HASH = `cd #{Rails.root}/plugins/redmine_intouch && git rev-parse --short HEAD`.chomp
 
   def self.commit_hash
     INTOUCH_COMMIT_HASH
+  end
+
+  def self.active_protocols
+    Setting.plugin_redmine_intouch['active_protocols'] || []
+  end
+
+  def self.available_recipients
+    if active_protocols.include? 'telegram'
+      %w(author assigned_to watchers telegram_groups)
+    else
+      %w(author assigned_to watchers)
+    end
+  end
+
+  def self.available_recipients_without(recipient)
+    available_recipients - [recipient]
   end
 
   def self.send_notifications(issues, state)
@@ -32,11 +49,16 @@ module Intouch
                 issue.assigners_updated_on < interval.to_i.hours.ago and
                 (last_notification.nil? or last_notification < interval.to_i.hours.ago)
 
-              IntouchSender.send_telegram_message(issue.id, state)
-              IntouchSender.send_email_message(issue.id, state) unless %w(overdue without_due_date).include? state
+              if active_protocols.include? 'email'
+                IntouchSender.send_email_message(issue.id, state) unless %w(overdue without_due_date).include? state
+              end
 
-              group_ids = telegram_settings.try(:[], state).try(:[], 'groups')
-              IntouchSender.send_telegram_group_message(issue.id, group_ids) if group_ids.present?
+              if active_protocols.include? 'telegram'
+                IntouchSender.send_telegram_message(issue.id, state)
+
+                group_ids = telegram_settings.try(:[], state).try(:[], 'groups')
+                IntouchSender.send_telegram_group_message(issue.id, group_ids) if group_ids.present?
+              end
 
               issue.last_notification = {} unless issue.last_notification.present?
               issue.last_notification[state] = Time.now

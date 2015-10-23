@@ -4,7 +4,7 @@
 
 <div>
   Скопировать значения со вкладки
-  <%= select_tag 'r', options_for_select(%w(author assigned_to watchers).collect{ |r| [l("intouch.recipient.#{r}"), r] }) %>
+  <%= select_tag 'r', options_for_select(Intouch.available_recipients_without('telegram_groups').collect{ |r| [l("intouch.recipient.#{r}"), r] }) %>
   <%= button_tag 'Скопировать', class: 'copySettingsFromOtherTab' %>
 </div>
 

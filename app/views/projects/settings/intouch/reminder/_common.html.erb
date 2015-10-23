@@ -1,7 +1,7 @@
 <table>
   <thead>
   <tr>
-    <% %w(author assigned_to watchers telegram_groups).each do |recipient| %>
+    <% Intouch.available_recipients.each do |recipient| %>
       <th><%= l "intouch.recipient.#{recipient}" %></th>
     <% end %>
   </tr>
@@ -10,23 +10,25 @@
   <tr>
     <% %w(author assigned_to watchers).each do |receiver| %>
       <td>
-        <% %w(telegram email).each do |protocol| %>
+        <% Intouch.active_protocols.each do |protocol| %>
           <%= check_box_tag "intouch_settings[#{protocol}_settings][#{status}][#{receiver}]", '1',
                             settings_source.send("#{protocol}_settings").try(:[], status).try(:[], receiver),
                             class: "#{protocol}_#{receiver}" %>
-          <%= label_tag l "intouch.protocol.#{protocol}" %><br>
+          <%= label_tag l "intouch.protocols.#{protocol}" %><br>
         <% end %>
       </td>
     <% end %>
-    <td>
-      <% TelegramGroupChat.find_each do |group| %>
-        <%= check_box_tag "intouch_settings[telegram_settings][#{status}][groups][]", '1',
-                          settings_source.telegram_settings.try(:[], status).
-                          try(:[], 'groups').try(:include?, group.id.to_s),
-                          class: "groups_#{group.id}" %>
-        <%= label_tag group.title %><br>
-      <% end %>
-    </td>
+    <% if Intouch.available_recipients.include? 'telegram_groups' %>
+      <td>
+        <% TelegramGroupChat.find_each do |group| %>
+          <%= check_box_tag "intouch_settings[telegram_settings][#{status}][groups][]", '1',
+                            settings_source.telegram_settings.try(:[], status).
+                                try(:[], 'groups').try(:include?, group.id.to_s),
+                            class: "groups_#{group.id}" %>
+          <%= label_tag group.title %><br>
+        <% end %>
+      </td>
+    <% end %>
   </tr>
 
 </table>
