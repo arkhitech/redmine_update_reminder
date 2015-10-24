@@ -158,7 +158,7 @@ module Intouch
 #{project.name}: #{subject}
 #{Intouch.issue_url(id)}
 TEXT
-          message = "Обновлено: #{updated_details_text}\n#{message}" if updated_details.present?
+          message = "Изменения: #{updated_details_text}\n#{message}" if updated_details.present?
           message = "Обновил: #{updated_by}\n#{message}" if updated_by.present?
           message
         end
