@@ -1,10 +1,10 @@
 class TelegramGroupSenderWorker
   include Sidekiq::Worker
 
-  def perform(issue_id, group_ids)
+  def perform(issue_id, group_ids, live = false)
     issue = Issue.find issue_id
 
-    message = issue.telegram_message
+    message = live ? issue.telegram_live_message : issue.telegram_message
 
     token = Setting.plugin_redmine_intouch['telegram_bot_token']
     bot = Telegrammer::Bot.new(token)

@@ -119,13 +119,7 @@ module Intouch
         end
 
         def performer
-          if assigned_to.present?
-            if assigned_to.class == Group
-              "Назначена на группу: #{assigned_to.name}"
-            else
-              assigned_to.name
-            end
-          end
+          assigned_to.present? ? assigned_to.name : 'не назначен'
         end
 
         def inactive?
@@ -145,7 +139,11 @@ module Intouch
         end
 
         def updated_details
-          journals.last.visible_details.map{|detail| detail.prop_key.to_s.gsub(/_id$/, '')}
+          last_journal = journals.last
+          if last_journal.present?
+            updated_details = last_journal.visible_details.map{|detail| detail.prop_key.to_s.gsub(/_id$/, '')}
+            updated_details << 'notes' if last_journal.notes.present?
+          end
         end
 
         def updated_details_text

@@ -1,6 +1,6 @@
 class TelegramLiveSenderWorker
   include Sidekiq::Worker
-  TELEGRAM_LIVE_SENDER_LOG = Logger.new(Rails.root.join('log', 'telegram-live-sender.log'))
+  TELEGRAM_LIVE_SENDER_LOG = Logger.new(Rails.root.join('log/intouch', 'telegram-live-sender.log'))
 
   def perform(issue_id)
     issue = Issue.find issue_id
@@ -34,6 +34,8 @@ class TelegramLiveSenderWorker
         TELEGRAM_LIVE_SENDER_LOG.debug "#{telegram_user.inspect}"
       end
     end
+  rescue ActiveRecord::RecordNotFound => e
+    TELEGRAM_LIVE_SENDER_LOG.error "#{e.class}: #{e.message}"
   end
 
 end

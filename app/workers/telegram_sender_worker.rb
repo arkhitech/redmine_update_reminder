@@ -1,6 +1,6 @@
 class TelegramSenderWorker
   include Sidekiq::Worker
-  TELEGRAM_SENDER_LOG = Logger.new(Rails.root.join('log', 'telegram-sender.log'))
+  TELEGRAM_SENDER_LOG = Logger.new(Rails.root.join('log/intouch', 'telegram-sender.log'))
 
   def perform(issue_id, state)
     issue = Issue.find issue_id

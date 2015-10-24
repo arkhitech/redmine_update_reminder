@@ -1,6 +1,7 @@
 module Intouch
   AVAILABLE_PROTOCOLS = %w(telegram email)
   INTOUCH_COMMIT_HASH = `cd #{Rails.root}/plugins/redmine_intouch && git rev-parse --short HEAD`.chomp
+  INTOUCH_SEND_NOTIFICATIONS_LOG = Logger.new(Rails.root.join('log/intouch', 'send-notifications.log'))
 
   def self.commit_hash
     INTOUCH_COMMIT_HASH
@@ -38,30 +39,36 @@ module Intouch
         project_issues.each do |issue|
 
           if issue.alarm? or Intouch.work_time?
+            begin
+              priority = issue.priority_id.to_s
+              active = reminder_settings[priority].try(:[], 'active')
+              interval = reminder_settings[priority].try(:[], 'interval')
+              last_notification = issue.last_notification.try(:[], state)
 
-            priority = issue.priority_id.to_s
-            active = reminder_settings[priority].try(:[], 'active')
-            interval = reminder_settings[priority].try(:[], 'interval')
-            last_notification = issue.last_notification.try(:[], state)
+              if active and
+                  interval.present? and
+                  issue.assigners_updated_on < interval.to_i.hours.ago and
+                  (last_notification.nil? or last_notification < interval.to_i.hours.ago)
 
-            if active and
-                interval.present? and
-                issue.assigners_updated_on < interval.to_i.hours.ago and
-                (last_notification.nil? or last_notification < interval.to_i.hours.ago)
+                if active_protocols.include? 'email'
+                  IntouchSender.send_email_message(issue.id, state) unless %w(overdue without_due_date).include? state
+                end
 
-              if active_protocols.include? 'email'
-                IntouchSender.send_email_message(issue.id, state) unless %w(overdue without_due_date).include? state
+                if active_protocols.include? 'telegram'
+                  IntouchSender.send_telegram_message(issue.id, state)
+
+                  group_ids = telegram_settings.try(:[], state).try(:[], 'groups')
+                  IntouchSender.send_telegram_group_message(issue.id, group_ids) if group_ids.present?
+                end
+
+                issue.last_notification = {} unless issue.last_notification.present?
+                issue.last_notification[state] = Time.now
               end
-
-              if active_protocols.include? 'telegram'
-                IntouchSender.send_telegram_message(issue.id, state)
-
-                group_ids = telegram_settings.try(:[], state).try(:[], 'groups')
-                IntouchSender.send_telegram_group_message(issue.id, group_ids) if group_ids.present?
-              end
-
-              issue.last_notification = {} unless issue.last_notification.present?
-              issue.last_notification[state] = Time.now
+            rescue NoMethodError => e
+              INTOUCH_SEND_NOTIFICATIONS_LOG.error "#{e.class}: #{e.message}"
+              INTOUCH_SEND_NOTIFICATIONS_LOG.debug "State: #{state} Priority: #{priority} Active: #{active} Interval: #{interval} Last notification: #{last_notification}"
+              INTOUCH_SEND_NOTIFICATIONS_LOG.debug issue.inspect
+              INTOUCH_SEND_NOTIFICATIONS_LOG.debug project.inspect
             end
           end
         end

@@ -26,7 +26,7 @@ class IntouchSender
     telegram_groups_settings = issue.project.active_telegram_settings.try(:[], 'groups')
     if telegram_groups_settings
       group_ids = telegram_groups_settings.select {|k,v| v.try(:[], status_id.to_s).try(:include?, priority_id.to_s)}.keys
-      TelegramGroupSenderWorker.perform_in(5.seconds, issue_id, group_ids)
+      TelegramGroupSenderWorker.perform_in(5.seconds, issue_id, group_ids, true)
     end
   end
 end
