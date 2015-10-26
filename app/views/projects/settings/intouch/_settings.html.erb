@@ -1,37 +1,45 @@
-<%= error_messages_for 'intouch_settings' %>
+<% if Intouch.active_protocols.present? %>
+  <%= error_messages_for 'intouch_settings' %>
 
-<% errors = [] %>
-<% errors << l('intouch.label.enable_module') unless @project.module_enabled?(:intouch) %>
+  <% errors = [] %>
+  <% errors << l('intouch.label.enable_module') unless @project.module_enabled?(:intouch) %>
 
-<% if errors.empty? %>
-  <%= form_tag({controller: :intouch, action: :save_settings, project_id: @project, tab: 'intouch_settings'}, method: :put, class: "tabular", multipart: true, id: 'intouch_settings') do %>
-    <div class="box">
-      <p>
-        <label for="settings_template_id">Использовать настройки из шаблона</label>
-        <%= select_tag('intouch_settings[settings_template_id]',
-                       options_for_select(SettingsTemplate.order(:name).collect { |u| [u.name, u.id] }, @project.settings_template_id),
-                       include_blank: true) %>
-        <%= link_to l(:label_intouch_settings_template_new), {controller: "settings_templates", action: 'new'}, class: 'icon icon-add' %>
-        <% if @project.settings_template.present? %>
-          <%= link_to 'Редактировать текущий', controller: "settings_templates", action: 'edit', id: @project.settings_template %>
-        <% end %>
-      </p>
+  <% if errors.empty? %>
+    <%= form_tag({controller: :intouch, action: :save_settings, project_id: @project, tab: 'intouch_settings'}, method: :put, class: "tabular", multipart: true, id: 'intouch_settings') do %>
+      <div class="box">
+        <p>
+          <label for="settings_template_id">Использовать настройки из шаблона</label>
+          <%= select_tag('intouch_settings[settings_template_id]',
+                         options_for_select(SettingsTemplate.order(:name).collect { |u| [u.name, u.id] }, @project.settings_template_id),
+                         include_blank: true) %>
+          <%= link_to l(:label_intouch_settings_template_new), {controller: "settings_templates", action: 'new'}, class: 'icon icon-add' %>
+          <% if @project.settings_template.present? %>
+            <%= link_to 'Редактировать текущий', controller: "settings_templates", action: 'edit', id: @project.settings_template %>
+          <% end %>
+        </p>
 
-    </div>
+      </div>
 
-    <div class="intouch-settings" <%= raw('style="display: none;"') if @project.settings_template.present? %>>
-      <%= render partial: 'projects/settings/intouch/common/settings', locals: { settings_source: @project} %>
-    </div>
+      <div class="intouch-settings" <%= raw('style="display: none;"') if @project.settings_template.present? %>>
+        <%= render partial: 'projects/settings/intouch/common/settings', locals: {settings_source: @project} %>
+      </div>
 
-    <div style="clear:both;"></div>
+      <div style="clear:both;"></div>
 
-    <%= submit_tag l(:button_save) %>
+      <%= submit_tag l(:button_save) %>
 
+    <% end %>
+
+  <% else %>
+    <p class="nodata"><%= errors.join("<br/>").html_safe %></p>
   <% end %>
-
 <% else %>
-  <p class="nodata"><%= errors.join("<br/>").html_safe %></p>
+  <p class="nodata">
+    Ни один протокол уведомлений не выбран. Выберите требуемые протоколы в
+    <a href="/settings/plugin/redmine_intouch" target="_blank">настройках плагина</a>.
+  </p>
 <% end %>
+
 
 <% content_for :header_tags do %>
   <%= stylesheet_link_tag "intouch?#{Intouch.commit_hash}", plugin: 'redmine_intouch' %>
