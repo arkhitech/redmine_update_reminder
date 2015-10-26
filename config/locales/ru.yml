@@ -4,7 +4,7 @@ ru:
       cron_email_reminder_sender: Уведомление по почте исполнителю задач, которые давно не обновлялись
       cron_feedback_regular_notification: 'Уведомления о задачах со статусом "Обратная связь"'
       cron_overdue_regular_notification: Уведомления о просроченных задачах
-      cron_unassigned_regular_notification: Уведомления о неназначенных задачах
+      cron_unassigned_regular_notification: Уведомления о не назначенных задачах
       cron_working_regular_notification: 'Уведомления о задачах со статусом  "В работе"'
     protocols:
       title: Протоколы
@@ -40,7 +40,7 @@ ru:
 
       intervals: "Общие настройки"
       feedback: "Обратная связь"
-      unassigned: "Неназначенные/Назначенные на группу"
+      unassigned: "Не назначенные/Назначенные на группу"
       overdue: "Просроченные/Без даты завершения"
       title: "Статусы"
       working: "В работе"
