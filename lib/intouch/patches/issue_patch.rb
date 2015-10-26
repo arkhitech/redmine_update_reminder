@@ -140,21 +140,60 @@ module Intouch
 
         def updated_details
           last_journal = journals.last
+          updated_details = []
           if last_journal.present?
             updated_details = last_journal.visible_details.map{|detail| detail.prop_key.to_s.gsub(/_id$/, '')}
             updated_details << 'notes' if last_journal.notes.present?
           end
+          updated_details
         end
 
         def updated_details_text
-          updated_details.map {|field| I18n.t(('field_' + field).to_sym)}.join(', ') if updated_details
+          updated_details.map {|field| I18n.t(('field_' + field).to_sym)}.join(', ') if updated_details.present?
+        end
+
+        def updated_priority_text
+          if updated_details.include?('priority')
+            last_journal = journals.last
+            priority_journal = last_journal.details.find_by(prop_key: 'priority_id')
+            old_priority = IssuePriority.find priority_journal.old_value
+            "#{old_priority.name} -> #{priority.name}"
+          else
+            priority.name
+          end
+        end
+
+        def updated_status_text
+          if updated_details.include?('status')
+            last_journal = journals.last
+            status_journal = last_journal.details.find_by(prop_key: 'status_id')
+            old_status = IssueStatus.find status_journal.old_value
+            "#{old_status.name} -> #{status.name}"
+          else
+            status.name
+          end
+        end
+
+        def updated_performer_text
+          if updated_details.include?('assigned_to')
+            last_journal = journals.last
+            performer_journal = last_journal.details.find_by(prop_key: 'assigned_to_id')
+            if performer_journal.old_value
+              old_performer = User.find performer_journal.old_value
+              "#{old_performer.name} -> #{performer}"
+            else
+              "не назначен -> #{performer}"
+            end
+          else
+            status.name
+          end
         end
 
         def telegram_live_message
           message = <<TEXT
-Приоритет: #{priority.try :name}
-Статус: #{status.try :name}
-Исполнитель: #{performer}
+Приоритет: #{updated_priority_text}
+Статус: #{updated_status_text}
+Исполнитель: #{updated_performer_text}
 #{project.name}: #{subject}
 #{Intouch.issue_url(id)}
 TEXT
