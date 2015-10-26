@@ -4,10 +4,10 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    Доброе утро, <%= @user.name %>!
+    <%= t 'intouch.mailer.message.hello' %>, <%= @user.name %>!
     <% if @issues.present? %>
       <% if @overdue_issues.present? %>
-        <h2>Просроченные задачи</h2>
+        <h2><%= t 'intouch.mailer.message.overdue_issues' %></h2>
         <ul>
           <% @overdue_issues.each do |issue| %>
             <li>
@@ -17,7 +17,7 @@
         </ul>
       <% end %>
       <% if @without_due_date_issues.present? %>
-        <h2>Не указана дата завершения</h2>
+        <h2><%= t 'intouch.mailer.message.without_due_date_issues' %></h2>
         <ul>
           <% @without_due_date_issues.each do |issue| %>
             <li>
@@ -27,9 +27,7 @@
         </ul>
       <% end %>
     <% else %>
-      <p>
-        На сегодня просроченных задач нет.
-      </p>
+      <p><%= t 'intouch.mailer.message.no_overdue_issues' %></p>
     <% end %>
   </body>
 </html>

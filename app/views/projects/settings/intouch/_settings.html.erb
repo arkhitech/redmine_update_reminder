@@ -8,13 +8,13 @@
     <%= form_tag({controller: :intouch, action: :save_settings, project_id: @project, tab: 'intouch_settings'}, method: :put, class: "tabular", multipart: true, id: 'intouch_settings') do %>
       <div class="box">
         <p>
-          <label for="settings_template_id">Использовать настройки из шаблона</label>
+          <label for="settings_template_id"><%= t 'intouch.project.settings.settings_template_label' %></label>
           <%= select_tag('intouch_settings[settings_template_id]',
                          options_for_select(SettingsTemplate.order(:name).collect { |u| [u.name, u.id] }, @project.settings_template_id),
                          include_blank: true) %>
           <%= link_to l(:label_intouch_settings_template_new), {controller: "settings_templates", action: 'new'}, class: 'icon icon-add' %>
           <% if @project.settings_template.present? %>
-            <%= link_to 'Редактировать текущий', controller: "settings_templates", action: 'edit', id: @project.settings_template %>
+            <%= link_to t 'intouch.project.settings.settings_template_edit', controller: "settings_templates", action: 'edit', id: @project.settings_template %>
           <% end %>
         </p>
 
@@ -35,8 +35,7 @@
   <% end %>
 <% else %>
   <p class="nodata">
-    Ни один протокол уведомлений не выбран. Выберите требуемые протоколы в
-    <a href="/settings/plugin/redmine_intouch" target="_blank">настройках плагина</a>.
+    <%= raw t('intouch.project.settings.settings_no_selected_protocol') %>
   </p>
 <% end %>
 

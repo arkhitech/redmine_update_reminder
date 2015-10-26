@@ -18,3 +18,4 @@ pickle-email-*.html
 
 .idea/
 .localeapp
+Gemfile.lock

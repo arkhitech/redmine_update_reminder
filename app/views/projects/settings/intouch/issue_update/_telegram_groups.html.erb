@@ -1,11 +1,11 @@
 <p class="description">
-  Укажите, в какую группу какие уведомления посылать
+  <%= t('intouch.project.settings.issue_update.telegram_groups.description') %>
 </p>
 
 <div>
-  Скопировать значения со вкладки
+  <%= t('intouch.project.settings.common.copy_settings_from_tab') %>
   <%= select_tag 'r', options_for_select(Intouch.available_recipients_without('telegram_groups').collect{ |r| [l("intouch.recipient.#{r}"), r] }) %>
-  <%= button_tag 'Скопировать', class: 'copySettingsFromOtherTab' %>
+  <%= button_tag t('intouch.project.settings.common.copy'), class: 'copySettingsFromOtherTab' %>
 </div>
 
 <% TelegramGroupChat.find_each do |telegram_group| %>
@@ -13,7 +13,7 @@
   <table>
     <thead>
     <tr>
-      <th>Статус \ Приоритет</th>
+      <th><%= t('field_status') %> \ <%= t('field_priority') %></th>
       <% IssuePriority.order(:position).each do |priority| %>
         <th><%= priority.name %></th>
       <% end %>

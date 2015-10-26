@@ -119,7 +119,7 @@ module Intouch
         end
 
         def performer
-          assigned_to.present? ? assigned_to.name : 'не назначен'
+          assigned_to.present? ? assigned_to.name : I18n.t('intouch.telegram_message.issue.performer.unassigned')
         end
 
         def inactive?
@@ -131,7 +131,7 @@ module Intouch
 
         def inactive_message
           hours = ((Time.now - updated_on) / 3600).round(1)
-          "Бездействие #{hours} ч."
+          I18n.t 'intouch.telegram_message.issue.inactive', hours: hours
         end
 
         def updated_by
@@ -182,7 +182,7 @@ module Intouch
               old_performer = User.find performer_journal.old_value
               "#{old_performer.name} -> #{performer}"
             else
-              "не назначен -> #{performer}"
+              "#{I18n.t('intouch.telegram_message.issue.performer.unassigned')} -> #{performer}"
             end
           else
             status.name
@@ -191,29 +191,29 @@ module Intouch
 
         def telegram_live_message
           message = <<TEXT
-Приоритет: #{updated_priority_text}
-Статус: #{updated_status_text}
-Исполнитель: #{updated_performer_text}
+#{I18n.t('field_priority')}: #{updated_priority_text}
+#{I18n.t('field_status')}: #{updated_status_text}
+#{I18n.t('field_assigned_to')}: #{updated_performer_text}
 #{project.name}: #{subject}
 #{Intouch.issue_url(id)}
 TEXT
-          message = "Изменения: #{updated_details_text}\n#{message}" if updated_details.present?
-          message = "Обновил: #{updated_by}\n#{message}" if updated_by.present?
+          message = "#{I18n.t('intouch.telegram_message.issue.updated_details')}: #{updated_details_text}\n#{message}" if updated_details.present?
+          message = "#{I18n.t('intouch.telegram_message.issue.updated_by')}: #{updated_by}\n#{message}" if updated_by.present?
           message
         end
 
         def telegram_message
           message = <<TEXT
-Приоритет: #{priority.try :name}
-Статус: #{status.try :name}
-Исполнитель: #{performer}
+#{I18n.t('field_priority')}: #{priority.try :name}
+#{I18n.t('field_status')}: #{status.try :name}
+#{I18n.t('field_assigned_to')}: #{performer}
 #{project.name}: #{subject}
 #{Intouch.issue_url(id)}
 TEXT
           message = "#{inactive_message}\n#{message}" if inactive?
-          message = "*** Установите дату выполнения *** \n#{message}" if without_due_date?
-          message = "*** Возьмите в работу (просроченная задача) ***  \n#{message}" if overdue?
-          message = "*** Назначьте исполнителя *** \n#{message}" if unassigned? or assigned_to_group?
+          message = "*** #{t('intouch.telegram_message.issue.notice.without_due_date')} *** \n#{message}" if without_due_date?
+          message = "*** #{t('intouch.telegram_message.issue.notice.overdue')} ***  \n#{message}" if overdue?
+          message = "*** #{t('intouch.telegram_message.issue.notice.unassigned')} *** \n#{message}" if unassigned? or assigned_to_group?
           message
         end
 

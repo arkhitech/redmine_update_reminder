@@ -18,7 +18,7 @@
         <%= link_to settings_template.name, controller: "settings_templates", action: 'edit', id: settings_template %>
       </td>
       <td class="buttons">
-        <%= link_to 'Редактировать', controller: "settings_templates", action: 'edit', id: settings_template %>
+        <%= link_to t('intouch.label.edit'), controller: "settings_templates", action: 'edit', id: settings_template %>
         <%= delete_link settings_template_path(settings_template) %>
       </td>
     </tr>

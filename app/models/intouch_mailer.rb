@@ -19,6 +19,6 @@ class IntouchMailer < ActionMailer::Base
     @overdue_issues = @issues.where('due_date < ?', Date.today)
     @without_due_date_issues = @issues.where(due_date: nil).where('created_on < ?', 1.day.ago)
 
-    mail to: @user.mail, subject: "Просроченные задачи по состоянию на #{Date.today}"
+    mail to: @user.mail, subject: t('intouch.mailer.subject', date: Date.today.to_s)
   end
 end

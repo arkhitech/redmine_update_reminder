@@ -1,17 +1,17 @@
 <p class="description">
-  Укажите, какие уведомления отправлять автору задачи
+  <%= t('intouch.project.settings.issue_update.author.description') %>
 </p>
 
 <div>
-  Скопировать значения со вкладки
+  <%= t('intouch.project.settings.common.copy_settings_from_tab') %>
   <%= select_tag 'r', options_for_select(Intouch.available_recipients_without('author').collect{ |r| [l("intouch.recipient.#{r}"), r] }) %>
-  <%= button_tag 'Скопировать', class: 'copySettingsFromOtherTab' %>
+  <%= button_tag t('intouch.project.settings.common.copy'), class: 'copySettingsFromOtherTab' %>
 </div>
 <br>
 <table>
   <thead>
   <tr>
-    <th>Статус \ Приоритет</th>
+    <th><%= t('field_status') %> \ <%= t('field_priority') %></th>
     <% IssuePriority.order(:position).each do |priority| %>
       <th><%= priority.name %></th>
     <% end %>

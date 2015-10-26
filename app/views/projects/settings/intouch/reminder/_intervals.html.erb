@@ -1,25 +1,19 @@
 <div class="box">
   <p class="description">
-    В таблице ниже указывается длительность интервалов периодических уведомлений для различных приоритетов.<br>
-    Уведомления будут отправляться только в рабочее время, за исключеним срочных задач.<br>
-    <strong>Например:</strong>
-    Есть задача с приоритетом "Нормальный", находящаяся в статусе "Обратная связь", но ее давно никто не обновлял.
-    Каждый рабочий день, с интервалом указанным ниже, пользоватли отмеченные на вкладке "Обратная связь" будут получать
-    уведомления.<br>
-    Если приоритет изменится на "Авария" (и этот приоритет в
-    <a href="/settings/plugin/redmine_intouch" target="_blank">настройках плагина</a> отмечен как "Срочный"),
-    уведомления будут приходить с другим интервалом, также отмеченным ниже. Но уже не будет учитываться - рабочий сегоня
-    день или нет, рабочее время или нет. То есть, уведомления для срочных задач отправляются круглосуточно и без
-    выходных.
-    <br>
-    Рабочее время и приоритеты срочных задач указываются в
-    <a href="/settings/plugin/redmine_intouch" target="_blank">настройках плагина</a>.
+    <%= t('intouch.project.settings.reminder.intervals.description_1') %><br>
+    <%= t('intouch.project.settings.reminder.intervals.description_2') %><br>
+    <strong>
+      <%= t('intouch.project.settings.reminder.intervals.example') %>:
+    </strong>
+    <%= t('intouch.project.settings.reminder.intervals.example_1') %><br>
+    <%= raw t('intouch.project.settings.reminder.intervals.example_2') %><br>
+    <%= raw t('intouch.project.settings.reminder.intervals.notice') %>
   </p>
   <table>
     <thead>
     <tr>
-      <th>Приоритет</th>
-      <th>Уведомлять <br> с интервалом</th>
+      <th><%= t('field_priority') %></th>
+      <th><%= raw t('intouch.project.settings.reminder.intervals.remind_with_interval') %></th>
     </tr>
     </thead>
 
@@ -35,7 +29,7 @@
           <%= number_field_tag "intouch_settings[reminder_settings][#{priority.id}][interval]",
                                settings_source.reminder_settings.
                                    try(:[], "#{priority.id}").try(:[], 'interval'), step: 0.1, class: 'hours_input' %>
-          <%= label_tag 'ч.' %>
+          <%= label_tag t('intouch.project.settings.reminder.intervals.hours_short') %>
         </td>
       </tr>
     <% end %>

@@ -1,14 +1,13 @@
 <div class="box">
   <p class="description">
-    Если задача ни на кого не назначена, либо назначена на группу, отправлять уведомления нижеследующим адресатам.<br>
-    Уведомления отправляются каждый рабочий день, в рабочее время, в случае, если задача не обновлялась указанное в
-    общих настройках количество часов.
+    <%= t('intouch.project.settings.reminder.unassigned.description') %><br>
+    <%= t('intouch.project.settings.reminder.unassigned.notice') %>
   </p>
 
   <div>
-    Скопировать значения со вкладки
+    <%= t('intouch.project.settings.common.copy_settings_from_tab') %>
     <%= select_tag 'r', options_for_select(%w(working feedback overdue).collect { |r| [l("intouch.reminder.#{r}"), r] }) %>
-    <%= button_tag 'Скопировать', class: 'copySettingsFromOtherTab' %>
+    <%= button_tag t('intouch.project.settings.common.copy'), class: 'copySettingsFromOtherTab' %>
   </div>
   <br>
   <table>

@@ -1,14 +1,13 @@
 <div class="box">
   <p class="description">
-    Каждый рабочий день, по расписанию, указанному в <a href="/settings/plugin/redmine_intouch?tab=sidekiq_cron_jobs" target="_blank">настройках плагина</a>, следующие пользователи будут получать сообщения
-    о <strong>просроченных</strong> задачах, а также задачах <strong>без указанной даты завершения</strong>.<br>
-    На e-mail каждому адресату будет приходить одно письмо со списком задач. В Telegram будет отправлен ряд сообщений о каждой задаче.<br>
-    Какие дни недели считать рабочими, указывается в <a href="/settings/plugin/redmine_intouch" target="_blank">настройках плагина</a>.
+    <%= raw t('intouch.project.settings.reminder.overdue.description_1') %><br>
+    <%= t('intouch.project.settings.reminder.overdue.description_2') %><br>
+    <%= raw t('intouch.project.settings.reminder.overdue.notice') %>
   </p>
   <div>
-    Скопировать значения со вкладки
+    <%= t('intouch.project.settings.common.copy_settings_from_tab') %>
     <%= select_tag 'r', options_for_select(%w(working feedback unassigned).collect{ |r| [l("intouch.reminder.#{r}"), r] }) %>
-    <%= button_tag 'Скопировать', class: 'copySettingsFromOtherTab' %>
+    <%= button_tag t('intouch.project.settings.common.copy'), class: 'copySettingsFromOtherTab' %>
   </div>
   <br>
   <%= render partial: 'projects/settings/intouch/reminder/common', locals: {status: 'overdue', settings_source: settings_source } %>

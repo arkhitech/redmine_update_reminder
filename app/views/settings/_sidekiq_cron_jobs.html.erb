@@ -1,12 +1,11 @@
-<h3><%=l(:label_intouch_sidekiq_cron_job_plural)%></h3>
+<h3><%= t 'intouch.settings.sidekiq_cron_job.title' %></h3>
 <p class="description">
-  В этой таблице настраивается расписание проверки состояний задач. <br>
-  Например, если настроить проверку для статусов "В работе" на каждые 5 минут, то
-  каждые 5 минут: <br>
+  <%= t 'intouch.settings.sidekiq_cron_job.description' %><br>
+  <%= t 'intouch.settings.sidekiq_cron_job.example' %> <br>
   <ul>
-  <li>будет осуществляться выборка задач с таким статусом,
-  <li>каждая задача будет проверена на необходимость отправки уведомлений в настоящий момент,
-  <li>адресаты будут получать уведомления в соответсвии с интрвалами, указанными в настройках проекта.
+  <li><%= t 'intouch.settings.sidekiq_cron_job.example_1' %>
+  <li><%= t 'intouch.settings.sidekiq_cron_job.example_2' %>
+  <li><%= t 'intouch.settings.sidekiq_cron_job.example_3' %>
   </ul>
 </p>
 <% if Sidekiq::Cron::Job.all.present? %>
@@ -14,25 +13,21 @@
   <thead><tr>
     <th><%=l(:field_name)%></th>
     <th>Cron</th>
-    <th></th>
   </tr></thead>
   <tbody>
   <% for sidekiq_cron_job in Sidekiq::Cron::Job.all  %>
     <tr class="<%= cycle("odd", "even") %>">
       <td class="name"><%= link_to t("intouch.cron.#{sidekiq_cron_job.name}"), controller: "sidekiq_cron_jobs", action: 'edit', id: sidekiq_cron_job.name %></td>
       <td class="name"><%= sidekiq_cron_job.cron %></td>
-      <td class="buttons">
-        <%#= delete_link sidekiq_cron_job_path(sidekiq_cron_job) %>
-      </td>
     </tr>
   <% end %>
   </tbody>
 </table>
 <p>
-  <%= link_to 'Установить расписание по-умолчанию', init_sidekiq_cron_jobs_path %>
+  <%= link_to t('intouch.settings.sidekiq_cron_job.default'), init_sidekiq_cron_jobs_path %>
 </p>
 <% else %>
 <p>
-  <%= link_to 'Инициализировать периодические задачи', init_sidekiq_cron_jobs_path %>
+  <%= link_to t('intouch.settings.sidekiq_cron_job.init'), init_sidekiq_cron_jobs_path %>
 </p>
 <% end %>

@@ -1,8 +1,8 @@
 <div class="box tabular settings">
   <h4><%= l 'intouch.protocols.title' %></h4>
 
-  <p class="description">Выберите протоколы отправки сообщений, которые хотите использовать
-  </p>
+  <p class="description"><%= t 'intouch.settings.common.protocols.description' %></p>
+
   <ul class="inline-checkboxes">
     <% Intouch::AVAILABLE_PROTOCOLS.each do |protocol| %>
       <li>
@@ -38,9 +38,10 @@
 </div>
 
 <div class="box tabular settings alarm">
-  <h4>Срочные задачи</h4>
-  <p class="description">Уведомления о задачах, с выбранными приоритетами, будут отправляться круглосуточно и без выходных. <br>
-    Уведомления для остальных приоритетов будут отправляться только в рабочее время.
+  <h4><%= t 'intouch.settings.common.alarm.title' %></h4>
+  <p class="description">
+    <%= t 'intouch.settings.common.alarm.description_1' %><br>
+    <%= t 'intouch.settings.common.alarm.description_2' %>
   </p>
   <ul class="inline-checkboxes">
     <% IssuePriority.find_each do |priority| %>
