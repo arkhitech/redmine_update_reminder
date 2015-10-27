@@ -6,7 +6,7 @@ class TelegramLiveSenderWorker
     Intouch.set_locale
     issue = Issue.find issue_id
 
-    message = issue.telegram_live_message
+    base_message = issue.telegram_live_message
 
     token = Setting.plugin_redmine_intouch['telegram_bot_token']
     bot = Telegrammer::Bot.new(token)
@@ -17,13 +17,13 @@ class TelegramLiveSenderWorker
       next unless telegram_user.present? and telegram_user.active?
 
       message = if issue.assigned_to_id == user.id
-                  "#{I18n.t('intouch.telegram_message.recipient.assignee')}\n#{message}"
+                  "#{I18n.t('intouch.telegram_message.recipient.assignee')}\n#{base_message}"
                 elsif issue.author_id == user.id
-                  "#{I18n.t('intouch.telegram_message.recipient.author')}\n#{message}"
+                  "#{I18n.t('intouch.telegram_message.recipient.author')}\n#{base_message}"
                 elsif issue.watchers.pluck(:user_id).include? user.id
-                  "#{I18n.t('intouch.telegram_message.recipient.watcher')}\n#{message}"
+                  "#{I18n.t('intouch.telegram_message.recipient.watcher')}\n#{base_message}"
                 else
-                  message
+                  base_message
                 end
 
       begin
