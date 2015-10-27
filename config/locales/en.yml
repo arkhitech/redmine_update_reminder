@@ -1,2 +1,135 @@
 en:
+  intouch:
+    cron:
+      cron_email_reminder_sender: Email notification to the assigner about the issues that have not been updated for a long time
+      cron_feedback_regular_notification: Notification about the issues with the “Feedback” status
+      cron_overdue_regular_notification: Notification about overdue issues
+      cron_unassigned_regular_notification: Notification about unassigned issues
+      cron_working_regular_notification: Notification about the issues with the “In work” status
+    label:
+      assigner_groups: Assigner groups
+      base: InTouch
+      common: General settings
+      edit: Edit
+      email: E-mail
+      enable_module: InTouch module must be enabled for this project
+      issue_update: Instant notifications when changing the issue status/priority
+      reminder: Periodic notifications
+      settings: InTouch
+      settings_templates: Setting Templates
+      sidekiq_cron_jobs: Periodic tasks schedule
+      telegram: Telegram
+    mailer:
+      message:
+        hello: Hello
+        no_overdue_issues: There are no overdue issues for today.
+        overdue_issues: Overdue issues
+        without_due_date_issues: Due date is not specified
+      subject: Overdue issues as of %{date}
+    priorities:
+      alarm: Alarm
+      title: Priorities
+    project:
+      settings:
+        assigner_groups:
+          description: Notifications addressed to <strong>Assigner</strong>, will be sent only if the <strong>Assigner</strong> is a part of one of the groups mentioned below.
+        common:
+          copy: Copy
+          copy_settings_from_tab: Copy the values from tab
+        issue_update:
+          assigned_to:
+            description: Specify which notifications should be sent to the assigner of the issue
+          author:
+            description: Specify which notifications should be sent to the author of the issue
+          telegram_groups:
+            description: Specify which notifications and in which group should be sent
+          watchers:
+            description: Specify which notifications should be sent to the watchers of the issue
+        reminder:
+          feedback:
+            description: 'Every working day, during working hours, if the issue has not been updated for a number of hours specified in the general settings and is in the status <strong>Feedback</strong>, the following users will receive the messages.'
+            notice: 'Working days, working hours, status perceived as <strong>Feedback</strong> are specified in <a href="/settings/plugin/redmine_intouch" target="_blank"> plugin settings</a>.'
+          intervals:
+            description_1: The following table indicates the length of intervals of periodic notifications for different priorities.
+            description_2: Notifications will be sent only during working hours, with the exception of urgent issues.
+            example: For example
+            example_1: There is a issue with the priority "Normal" in the "Feedback" status, but it has not been updated for a long time. Every working day, at interval specified below, users marked on the "Feedback" tab will receive the notifications.
+            example_2: If the priority is changed to "Alarm" (and this priority in <a href="/settings/plugin/redmine_intouch" target="_blank">plugin settings</a> is marked as "Urgent"), notifications will be received at other period, as noted below. But it will not be counted – today is a working day or not, working hours or not. That is, the notifications for urgent issues are sent twenty-four seven.
+            hours_short: h.
+            notice: Working hours and priorities of urgent issues are specified in <a href="/settings/plugin/redmine_intouch" target="_blank">plugin settings</a>.
+            remind_with_interval: Notify <br> at interval
+          overdue:
+            description_1: Every working day, under schedule specified in <a href="/settings/plugin/redmine_intouch?tab=sidekiq_cron_jobs" target="_blank">plugin settings</a>, the following users will receive the messages about <strong>overdue</strong> issues as well as issues <strong>without a specified due date</strong>.
+            description_2: Each recipient will get one letter with a list of issues by e-mail. A series of messages on each issue will be sent in Telegram.
+            notice: Which days of the week to be considered as working ones should be specified in <a href="/settings/plugin/redmine_intouch" target="_blank">plugin settings</a>.
+          unassigned:
+            description: If the issue is not assigned to anybody or it is assigned to a group, notifications should be sent to the following recipients.
+            notice: Notifications are sent every working day during working hours, if the issue has not been updated for a number of hours specified in the general settings.
+          working:
+            description: Every working day, during working hours, if the issue has not been updated for a number of hours specified in the general settings and is in the status <strong>In work</strong>, the following users will receive the messages.
+            notice: Working days, working hours, status perceived as <strong>In work</strong> are specified in <a href="/settings/plugin/redmine_intouch" target="_blank">plugin settings</a>.
+        settings_no_selected_protocol: Any notification protocol is not selected. Select the desired protocols in <a href="/settings/plugin/redmine_intouch" target="_blank">plugin settings</a>.
+        settings_template_edit: Edit current
+        settings_template_label: Use the settings from the template
+    protocols:
+      email: E-mail
+      telegram: Telegram
+      title: Protocols
+    recipient:
+      assigned_to: Assigner
+      author: Author
+      telegram_groups: Telegram group chats
+      title: Recipient
+      watchers: Watchers
+    reminder:
+      feedback: Feedback
+      intervals: General Settings
+      overdue: Overdue/without a due date
+      title: Status
+      unassigned: Unassigned/assigned to the group
+      working: In work
+    settings:
+      common:
+        alarm:
+          description_1: Notification about the issues with the selected priorities will be sent twenty-four seven.
+          description_2: Notifications for other priorities will be sent only during working hours.
+          title: Urgent issues
+        protocols:
+          description: Select the protocols for sending messages that you want to use
+      sidekiq_cron_job:
+        default: Set a schedule by default
+        description: Issue statuses verification schedule is set in this table.
+        edit: Edit periodic task schedule
+        example: 'For example, if you set a verification for the "In work" status for every 5 minutes, then every 5 minutes:'
+        example_1: sample of issues with this status will be performed,
+        example_2: each issue will be checked for the need to send notifications at the moment,
+        example_3: recipients will receive notifications in accordance with intervals specified in the project settings.
+        init: Initialize periodic tasks
+        title: Periodic tasks
+    settings_templates:
+      edit: Editing setting template
+      new: New setting template
+    telegram_message:
+      issue:
+        inactive: Inactive %{hours} h
+        notice:
+          overdue: Take for work (overdue issue)
+          unassigned: Appoint the assigner
+          without_due_date: Set the due date
+        performer:
+          unassigned: unassigned
+        updated_by: Updated by
+        updated_details: Changes
+      recipient:
+        assignee: Assigner
+        author: Author
+        watcher: Watcher
+    work_days:
+      from: From
+      title: Working days
+      to: till
+  label_intouch_settings_template_edit: Edit
+  label_intouch_settings_template_new: New
+  label_intouch_settings_template_plural: Settings Templates
+  label_intouch_sidekiq_cron_job_plural: Periodic tasks
   name: Name

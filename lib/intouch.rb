@@ -3,6 +3,10 @@ module Intouch
   INTOUCH_COMMIT_HASH = `cd #{Rails.root}/plugins/redmine_intouch && git rev-parse --short HEAD`.chomp
   INTOUCH_SEND_NOTIFICATIONS_LOG = Logger.new(Rails.root.join('log/intouch', 'send-notifications.log'))
 
+  def self.set_locale
+    I18n.locale = Setting['default_language']
+  end
+
   def self.commit_hash
     INTOUCH_COMMIT_HASH
   end

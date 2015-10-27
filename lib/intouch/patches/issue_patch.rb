@@ -211,9 +211,9 @@ TEXT
 #{Intouch.issue_url(id)}
 TEXT
           message = "#{inactive_message}\n#{message}" if inactive?
-          message = "*** #{t('intouch.telegram_message.issue.notice.without_due_date')} *** \n#{message}" if without_due_date?
-          message = "*** #{t('intouch.telegram_message.issue.notice.overdue')} ***  \n#{message}" if overdue?
-          message = "*** #{t('intouch.telegram_message.issue.notice.unassigned')} *** \n#{message}" if unassigned? or assigned_to_group?
+          message = "*** #{I18n.t('intouch.telegram_message.issue.notice.without_due_date')} *** \n#{message}" if without_due_date?
+          message = "*** #{I18n.t('intouch.telegram_message.issue.notice.overdue')} ***  \n#{message}" if overdue?
+          message = "*** #{I18n.t('intouch.telegram_message.issue.notice.unassigned')} *** \n#{message}" if unassigned? or assigned_to_group?
           message
         end
 

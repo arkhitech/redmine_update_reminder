@@ -3,6 +3,7 @@ class TelegramSenderWorker
   TELEGRAM_SENDER_LOG = Logger.new(Rails.root.join('log/intouch', 'telegram-sender.log'))
 
   def perform(issue_id, state)
+    Intouch.set_locale
     issue = Issue.find issue_id
 
     message = issue.telegram_message

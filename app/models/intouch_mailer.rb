@@ -6,6 +6,7 @@ class IntouchMailer < ActionMailer::Base
   end
 
   def reminder_email(user, issue)
+    Intouch.set_locale
     @user = user
     @issue = issue
 
@@ -13,6 +14,7 @@ class IntouchMailer < ActionMailer::Base
   end
 
   def overdue_issues_email(user_id, issue_ids)
+    Intouch.set_locale
     @user = User.find user_id
     @issues = Issue.open.where(id: issue_ids).includes(:project)
 

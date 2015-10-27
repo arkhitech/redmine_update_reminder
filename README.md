@@ -1,167 +1,165 @@
 # redmine_intouch
 
-Плагин разработан [Centos-admin.ru](http://centos-admin.ru/).
+Plugin is designed by [Centos-admin.ru](http://centos-admin.ru/).
 
-Плагин предназначен для рассылки уведомлений пользователям Redmine через Telegram или E-mail.
+Plugin is designed to send notifications to Redmine’s users by Telegram or E-mail.
 
 ## Requirements
 
-Для работы палагина необходимо установить плагин [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq)
+To work with plugin, you must install a [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq) plugin
 
-[Запуск Sidekiq как демона](https://github.com/mperham/sidekiq/wiki/Deployment#daemonization)
+[Launch Sidekiq as daemon](https://github.com/mperham/sidekiq/wiki/Deployment#daemonization)
 
-* примеры конфигурационного файла и скрипта для `init.d` находятся в папке `tools`
+* Examples of configuration file and script for `init.d` are in the folder `tools`
 
-Для корректного отображения сообщений на вашем языке, в файле
-`redmine/config/application.rb` добавьте
+# Plugin Setting
 
-```ruby
-config.i18n.default_locale = :ru
-```
+## General settings
 
-# Настройка плагина
+The required notification protocols are specified in the "Protocols" section. Telegram and email are currently available.
 
-## Общие настройки
+The "Working days" section shall contain:
 
-В секции "Протоколы" указываются требуемые протоколы уведомлений. В настоящий момент доступны - telegram и email.
+* the start and the end of the working day
+* what days of the week are working days
 
-В секции "Рабочие дни" указываются:
-* время начала и завершения рабочего дня
-* какие дни недели являются рабочими
+In the "Urgent issues" section you should specify issue priorities, for which notifications should be **always** sent, regardless of time of day and day of the week.
 
-В секции "Срочные задачи" указываются приоритеты задач, для которых необходимо **всегда** отправлять уведомления,
-независимо от времени суток и дня недели
-
-Плагин содержит функционал периодических уведомлений о задачах "В работе" или со статусом "Обратная связь".
-Для правильной интерпретации этих статусов плагином, укажите их в соответствующих секциях.
+The plugin contains the functional of periodic notifications about the issues "In work" or with the "Feedback" status. To correctly interpret these statuses by plugin, specify them in the respective sections.
 
 ## Telegram
 
-На этой вкладке необходимо указать токен бота Telegram.
+On this tab, you must specify the Telegram bot token.
 
-### Создание бота Telegram
+### Creating a Telegram bot
 
-Бота необходимо зарегистрировать и получить его токен. Для этого в Telegram существует специальный бот — @BotFather.
+It is necessary to register a bot and get its token. For this purpose, there is a special bot in Telegram - @BotFather.
 
-Пишем ему `/start` и получаем список всех его команд.
-Первая и главная — `/newbot` — отправляем ему и бот просит придумать имя нашему новому боту. Единственное ограничение на имя —
-в конце оно должно оканчиваться на «bot».
-В случае успеха BotFather возвращает токен бота и ссылку для быстрого добавления бота в контакты,
-иначе придется поломать голову над именем.
+We should write for him `/start` and get a list of all its commands.
+The first and foremost - `/newbot`  - we send to it and the bot asks to come up with the name for our new bot.
+The only restriction on the name - it must be ended with “bot”.
+If successful, @BotFather returns a bot token and link to quickly add a bot to contacts;
+otherwise you'll have to break your head over the name.
 
-Полученный токен нужно ввести на странце настройки плагина.
+The resulting token must be entered in the plugin settings page.
 
-### Запуск бота
+### Bot launch
 
-Перед запуском бота на странице настройки плагина нужно указать:
+Before launching the bot, you must specify in the plugin settings page:
 
-* токен бота Telegram (как его получить описано ниже)
-* рабочее время - в это время отправляются уведомления по не срочным задачам
-* указать какие приоритеты считать срочными
-* указать какие статусы считать *в работе* и *обратной связью*
+* Telegram’s bot token (how to get it is described below)
+* working time - notifications about non-urgent issues are sent during this time
+* specify what priorities should be considered as urgent ones
+* specify what statuses should be considered _in work_ and _feedback_
 
-После этого необходимо запустить бота командой:
+After that you need to launch a bot by command:
 
 ```shell
 bundle exec rake intouch:telegram:bot PID_DIR='/pid/dir'
 ```
 
-* пример скрипта для `init.d` в папке `tools`
+Example of the script for `init.d` in the `tools` folder.
 
-Этот процесс добавляет пользователей Telegram в Redmine, а также создает в Redmine группы Telegram, в которые добавили бота.
+This process adds Telegram’s users in Redmine, as well as creates the Telegram groups in Redmine,
+in which the bot was added.
 
-### Добавление аккаунта Telegram к пользователю
+### Adding a Telegram account to the user
 
-После того как бот запущен и пользователь поприветствовали его командой `/start`,
-на страничке редактированию пользователя, можно выбрать соответствующий ему аккаунт Telegram.
+Once the bot was launched and the user welcomed it by `/start` command,
+it is possible to select the corresponding Telegram account for the user on the user’s editing page.
 
-#### Если бота обновили
+#### If the bot has been changed
 
-Если у вас поменялся бот, то каждому пользователю нужно с ним лично поздороваться.
+If you have changed the bot, then each user needs to greet it personally.
 
-То есть через поиск найти @YourTelegramBot и написать ему `/start`
+That is, to find @YourTelegramBot through the search and to write to it `/start`.
 
-### Добавление группы Telegram
+### Adding a Telegram Group
 
-Группы добавятся в Redmine автоматически, если в них будет добавлен бот.
+The groups will be added automatically in Redmine, if the boat will be added to them.
 
-Название группы сохраняется сразу при добавлении. Если, какое-то время спустя, вы изменили название группы и хотите,
-чтобы в Redmine название также обновилось - выполните команду `/rename` в групповом чате.
+The name of the group is saved right away when adding.
+If some time later you change the name of the group and want to update the name in Redmine,
+perform the command `/rename` in the group chat.
 
-## Шаблоны настроек
+## Setting Templates
 
-Шаблоны настроек позволяют один раз задать все требуемые настройки для проектов, а потом в каждом проекте выбрать нужный шаблон.
-Подробней о настройках плагину внутри проекта читайте ниже.
-
-
-## Расписание регулярных уведомлений
-
-В плагине предусмотрены
-
-* Уведомления о задачах со статусом "В работе"
-* Уведомления о задачах со статусом "Обратная связь"
-* Уведомления о не назначенных задачах
-* Уведомления о просроченных задачах
-
-Периодичность и получатели этих уведомлений, настраиваются в каждом проекте индивидуально, либо с использованием шаблонов.
-
-Расписание регулярных уведомлений настраивается на странице настройки плагина, на вкладке **Расписание периодических задач**.
-
-При первой установке плагина, нужно инициализировать периодические задачи.
-
-После этого можно настроить удобное вам расписание периодических уведомлений.
-
-Расписание настраивается используя синтаксис CRON.
-
-Важно отметить, что на этой вкладке настраивается то, как часто проверять наличие задач, по которым требуется отправить уведомления.
-Периодичность самих уведомлений указывается в каждом проекте индивидуально, либо с использованием шаблонов.
+Setting templates allow you to specify all the required settings for the project only one time
+and then to select the desired template in each project.
+Read below for more information on the plugin settings within the project.
 
 
-# Настройка модуля внутри проекта
+## Regular Notifications Schedule
 
-В настройках проекта на вкладке "Модули" нужно выбрать модуль Intouch.
-В результате в настройках появится вкладка "Intouch".
+The plugin is provided with:
 
-На этой вкладке есть три секции:
+* Notification about issues with the status "In work"
+* Notification about issues with the status "Feedback"
+* Notifications about unassigned issues
+* Notifications about overdue issues
 
-* Мгновенные уведомления при смене статуса/приоритета задачи
-* Периодические уведомления
-* Группы исполнителей
+The frequency and recipients of these notifications are set for each project individually or using templates.
 
-## Мгновенные уведомления при смене статуса/приоритета задачи
+Regular notifications schedule regular is set on the plugin settings page, on the **Periodic tasks schedule** tab.
 
-В этой секции настраиваются мгновенные уведомления для следующих получателей:
+When you set the plugin for the first time, you need to initialize the periodic tasks.
 
-* автор
-* исполнитель
-* наблюдатели за задачей
-* группы Telegram
+You can then set a periodic notifications schedule convenient to you.
 
-**Важное замечание: для того, чтобы пользователь Telegram получал сообщения,
-нужно чтобы он предварительно написал команду `/start` боту**
+Schedule is set using the CRON syntax.
 
-## Периодические уведомления
+It is important to note that on this tab you should set how often to check for availability of issues on which
+you want to send the notifications.
+The frequency of the notifications themselves is indicated in each project individually or using templates.
 
-### Общие настройки
+# Setting the module within the project
 
-В общих настройках указываются интервалы периодических уведомлений для различных приоритетов.
+You must select the Intouch module in the project settings on the "Modules" tab.
+As a result, the "Intouch" tab appears in the settings.
 
-### В работе / Обратная связь
+This tab includes three sections:
 
-На этих вкладках указываются получатели периодических уведомлений о задачах со статусами "В работе" и "Обратная связь"
+* Instant notifications when changing the issue status/priority
+* Periodic notifications
+* Assigner groups
 
-### Не назначенные / Назначенные на группу
+## Instant notifications when changing the issue status/priority
 
-На этой вкладке указываются получатели периодических уведомлений о задачах
-* без назначенного исполнителя
-* назначенные на группу
+In this section, instant notifications are set for the following recipients:
 
-### Просроченные / Без даты завершения
+* Author
+* Assigner
+* Task watchers
+* Telegram groups
 
-На этой вкладке указываются получатели периодических уведомлений о задачах
-* дата завершения которых находится в прошлом
-* с неуказанной датой завершения
+**Important note: In order that the Telegram’s user can receive messages,
+the user must preliminarily write the `/start` command to the bot**
 
-# Автор плагина
+## Periodic notifications
 
-Плагин разработан [Centos-admin.ru](http://centos-admin.ru/).
+### General settings
+
+The intervals of periodic notifications for different priorities are specified in general settings.
+
+### In work / Feedback
+
+The recipients of periodic notifications about the issues with the statuses
+"In work" and "Feedback" are specified on these tabs.
+
+### Unassigned / Assigned to the group
+
+On this tab, one should specify recipients of periodic notifications about the issues
+
+* without the designated assigner
+* assigned to the group
+
+### Overdue / Without a due date
+
+On this tab, one should specify recipients of periodic notifications about the issues
+
+* the due date of which is in the past
+* with an unspecified due date
+
+# Author of the Plugin
+
+The plugin is designed by [Centos-admin.ru](http://centos-admin.ru/).

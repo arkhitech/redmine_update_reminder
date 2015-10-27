@@ -3,6 +3,7 @@ class EmailLiveSenderWorker
   EMAIL_LIVE_SENDER_LOG = Logger.new(Rails.root.join('log/intouch', 'email-live-sender.log'))
 
   def perform(issue_id)
+    Intouch.set_locale
     issue = Issue.find issue_id
 
     issue.intouch_live_recipients('email').each do |user|
