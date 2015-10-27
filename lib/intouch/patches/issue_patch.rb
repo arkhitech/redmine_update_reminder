@@ -179,7 +179,7 @@ module Intouch
             last_journal = journals.last
             performer_journal = last_journal.details.find_by(prop_key: 'assigned_to_id')
             if performer_journal.old_value
-              old_performer = User.find performer_journal.old_value
+              old_performer = Principal.find performer_journal.old_value
               "#{old_performer.name} -> #{performer}"
             else
               "#{I18n.t('intouch.telegram_message.issue.performer.unassigned')} -> #{performer}"
@@ -238,12 +238,17 @@ TEXT
 
         def send_new_message
           if project.module_enabled?(:intouch) and project.active? and !closed?
-            if Intouch.active_protocols.include? 'telegram'
-              IntouchSender.send_live_telegram_message(id)
-              IntouchSender.send_live_telegram_group_message(id, status_id, priority_id)
-            end
+            if id.present?
+              if Intouch.active_protocols.include? 'telegram'
+                IntouchSender.send_live_telegram_message(id)
+                IntouchSender.send_live_telegram_group_message(id, status_id, priority_id)
+              end
 
-            IntouchSender.send_live_email_message(id) if Intouch.active_protocols.include? 'email'
+              IntouchSender.send_live_email_message(id) if Intouch.active_protocols.include? 'email'
+            else
+              logger = Logger.new(Rails.root.join('log/intouch', 'issue-new.log'))
+              logger.debug attributes
+            end
           end
         end
 

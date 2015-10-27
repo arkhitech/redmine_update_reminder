@@ -2,6 +2,8 @@ class TelegramGroupSenderWorker
   include Sidekiq::Worker
 
   def perform(issue_id, group_ids, live = false)
+    return unless group_ids.present?
+
     Intouch.set_locale
     issue = Issue.find issue_id
 
