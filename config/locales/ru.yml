@@ -122,9 +122,9 @@ ru:
         updated_by: "Обновил"
         updated_details: "Изменения"
       recipient:
-        assignee: "Исполнителю"
+        assigned_to: "Исполнителю"
         author: "Автору"
-        watcher: "Наблюдателю"
+        watchers: "Наблюдателю"
     work_days:
       from: "С"
       title: "Рабочие дни"

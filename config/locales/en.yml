@@ -122,9 +122,9 @@ en:
         updated_by: Updated by
         updated_details: Changes
       recipient:
-        assignee: Assigner
+        assigned_to: Assigner
         author: Author
-        watcher: Watcher
+        watchers: Watcher
     work_days:
       from: From
       title: Working days

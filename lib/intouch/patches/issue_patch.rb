@@ -85,7 +85,7 @@ module Intouch
         def live_recipient_ids(protocol)
           settings = project.send("active_#{protocol}_settings")
           if settings.present?
-            recipients = settings.select { |k, v| %w(author assigned_to watchers user_groups).include? k }
+            recipients = settings.select { |k, v| %w(author assigned_to watchers).include? k }
 
             user_ids = []
             recipients.each_pair do |key, value|

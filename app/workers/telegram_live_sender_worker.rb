@@ -16,15 +16,25 @@ class TelegramLiveSenderWorker
       telegram_user = user.telegram_user
       next unless telegram_user.present? and telegram_user.active?
 
-      message = if issue.assigned_to_id == user.id
-                  "#{I18n.t('intouch.telegram_message.recipient.assignee')}\n#{base_message}"
-                elsif issue.watchers.pluck(:user_id).include? user.id
-                  "#{I18n.t('intouch.telegram_message.recipient.watcher')}\n#{base_message}"
-                elsif issue.author_id == user.id
-                  "#{I18n.t('intouch.telegram_message.recipient.author')}\n#{base_message}"
-                else
-                  base_message
-                end
+      roles_in_issue = []
+
+      roles_in_issue << 'assigned_to' if issue.assigned_to_id == user.id
+      roles_in_issue << 'watchers' if issue.watchers.pluck(:user_id).include? user.id
+      roles_in_issue << 'author' if issue.author_id == user.id
+
+      project = issue.project
+      settings = project.active_telegram_settings
+
+      recipients = settings.select do |key, value|
+        %w(author assigned_to watchers).include?(key) and
+            value.try(:[], issue.status_id.to_s).try(:include?, issue.priority_id.to_s)
+      end.keys
+
+      prefix = (roles_in_issue & recipients).map do |role|
+        I18n.t("intouch.telegram_message.recipient.#{role}")
+      end
+
+      message = prefix.present? ? "#{prefix}\n#{base_message}" : base_message
 
       begin
         bot.send_message(chat_id: telegram_user.tid, text: message, disable_web_page_preview: true)
