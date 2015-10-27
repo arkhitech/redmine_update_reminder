@@ -226,7 +226,7 @@ TEXT
         private
 
         def check_alarm
-          if project.module_enabled?(:intouch) and project.active? and !closed?
+          if !new_record? and project.module_enabled?(:intouch) and project.active? and !closed?
             if alarm? or Intouch.work_time?
               if Intouch.active_protocols.include? 'telegram'
 
@@ -244,17 +244,12 @@ TEXT
 
         def send_new_message
           if project.module_enabled?(:intouch) and project.active? and !closed?
-            if id.present?
-              if Intouch.active_protocols.include? 'telegram'
-                IntouchSender.send_live_telegram_message(id)
-                IntouchSender.send_live_telegram_group_message(id, status_id, priority_id)
-              end
-
-              IntouchSender.send_live_email_message(id) if Intouch.active_protocols.include? 'email'
-            else
-              logger = Logger.new(Rails.root.join('log/intouch', 'issue-new.log'))
-              logger.debug attributes
+            if Intouch.active_protocols.include? 'telegram'
+              IntouchSender.send_live_telegram_message(id)
+              IntouchSender.send_live_telegram_group_message(id, status_id, priority_id)
             end
+
+            IntouchSender.send_live_email_message(id) if Intouch.active_protocols.include? 'email'
           end
         end
 
