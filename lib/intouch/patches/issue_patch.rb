@@ -187,7 +187,7 @@ module Intouch
               "#{I18n.t('intouch.telegram_message.issue.performer.unassigned')} -> #{performer}"
             end
           else
-            status.name
+            assigned_to.name
           end
         end
 
