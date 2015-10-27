@@ -28,7 +28,7 @@ module Intouch
 
         def assigners_updated_on
           assigners_updated_on = journals.where(user_id: project.assigner_ids).last.try :created_on
-          updated_on unless assigners_updated_on.present?
+          assigners_updated_on.present? ? assigners_updated_on : updated_on
         end
 
         def alarm?
@@ -238,7 +238,6 @@ TEXT
 
         def send_new_message
           if project.module_enabled?(:intouch) and project.active? and !closed?
-
             if Intouch.active_protocols.include? 'telegram'
               IntouchSender.send_live_telegram_message(id)
               IntouchSender.send_live_telegram_group_message(id, status_id, priority_id)

@@ -51,7 +51,7 @@ module Intouch
 
               if active and
                   interval.present? and
-                  (issue.assigners_updated_on.nil? or issue.assigners_updated_on < interval.to_i.hours.ago) and
+                  issue.assigners_updated_on < interval.to_i.hours.ago and
                   (last_notification.nil? or last_notification < interval.to_i.hours.ago)
 
                 if active_protocols.include? 'email'
