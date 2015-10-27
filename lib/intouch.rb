@@ -104,7 +104,7 @@ module Intouch
       end
 
       user_issues_ids.each do |user_id, issue_ids|
-        IntouchMailer.overdue_issues_email(user_id, issue_ids).deliver
+        IntouchMailer.overdue_issues_email(user_id, issue_ids).deliver if user_id.present?
       end
     end
   end

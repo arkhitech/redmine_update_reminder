@@ -1,7 +1,12 @@
 <% html_title "#{t('intouch.settings.sidekiq_cron_job.edit')} - Redmine Intouch plugin" %>
 
 <h2>
-  <%= link_to l(:label_intouch_sidekiq_cron_job_plural), controller: 'sidekiq_cron_jobs', action: 'index' %> &#187;
+  <%= link_to t('label_module_plural'), '/admin/plugins' %>
+  &#187;
+  <%= link_to 'Redmine Intouch plugin', '/settings/plugin/redmine_intouch' %>
+  &#187;
+  <%= link_to l(:label_intouch_sidekiq_cron_job_plural),
+              { action: "plugin", id: "redmine_intouch", controller: "settings", tab: 'sidekiq_cron_jobs'} %> &#187;
   <%= t("intouch.cron.#{@sidekiq_cron_job.name}") %>
 </h2>
 

@@ -1,8 +1,9 @@
 <% html_title "#{t('intouch.settings_templates.new')} - Redmine Intouch plugin" %>
 
 <h2>
-  <%= link_to l(:label_intouch_settings_template_plural),
-              { action: "plugin", id: "redmine_intouch", controller: "settings", tab: 'settings_templates'} %>
+  <%= link_to t('label_module_plural'), '/admin/plugins' %>
+  &#187;
+  <%= link_to 'Redmine Intouch plugin', '/settings/plugin/redmine_intouch' %>
   &#187;
   <%= link_to l(:label_intouch_settings_template_plural),
               { action: "plugin", id: "redmine_intouch", controller: "settings", tab: 'settings_templates'} %>

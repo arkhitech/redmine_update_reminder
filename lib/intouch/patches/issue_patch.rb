@@ -151,7 +151,11 @@ module Intouch
         end
 
         def updated_details_text
-          updated_details.map {|field| I18n.t(('field_' + field).to_sym)}.join(', ') if updated_details.present?
+          if updated_details.present?
+            (updated_details - %w(priority status assigned_to)).map do |field|
+              I18n.t(('field_' + field).to_sym)
+            end.join(', ')
+          end
         end
 
         def updated_priority_text
