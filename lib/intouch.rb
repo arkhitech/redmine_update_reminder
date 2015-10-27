@@ -67,6 +67,7 @@ module Intouch
 
                 issue.last_notification = {} unless issue.last_notification.present?
                 issue.last_notification[state] = Time.now
+                issue.save
               end
             rescue NoMethodError => e
               INTOUCH_SEND_NOTIFICATIONS_LOG.error "#{e.class}: #{e.message}"
