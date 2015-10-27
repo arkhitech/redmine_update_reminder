@@ -17,10 +17,10 @@ class TelegramSenderWorker
 
       message = if issue.assigned_to_id == user.id
                   "#{I18n.t('intouch.telegram_message.recipient.assignee')}\n#{base_message}"
-                elsif issue.author_id == user.id
-                  "#{I18n.t('intouch.telegram_message.recipient.author')}\n#{base_message}"
                 elsif issue.watchers.pluck(:user_id).include? user.id
                   "#{I18n.t('intouch.telegram_message.recipient.watcher')}\n#{base_message}"
+                elsif issue.author_id == user.id
+                  "#{I18n.t('intouch.telegram_message.recipient.author')}\n#{base_message}"
                 else
                   base_message
                 end
