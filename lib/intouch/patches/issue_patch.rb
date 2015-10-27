@@ -73,6 +73,8 @@ module Intouch
                   end
                 when 'watchers'
                   watchers.pluck(:user_id)
+                when 'user_groups'
+                  Group.where(id: value).map(&:user_ids).flatten if value.present?
                 else
                   nil
               end

@@ -4,11 +4,54 @@
     <%= t('intouch.project.settings.reminder.overdue.description_2') %><br>
     <%= raw t('intouch.project.settings.reminder.overdue.notice') %>
   </p>
+
   <div>
     <%= t('intouch.project.settings.common.copy_settings_from_tab') %>
-    <%= select_tag 'r', options_for_select(%w(working feedback unassigned).collect{ |r| [l("intouch.reminder.#{r}"), r] }) %>
+    <%= select_tag 'r', options_for_select(%w(working feedback unassigned).collect { |r| [l("intouch.reminder.#{r}"), r] }) %>
     <%= button_tag t('intouch.project.settings.common.copy'), class: 'copySettingsFromOtherTab' %>
   </div>
   <br>
-  <%= render partial: 'projects/settings/intouch/reminder/common', locals: {status: 'overdue', settings_source: settings_source } %>
+  <table>
+    <thead>
+    <tr>
+      <% (Intouch.available_recipients + ['user_groups']).each do |recipient| %>
+        <th><%= l "intouch.recipient.#{recipient}" %></th>
+      <% end %>
+    </tr>
+    </thead>
+
+    <tr>
+      <% %w(author assigned_to watchers).each do |receiver| %>
+        <td>
+          <% Intouch.active_protocols.each do |protocol| %>
+            <%= check_box_tag "intouch_settings[#{protocol}_settings][overdue][#{receiver}]", '1',
+                              settings_source.send("#{protocol}_settings").try(:[], 'overdue').try(:[], receiver),
+                              class: "#{protocol}_#{receiver}" %>
+            <%= label_tag l "intouch.protocols.#{protocol}" %><br>
+          <% end %>
+        </td>
+      <% end %>
+      <% if Intouch.available_recipients.include? 'telegram_groups' %>
+        <td>
+          <% TelegramGroupChat.find_each do |group| %>
+            <%= check_box_tag "intouch_settings[telegram_settings][overdue][groups][]", group.id.to_s,
+                              settings_source.telegram_settings.try(:[], 'overdue').
+                                  try(:[], 'groups').try(:include?, group.id.to_s),
+                              class: "groups_#{group.id}" %>
+            <%= label_tag group.title %><br>
+          <% end %>
+        </td>
+      <% end %>
+      <td>
+        <% Group.find_each do |group| %>
+          <%= check_box_tag "intouch_settings[email_settings][overdue][user_groups][]", group.id.to_s,
+                            settings_source.email_settings.try(:[], 'overdue').
+                                try(:[], 'user_groups').try(:include?, group.id.to_s),
+                            class: "user_groups_#{group.id}" %>
+          <%= label_tag group.name %><br>
+        <% end %>
+      </td>
+    </tr>
+
+  </table>
 </div>

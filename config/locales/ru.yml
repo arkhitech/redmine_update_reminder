@@ -80,6 +80,7 @@ ru:
       author: "Автор"
       telegram_groups: "Групповые чаты Telegram"
       title: "Получатель"
+      user_groups: 'Группы пользователей (только e-mail)'
       watchers: "Наблюдатели"
     reminder:
       feedback: "Обратная связь"

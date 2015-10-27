@@ -80,6 +80,7 @@ en:
       author: Author
       telegram_groups: Telegram group chats
       title: Recipient
+      user_groups: User groups (only e-mail)
       watchers: Watchers
     reminder:
       feedback: Feedback

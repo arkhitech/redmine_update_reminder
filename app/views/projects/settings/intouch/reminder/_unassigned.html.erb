@@ -33,7 +33,7 @@
       <% if Intouch.available_recipients_without('assigned_to').include? 'telegram_groups' %>
         <td>
           <% TelegramGroupChat.find_each do |group| %>
-            <%= check_box_tag "intouch_settings[telegram_settings][unassigned][groups][]", '1',
+            <%= check_box_tag "intouch_settings[telegram_settings][unassigned][groups][]", group.id.to_s,
                               settings_source.telegram_settings.try(:[], 'unassigned').
                                   try(:[], 'groups').try(:include?, group.id.to_s),
                               class: "groups_#{group.id}" %>
