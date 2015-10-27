@@ -10,4 +10,12 @@ class TelegramUser < ActiveRecord::Base
       "#{first_name} #{last_name}"
     end
   end
+
+  def activate
+    update(active: true) unless active?
+  end
+
+  def deactivate
+    update(active: false) if active?
+  end
 end

@@ -14,7 +14,7 @@ class TelegramLiveSenderWorker
     issue.intouch_live_recipients('telegram').each do |user|
 
       telegram_user = user.telegram_user
-      next unless telegram_user.present?
+      next unless telegram_user.present? and telegram_user.active?
 
       message = if issue.assigned_to_id == user.id
                   "#{I18n.t('intouch.telegram_message.recipient.assignee')}\n#{message}"
@@ -29,10 +29,15 @@ class TelegramLiveSenderWorker
       begin
         bot.send_message(chat_id: telegram_user.tid, text: message, disable_web_page_preview: true)
       rescue Telegrammer::Errors::BadRequestError => e
-        TELEGRAM_LIVE_SENDER_LOG.error "#{e.class}: #{e.message}"
-        TELEGRAM_LIVE_SENDER_LOG.debug "#{issue.inspect}"
-        TELEGRAM_LIVE_SENDER_LOG.debug "#{user.inspect}"
-        TELEGRAM_LIVE_SENDER_LOG.debug "#{telegram_user.inspect}"
+        if e.message.include? 'Bot was kicked'
+          telegram_user.deactivate
+          TELEGRAM_LIVE_SENDER_LOG.info "Bot was kicked from chat. Deactivate #{telegram_user.inspect}"
+        else
+          TELEGRAM_LIVE_SENDER_LOG.error "#{e.class}: #{e.message}"
+          TELEGRAM_LIVE_SENDER_LOG.debug "#{issue.inspect}"
+          TELEGRAM_LIVE_SENDER_LOG.debug "#{user.inspect}"
+          TELEGRAM_LIVE_SENDER_LOG.debug "#{telegram_user.inspect}"
+        end
       end
     end
   rescue ActiveRecord::RecordNotFound => e

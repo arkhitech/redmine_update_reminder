@@ -3,7 +3,7 @@ namespace :intouch do
     # bundle exec rake intouch:telegram:bot PID_DIR='/tmp'
     desc "Runs telegram bot process (options: PID_DIR='/pid/dir')"
     task :bot => :environment do
-      LOG = Logger.new(Rails.root.join('log', 'telegram-bot.log'))
+      LOG = Rails.env.production? ? Logger.new(Rails.root.join('log', 'telegram-bot.log')) : Logger.new(STDOUT)
 
       Process.daemon(true, true) if Rails.env.production?
 
@@ -67,7 +67,12 @@ namespace :intouch do
             bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! I'm added your profile for Redmine notifications.")
             LOG.info "#{bot_name}: new user #{user.first_name} #{user.last_name} @#{user.username} added!"
           else
-            bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! You are already connected for Redmine notifications.")
+            if t_user.active?
+              bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! You are already connected for Redmine notifications.")
+            else
+              t_user.activate
+              bot.send_message(chat_id: message.chat.id, text: "Hello again, #{user.first_name}! I'm activate your profile for Redmine notifications.")
+            end
           end
         elsif message.chat.id < 0
           chat = message.chat
