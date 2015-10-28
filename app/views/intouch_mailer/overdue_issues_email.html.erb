@@ -4,14 +4,16 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <%= t 'intouch.mailer.message.hello' %>, <%= @user.name %>!
+    <p><%= t 'intouch.mailer.message.hello' %>, <%= @user.name %>!</p>
+
     <% if @issues.present? %>
       <% if @overdue_issues.present? %>
         <h2><%= t 'intouch.mailer.message.overdue_issues' %></h2>
         <ul>
           <% @overdue_issues.each do |issue| %>
+            <% prefix = issue.assigned_to.class == Group ? "#{issue.assigned_to.name}: " : '' %>
             <li>
-              <%= link_to issue.to_s, issue_url(issue) %>
+              <%= link_to "#{prefix}[#{format_date(issue.due_date)}] #{issue.to_s}", issue_url(issue) %>
             </li>
           <% end %>
         </ul>
@@ -20,8 +22,9 @@
         <h2><%= t 'intouch.mailer.message.without_due_date_issues' %></h2>
         <ul>
           <% @without_due_date_issues.each do |issue| %>
+            <% prefix = issue.assigned_to.class == Group ? "#{issue.assigned_to.name}: " : '' %>
             <li>
-              <%= link_to issue.to_s, issue_url(issue) %>
+              <%= link_to "#{prefix}#{issue.to_s}", issue_url(issue) %>
             </li>
           <% end %>
         </ul>

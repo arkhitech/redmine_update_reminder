@@ -71,6 +71,7 @@ ru:
         settings_no_selected_protocol: Ни один протокол уведомлений не выбран. Выберите требуемые протоколы в <a href="/settings/plugin/redmine_intouch" target="_blank">настройках плагина</a>.
         settings_template_edit: "Редактировать текущий"
         settings_template_label: "Использовать настройки из шаблона"
+        plugin_settings: Глобальные настройки модуля
     protocols:
       email: E-mail
       telegram: Telegram

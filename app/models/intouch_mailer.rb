@@ -1,5 +1,12 @@
 class IntouchMailer < ActionMailer::Base
-  default from: Setting.mail_from
+  layout 'mailer'
+  helper :application
+  helper :issues
+  helper :custom_fields
+
+  include Redmine::I18n
+
+  default from: "#{Setting.app_title} <#{Setting.mail_from}>"
 
   def self.default_url_options
     Mailer.default_url_options
@@ -21,6 +28,7 @@ class IntouchMailer < ActionMailer::Base
     @overdue_issues = @issues.where('due_date < ?', Date.today)
     @without_due_date_issues = @issues.where(due_date: nil).where('created_on < ?', 1.day.ago)
 
-    mail to: @user.mail, subject: t('intouch.mailer.subject', date: Date.today.to_s)
+    mail to: @user.mail,
+         subject: t('intouch.mailer.subject', date: format_date(Date.today))
   end
 end
