@@ -12,6 +12,7 @@ class TelegramSenderWorker
     bot = Telegrammer::Bot.new(token)
 
     issue.intouch_recipients('telegram', state).each do |user|
+
       telegram_user = user.telegram_user
       next unless telegram_user.present? and telegram_user.active?
 
@@ -31,7 +32,7 @@ class TelegramSenderWorker
 
         prefix = (roles_in_issue & recipients).map do |role|
           I18n.t("intouch.telegram_message.recipient.#{role}")
-        end
+        end.join(', ')
       else
         prefix = nil
       end

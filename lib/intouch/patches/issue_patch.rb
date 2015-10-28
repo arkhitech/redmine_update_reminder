@@ -203,7 +203,7 @@ module Intouch
 #{project.name}: #{subject}
 #{Intouch.issue_url(id)}
 TEXT
-          message = "#{I18n.t('intouch.telegram_message.issue.updated_details')}: #{updated_details_text}\n#{message}" if updated_details.present?
+          message = "#{I18n.t('intouch.telegram_message.issue.updated_details')}: #{updated_details_text}\n#{message}" if updated_details_text.present?
           message = "#{I18n.t('intouch.telegram_message.issue.updated_by')}: #{updated_by}\n#{message}" if updated_by.present?
           message
         end

@@ -25,13 +25,17 @@ class TelegramLiveSenderWorker
       project = issue.project
       settings = project.active_telegram_settings
 
-      recipients = settings.select do |key, value|
-        %w(author assigned_to watchers).include?(key) and
-            value.try(:[], issue.status_id.to_s).try(:include?, issue.priority_id.to_s)
-      end.keys
+      if settings.present?
+        recipients = settings.select do |key, value|
+          %w(author assigned_to watchers).include?(key) and
+              value.try(:[], issue.status_id.to_s).try(:include?, issue.priority_id.to_s)
+        end.keys
 
-      prefix = (roles_in_issue & recipients).map do |role|
-        I18n.t("intouch.telegram_message.recipient.#{role}")
+        prefix = (roles_in_issue & recipients).map do |role|
+          I18n.t("intouch.telegram_message.recipient.#{role}")
+        end.join(', ')
+      else
+        prefix = nil
       end
 
       message = prefix.present? ? "#{prefix}\n#{base_message}" : base_message
