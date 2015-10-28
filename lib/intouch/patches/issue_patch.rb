@@ -196,24 +196,29 @@ module Intouch
         end
 
         def telegram_live_message
-          message = <<TEXT
+          message = "#{project.name}: #{subject}"
+
+          message += "\n#{I18n.t('intouch.telegram_message.issue.updated_by')}: #{updated_by}" if updated_by.present?
+
+          message += "\n#{I18n.t('field_assigned_to')}: #{updated_performer_text}"
+
+          message += "\n#{I18n.t('intouch.telegram_message.issue.updated_details')}: #{updated_details_text}" if updated_details_text.present?
+
+          message += <<TEXT
+
 #{I18n.t('field_priority')}: #{updated_priority_text}
 #{I18n.t('field_status')}: #{updated_status_text}
-#{I18n.t('field_assigned_to')}: #{updated_performer_text}
-#{project.name}: #{subject}
 #{Intouch.issue_url(id)}
 TEXT
-          message = "#{I18n.t('intouch.telegram_message.issue.updated_details')}: #{updated_details_text}\n#{message}" if updated_details_text.present?
-          message = "#{I18n.t('intouch.telegram_message.issue.updated_by')}: #{updated_by}\n#{message}" if updated_by.present?
           message
         end
 
         def telegram_message
           message = <<TEXT
+#{project.name}: #{subject}
+#{I18n.t('field_assigned_to')}: #{performer}
 #{I18n.t('field_priority')}: #{priority.try :name}
 #{I18n.t('field_status')}: #{status.try :name}
-#{I18n.t('field_assigned_to')}: #{performer}
-#{project.name}: #{subject}
 #{Intouch.issue_url(id)}
 TEXT
           message = "#{inactive_message}\n#{message}" if inactive?
