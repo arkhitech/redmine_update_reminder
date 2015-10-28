@@ -113,7 +113,7 @@ ru:
       new: "Новый шаблон настроек"
     telegram_message:
       issue:
-        inactive: "Бездействие %{hours} ч."
+        inactive: "Напишите статус в задаче (бездействие %{hours} ч)"
         notice:
           overdue: "Возьмите в работу (просроченная задача)"
           unassigned: "Назначьте исполнителя"

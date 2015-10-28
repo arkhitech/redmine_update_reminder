@@ -113,7 +113,7 @@ en:
       new: New setting template
     telegram_message:
       issue:
-        inactive: Inactive %{hours} h
+        inactive: Please update issue status (inactive %{hours} h)
         notice:
           overdue: Take for work (overdue issue)
           unassigned: Appoint the assigner
