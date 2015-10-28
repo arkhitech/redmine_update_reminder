@@ -164,41 +164,29 @@ module Intouch
           end
         end
 
-        def updated_priority_text
-          if updated_details.include?('priority')
-            last_journal = journals.last
-            priority_journal = last_journal.details.find_by(prop_key: 'priority_id')
-            old_priority = IssuePriority.find priority_journal.old_value
-            "#{old_priority.name} -> #{priority.name}"
+        def updated_performer_text
+          last_journal = journals.last
+          performer_journal = last_journal.details.find_by(prop_key: 'assigned_to_id')
+          if performer_journal.old_value
+            old_performer = Principal.find performer_journal.old_value
+            "#{old_performer.name} -> #{performer}"
           else
-            priority.name
+            "#{I18n.t('intouch.telegram_message.issue.performer.unassigned')} -> #{performer}"
           end
+        end
+
+        def updated_priority_text
+          last_journal = journals.last
+          priority_journal = last_journal.details.find_by(prop_key: 'priority_id')
+          old_priority = IssuePriority.find priority_journal.old_value
+          "#{old_priority.name} -> #{priority.name}"
         end
 
         def updated_status_text
-          if updated_details.include?('status')
-            last_journal = journals.last
-            status_journal = last_journal.details.find_by(prop_key: 'status_id')
-            old_status = IssueStatus.find status_journal.old_value
-            "#{old_status.name} -> #{status.name}"
-          else
-            status.name
-          end
-        end
-
-        def updated_performer_text
-          if updated_details.include?('assigned_to')
-            last_journal = journals.last
-            performer_journal = last_journal.details.find_by(prop_key: 'assigned_to_id')
-            if performer_journal.old_value
-              old_performer = Principal.find performer_journal.old_value
-              "#{old_performer.name} -> #{performer}"
-            else
-              "#{I18n.t('intouch.telegram_message.issue.performer.unassigned')} -> #{performer}"
-            end
-          else
-            assigned_to.name
-          end
+          last_journal = journals.last
+          status_journal = last_journal.details.find_by(prop_key: 'status_id')
+          old_status = IssueStatus.find status_journal.old_value
+          "#{old_status.name} -> #{status.name}"
         end
 
         def telegram_live_message
@@ -206,16 +194,18 @@ module Intouch
 
           message += "\n#{I18n.t('intouch.telegram_message.issue.updated_by')}: #{updated_by}" if updated_by.present?
 
-          message += "\n#{I18n.t('field_assigned_to')}: #{updated_performer_text}"
+          message += "\n#{I18n.t('field_assigned_to')}: #{updated_performer_text}" if updated_details.include?('assigned_to')
+          message += "\n#{I18n.t('field_priority')}: #{updated_priority_text}" if updated_details.include?('priority')
+          message += "\n#{I18n.t('field_status')}: #{updated_status_text}" if updated_details.include?('status')
 
           message += "\n#{I18n.t('intouch.telegram_message.issue.updated_details')}: #{updated_details_text}" if updated_details_text.present?
 
-          message += <<TEXT
+          message += "\n#{I18n.t('field_assigned_to')}: #{assigned_to.name}" unless updated_details.include?('assigned_to')
+          message += "\n#{I18n.t('field_priority')}: #{priority.name}" unless updated_details.include?('priority')
+          message += "\n#{I18n.t('field_status')}: #{status.name}" unless updated_details.include?('status')
 
-#{I18n.t('field_priority')}: #{updated_priority_text}
-#{I18n.t('field_status')}: #{updated_status_text}
-#{Intouch.issue_url(id)}
-TEXT
+          message += "#{Intouch.issue_url(id)}"
+
           message
         end
 
