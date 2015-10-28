@@ -204,7 +204,7 @@ module Intouch
           message += "\n#{I18n.t('field_priority')}: #{priority.name}" unless updated_details.include?('priority')
           message += "\n#{I18n.t('field_status')}: #{status.name}" unless updated_details.include?('status')
 
-          message += "#{Intouch.issue_url(id)}"
+          message += "\n#{Intouch.issue_url(id)}"
 
           message
         end

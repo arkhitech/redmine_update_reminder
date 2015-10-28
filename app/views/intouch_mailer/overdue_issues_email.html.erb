@@ -1,37 +1,59 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
-  </head>
-  <body>
-    <p><%= t 'intouch.mailer.message.hello' %>, <%= @user.name %>!</p>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
+</head>
+<body>
+<p><%= t 'intouch.mailer.message.hello' %>, <%= @user.name %>!</p>
 
-    <% if @issues.present? %>
-      <% if @overdue_issues.present? %>
-        <h2><%= t 'intouch.mailer.message.overdue_issues' %></h2>
-        <ul>
-          <% @overdue_issues.each do |issue| %>
-            <% prefix = issue.assigned_to.class == Group ? "#{issue.assigned_to.name}: " : '' %>
-            <li>
-              <%= "[#{format_date(issue.due_date)}]" %>
-              <%= link_to "#{prefix}#{issue.tracker} ##{issue.id}", issue_url(issue) %>
-            </li>
-          <% end %>
-        </ul>
+<% if @issues.present? %>
+  <% if @overdue_issues.present? %>
+    <h2><%= t 'intouch.mailer.message.overdue_issues' %></h2>
+    <ul>
+      <% @overdue_issues.each do |issue| %>
+        <li>
+          <%= "[#{format_date(issue.due_date)}]" %>
+          <%= link_to "#{issue.tracker} ##{issue.id}", issue_url(issue) %>
+          <%= "#{issue.subject}" %>
+        </li>
       <% end %>
-      <% if @without_due_date_issues.present? %>
-        <h2><%= t 'intouch.mailer.message.without_due_date_issues' %></h2>
-        <ul>
-          <% @without_due_date_issues.each do |issue| %>
-            <% prefix = issue.assigned_to.class == Group ? "#{issue.assigned_to.name}: " : '' %>
-            <li>
-              <%= link_to "#{prefix}#{issue.tracker} ##{issue.id}", issue_url(issue) %>
-            </li>
-          <% end %>
-        </ul>
+    </ul>
+  <% end %>
+  <% if @without_due_date_issues.present? %>
+    <h2><%= t 'intouch.mailer.message.without_due_date_issues' %></h2>
+    <ul>
+      <% @without_due_date_issues.each do |issue| %>
+        <li>
+          <%= link_to "#{issue.tracker} ##{issue.id}", issue_url(issue) %>
+          <%= "#{issue.subject}" %>
+        </li>
       <% end %>
-    <% else %>
-      <p><%= t 'intouch.mailer.message.no_overdue_issues' %></p>
-    <% end %>
-  </body>
+    </ul>
+  <% end %>
+  <% if @unassigned_issues.present? %>
+    <h2><%= t 'intouch.mailer.message.unassigned_issues' %></h2>
+    <ul>
+      <% @unassigned_issues.each do |issue| %>
+        <li>
+          <%= link_to "#{issue.tracker} ##{issue.id}", issue_url(issue) %>
+          <%= "#{issue.subject}" %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+  <% if @group_assigned_issues.present? %>
+    <h2><%= t 'intouch.mailer.message.group_assigned_issues' %></h2>
+    <ul>
+      <% @group_assigned_issues.each do |issue| %>
+        <li>
+          <%= link_to "#{issue.tracker} ##{issue.id}", issue_url(issue) %>
+          <%= "#{issue.subject}" %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+<% else %>
+  <p><%= t 'intouch.mailer.message.no_overdue_issues' %></p>
+<% end %>
+</body>
 </html>

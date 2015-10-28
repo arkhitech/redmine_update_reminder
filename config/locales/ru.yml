@@ -25,6 +25,8 @@ ru:
         no_overdue_issues: "На сегодня просроченных задач нет."
         overdue_issues: "Просроченные задачи"
         without_due_date_issues: "Не указана дата завершения"
+        unassigned_issues: "Не назначенные задачи"
+        group_assigned_issues: "Назначенные на группу"
       subject: "Просроченные задачи по состоянию на %{date}"
     priorities:
       alarm: "Авария"

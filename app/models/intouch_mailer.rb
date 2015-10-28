@@ -28,6 +28,9 @@ class IntouchMailer < ActionMailer::Base
     @overdue_issues = @issues.where('due_date < ?', Date.today)
     @without_due_date_issues = @issues.where(due_date: nil).where('created_on < ?', 1.day.ago)
 
+    @unassigned_issues = @issues.where(assigned_to_id: nil)
+    @group_assigned_issues = @issues.joins(:assigned_to).where(users: {type: 'Group'})
+
     mail to: @user.mail,
          subject: t('intouch.mailer.subject', date: format_date(Date.today))
   end

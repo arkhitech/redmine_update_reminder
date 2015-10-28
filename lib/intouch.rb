@@ -94,10 +94,12 @@ module Intouch
 
           project_issues.each do |issue|
 
-            user_ids = issue.recipient_ids('email', state)
-            user_ids && user_ids.each do |user_id|
-              user_issues_ids[user_id] = [] if user_issues_ids[user_id].nil?
-              user_issues_ids[user_id] << issue.id
+            %w(owerdue unassigned).each do |state|
+              user_ids = issue.recipient_ids('email', state)
+              user_ids && user_ids.each do |user_id|
+                user_issues_ids[user_id] = [] if user_issues_ids[user_id].nil?
+                user_issues_ids[user_id] << issue.id
+              end
             end
 
           end

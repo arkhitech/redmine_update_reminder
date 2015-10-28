@@ -25,6 +25,8 @@ en:
         no_overdue_issues: There are no overdue issues for today.
         overdue_issues: Overdue issues
         without_due_date_issues: Due date is not specified
+        unassigned_issues: "Unassigned issues"
+        group_assigned_issues: "Group assigned issues"
       subject: Overdue issues as of %{date}
     priorities:
       alarm: Alarm
