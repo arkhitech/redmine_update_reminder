@@ -67,7 +67,7 @@ module Intouch
                   author.id
                 when 'assigned_to'
                   if assigned_to.class == Group
-                    assigned_to.user_ids
+                    # assigned_to.user_ids
                   else
                     assigned_to_id if project.assigner_ids.include?(assigned_to_id)
                   end
@@ -95,7 +95,7 @@ module Intouch
                     user_ids << author.id
                   when 'assigned_to'
                     if assigned_to.class == Group
-                      user_ids += assigned_to.user_ids
+                      # user_ids += assigned_to.user_ids
                     else
                       user_ids << assigned_to_id if project.assigner_ids.include?(assigned_to_id)
                     end
