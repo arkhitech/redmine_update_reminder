@@ -69,7 +69,7 @@ module Intouch
                 else
                   nil
               end
-            end.flatten.uniq + [last_assigner_id]
+            end.flatten.uniq + [assigner_id]
           end
         end
 
@@ -97,7 +97,7 @@ module Intouch
                 end
               end
             end
-            user_ids.flatten.uniq + [last_assigner_id] - [updated_by.try(:id)] # Не отправляем сообщение тому, то обновил задачу
+            user_ids.flatten.uniq + [assigner_id] - [updated_by.try(:id)] # Не отправляем сообщение тому, то обновил задачу
           else
             []
           end
@@ -115,8 +115,12 @@ module Intouch
           assigned_to.present? ? assigned_to.name : I18n.t('intouch.telegram_message.issue.performer.unassigned')
         end
 
-        def last_assigner_id
-          journals.where(user_id: project.assigner_ids).last.try :user_id
+        def assigner_id
+          if project.assigner_ids.include? assigned_to_id
+            assigned_to_id
+          else
+            journals.where(user_id: project.assigner_ids).last.try :user_id
+          end
         end
 
         def assigners_updated_on
