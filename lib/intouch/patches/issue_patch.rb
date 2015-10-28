@@ -231,11 +231,11 @@ TEXT
         private
 
         def check_alarm
-          if !new_record? and project.module_enabled?(:intouch) and project.active? and !closed?
+          if !new_record? and project.module_enabled?(:intouch) and project.active? and !closed? and changed_attributes
             if alarm? or Intouch.work_time?
               if Intouch.active_protocols.include? 'telegram'
 
-                if changed_attributes and (changed_attributes['priority_id'] or changed_attributes['status_id'])
+                if changed_attributes['priority_id'] or changed_attributes['status_id']
                   IntouchSender.send_live_telegram_group_message(id, status_id, priority_id)
                 end
 
