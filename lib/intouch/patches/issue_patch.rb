@@ -22,15 +22,6 @@ module Intouch
           Issue.where(status_id: IssueStatus.feedback_ids)
         end
 
-        def last_assigner_id
-          journals.where(user_id: project.assigner_ids).last.try :user_id
-        end
-
-        def assigners_updated_on
-          assigners_updated_on = journals.where(user_id: project.assigner_ids).last.try :created_on
-          assigners_updated_on.present? ? assigners_updated_on : updated_on
-        end
-
         def alarm?
           IssuePriority.alarm_ids.include? priority_id
         end
@@ -124,15 +115,26 @@ module Intouch
           assigned_to.present? ? assigned_to.name : I18n.t('intouch.telegram_message.issue.performer.unassigned')
         end
 
+        def last_assigner_id
+          journals.where(user_id: project.assigner_ids).last.try :user_id
+        end
+
+        def assigners_updated_on
+          assigners_updated_on = journals.where(user_id: project.assigner_ids).last.try :created_on
+          assigners_updated_on.present? ? assigners_updated_on : updated_on
+        end
+
         def inactive?
-          interval = project.active_intouch_settings.
-              try(:[], 'working').try(:[], 'priority_notification').
-              try(:[], "#{priority_id}").try(:[], 'interval')
-          interval.present? and updated_on < interval.to_i.hours.ago
+          reminder_settings = project.active_intouch_settings.
+              try(:[], 'reminder_settings').
+              try(:[], "#{priority_id}")
+          active = reminder_settings.try(:[], 'active')
+          interval = reminder_settings.try(:[], 'interval')
+          active and interval.present? and assigners_updated_on < interval.to_i.hours.ago
         end
 
         def inactive_message
-          hours = ((Time.now - updated_on) / 3600).round(1)
+          hours = ((Time.now - assigners_updated_on) / 3600).round(1)
           I18n.t 'intouch.telegram_message.issue.inactive', hours: hours
         end
 
@@ -221,7 +223,7 @@ TEXT
 #{I18n.t('field_status')}: #{status.try :name}
 #{Intouch.issue_url(id)}
 TEXT
-          message = "#{inactive_message}\n#{message}" if inactive?
+          message = "*** #{inactive_message} ***\n#{message}" if inactive?
           message = "*** #{I18n.t('intouch.telegram_message.issue.notice.without_due_date')} *** \n#{message}" if without_due_date?
           message = "*** #{I18n.t('intouch.telegram_message.issue.notice.overdue')} ***  \n#{message}" if overdue?
           message = "*** #{I18n.t('intouch.telegram_message.issue.notice.unassigned')} *** \n#{message}" if unassigned? or assigned_to_group?
