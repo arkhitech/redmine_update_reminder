@@ -65,9 +65,10 @@ module Intouch
                   IntouchSender.send_telegram_group_message(issue.id, group_ids) if group_ids.present?
                 end
 
-                issue.last_notification = {} unless issue.last_notification.present?
-                issue.last_notification[state] = Time.now
-                issue.save
+                last_notification = issue.last_notification
+                last_notification = {} unless last_notification.present?
+                last_notification[state] = Time.now
+                issue.update_column :intouch_data, {'last_notification' => last_notification}
               end
             rescue NoMethodError => e
               INTOUCH_SEND_NOTIFICATIONS_LOG.error "#{e.class}: #{e.message}"
