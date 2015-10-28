@@ -13,7 +13,7 @@
   <table>
     <thead>
     <tr>
-      <% Intouch.available_recipients_without('assigned_to').each do |recipient| %>
+      <% (Intouch.available_recipients_without('assigned_to') + ['user_groups']).each do |recipient| %>
         <th><%= l "intouch.recipient.#{recipient}" %></th>
       <% end %>
     </tr>
@@ -41,6 +41,15 @@
           <% end %>
         </td>
       <% end %>
+      <td>
+        <% Group.find_each do |group| %>
+          <%= check_box_tag "intouch_settings[email_settings][unassigned][user_groups][]", group.id.to_s,
+                            settings_source.email_settings.try(:[], 'unassigned').
+                                try(:[], 'user_groups').try(:include?, group.id.to_s),
+                            class: "user_groups_#{group.id}" %>
+          <%= label_tag group.name %><br>
+        <% end %>
+      </td>
     </tr>
   </table>
 </div>

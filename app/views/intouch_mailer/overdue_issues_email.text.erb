@@ -4,7 +4,7 @@
     ### <%= t 'intouch.mailer.message.overdue_issues' %>
     <% @overdue_issues.each do |issue| %>
       <% prefix = issue.assigned_to.class == Group ? "#{issue.assigned_to.name}: " : '' %>
-      <%= "#{prefix}[#{format_date(issue.due_date)}] #{issue.to_s}" %>
+      <%= "#{prefix}[#{format_date(issue.due_date)}] #{issue.tracker} ##{issue.id}:" %>
       <%= url_for({controller: 'issues', action: 'show', id: issue}) %>
     <% end %>
   <% end %>
@@ -14,7 +14,7 @@
 
     <% @without_due_date_issues.each do |issue| %>
       <% prefix = issue.assigned_to.class == Group ? "#{issue.assigned_to.name}: " : '' %>
-      <%= "#{prefix}#{issue.to_s}" %>
+      <%= "#{prefix}#{issue.tracker} ##{issue.id}:" %>
       <%= url_for({controller: 'issues', action: 'show', id: issue}) %>
     <% end %>
 

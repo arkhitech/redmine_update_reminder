@@ -13,7 +13,8 @@
           <% @overdue_issues.each do |issue| %>
             <% prefix = issue.assigned_to.class == Group ? "#{issue.assigned_to.name}: " : '' %>
             <li>
-              <%= link_to "#{prefix}[#{format_date(issue.due_date)}] #{issue.to_s}", issue_url(issue) %>
+              <%= "[#{format_date(issue.due_date)}]" %>
+              <%= link_to "#{prefix}#{issue.tracker} ##{issue.id}", issue_url(issue) %>
             </li>
           <% end %>
         </ul>
@@ -24,7 +25,7 @@
           <% @without_due_date_issues.each do |issue| %>
             <% prefix = issue.assigned_to.class == Group ? "#{issue.assigned_to.name}: " : '' %>
             <li>
-              <%= link_to "#{prefix}#{issue.to_s}", issue_url(issue) %>
+              <%= link_to "#{prefix}#{issue.tracker} ##{issue.id}", issue_url(issue) %>
             </li>
           <% end %>
         </ul>
