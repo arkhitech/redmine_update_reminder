@@ -10,6 +10,7 @@
 
 .intouch-settings table {
     border-collapse: collapse;
+    margin-top: 5px;
 }
 .intouch-settings table th {
     border: 1px solid #555;

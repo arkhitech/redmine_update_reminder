@@ -9,7 +9,20 @@
 </div>
 
 <% TelegramGroupChat.find_each do |telegram_group| %>
-  <h5><%= telegram_group.title %></h5>
+  <h4><%= telegram_group.title %></h4>
+  <%= check_box_tag "intouch_settings[telegram_settings][groups][#{telegram_group.id}][only_unassigned]", '1',
+                    settings_source.telegram_settings.try(:[], 'groups').try(:[], telegram_group.id.to_s).
+                        try(:[], 'only_unassigned'),
+                    id: "telegram_groups_#{telegram_group.id}_only_unassigned"
+  %>
+  <%= label_tag "telegram_groups_#{telegram_group.id}_only_unassigned", 'Только неназначенные' %>
+
+  <%= check_box_tag "intouch_settings[telegram_settings][groups][#{telegram_group.id}][anytime]", '1',
+                    settings_source.telegram_settings.try(:[], 'groups').try(:[], telegram_group.id.to_s).
+                        try(:[], 'anytime'),
+                    id: "telegram_groups_#{telegram_group.id}_anytime"
+  %>
+  <%= label_tag "telegram_groups_#{telegram_group.id}_anytime", 'Круглосуточно и без выходных' %>
   <table>
     <thead>
     <tr>

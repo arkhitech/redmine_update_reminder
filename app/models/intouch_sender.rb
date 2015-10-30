@@ -21,12 +21,29 @@ class IntouchSender
     TelegramLiveSenderWorker.perform_in(1.second, issue_id)
   end
 
-  def self.send_live_telegram_group_message(issue_id, status_id, priority_id)
+  def self.send_live_telegram_group_message(issue_id)
     issue = Issue.find issue_id
     telegram_groups_settings = issue.project.active_telegram_settings.try(:[], 'groups')
+
     if telegram_groups_settings
-      group_ids = telegram_groups_settings.select {|k,v| v.try(:[], status_id.to_s).try(:include?, priority_id.to_s)}.keys
-      TelegramGroupSenderWorker.perform_in(1.second, issue_id, group_ids, true)
+
+      group_ids = telegram_groups_settings.select do |k, v|
+        v.try(:[], issue.status_id.to_s).try(:include?, issue.priority_id.to_s)
+      end.keys
+
+      only_unassigned_group_ids = telegram_groups_settings.select {|k,v| v.try(:[], 'only_unassigned').present?}.keys
+
+      group_ids -= only_unassigned_group_ids if !issue.unassigned? and !issue.assigned_to_group?
+
+      if issue.alarm? or Intouch.work_time?
+
+        TelegramGroupSenderWorker.perform_in(1.second, issue_id, group_ids, true)
+
+      else
+        anytime_group_ids = telegram_groups_settings.select {|k,v| v.try(:[], 'anytime').present?}.keys
+
+        TelegramGroupSenderWorker.perform_in(1.second, issue_id, (group_ids & anytime_group_ids), true)
+      end
     end
   end
 end

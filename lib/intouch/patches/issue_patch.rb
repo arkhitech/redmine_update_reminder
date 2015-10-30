@@ -34,6 +34,10 @@ module Intouch
           assigned_to.class == Group
         end
 
+        def total_unassigned?
+          unassigned? or assigned_to_group? or !project.assigner_ids.include?(assigned_to_id)
+        end
+
         def working?
           IssueStatus.working_ids.include? status_id
         end
@@ -191,7 +195,7 @@ module Intouch
 
         def bold_for_alarm(text)
           if alarm?
-            "\n*#{I18n.t('field_priority')}: !!! #{text} !!!*"
+            "\n*#{I18n.t('field_priority')}: #{text}*"
           else
             "\n#{I18n.t('field_priority')}: #{text}"
           end
@@ -244,7 +248,7 @@ TEXT
               if Intouch.active_protocols.include? 'telegram'
 
                 if changed_attributes['priority_id'] or changed_attributes['status_id']
-                  IntouchSender.send_live_telegram_group_message(id, status_id, priority_id)
+                  IntouchSender.send_live_telegram_group_message(id)
                 end
 
                 IntouchSender.send_live_telegram_message(id)
@@ -257,13 +261,17 @@ TEXT
 
         def send_new_message
           if project.module_enabled?(:intouch) and project.active? and !closed?
+
             if alarm? or Intouch.work_time?
-              if Intouch.active_protocols.include? 'telegram'
-                IntouchSender.send_live_telegram_message(id)
-                IntouchSender.send_live_telegram_group_message(id, status_id, priority_id)
-              end
+
+              IntouchSender.send_live_telegram_message(id) if Intouch.active_protocols.include? 'telegram'
 
               IntouchSender.send_live_email_message(id) if Intouch.active_protocols.include? 'email'
+
+            end
+
+            if Intouch.active_protocols.include? 'telegram'
+              IntouchSender.send_live_telegram_group_message(id)
             end
           end
         end
