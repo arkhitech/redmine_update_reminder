@@ -112,6 +112,8 @@ en:
         example_3: recipients will receive notifications in accordance with intervals specified in the project settings.
         init: Initialize periodic tasks
         title: Periodic tasks
+      telegram:
+        users: "Telegram users"
     settings_templates:
       edit: Editing setting template
       new: New setting template

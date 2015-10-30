@@ -25,7 +25,7 @@
     <ul>
       <% @without_due_date_issues.each do |issue| %>
         <li>
-          <%= format_date issue.created_on %>
+          <%= "[#{format_date(issue.created_on)}]" %>
           <strong><%= issue.assigned_to.try :name %></strong>
           <%= link_to "#{issue.tracker} ##{issue.id}", issue_url(issue) %>
           <%= "#{issue.subject}" %>
@@ -38,7 +38,7 @@
     <ul>
       <% @unassigned_issues.each do |issue| %>
         <li>
-          <%= format_date issue.created_on %>
+          <%= "[#{format_date(issue.created_on)}]" %>
           <%= link_to "#{issue.tracker} ##{issue.id}", issue_url(issue) %>
           <%= "#{issue.subject}" %>
         </li>
@@ -50,7 +50,7 @@
     <ul>
       <% @group_assigned_issues.each do |issue| %>
         <li>
-          <%= format_date issue.created_on %>
+          <%= "[#{format_date(issue.created_on)}]" %>
           <%= link_to "#{issue.tracker} ##{issue.id}", issue_url(issue) %>
           <%= "#{issue.subject}" %>
         </li>

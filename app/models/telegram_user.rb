@@ -2,6 +2,7 @@ class TelegramUser < ActiveRecord::Base
   unloadable if Rails.env.production?
 
   belongs_to :user
+  attr_accessible :user_id
 
   def name
     if username.present?

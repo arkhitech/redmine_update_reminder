@@ -2,3 +2,39 @@
   <label for="settings_telegram_bot_token">Bot Token</label>
   <%= text_field_tag 'settings[telegram_bot_token]', @settings['telegram_bot_token'], size: 50 %>
 </p>
+
+<h3><%= t 'intouch.settings.telegram.users' %></h3>
+
+<table class="list">
+  <thead>
+  <tr>
+    <th><%= l(:field_name) %></th>
+    <th><%= l(:status_active) %></th>
+    <th><%= l(:field_user) %></th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+  <% for telegram_user in TelegramUser.all %>
+    <tr class="<%= cycle("odd", "even") %>">
+      <td class="name">
+        <%= link_to telegram_user.name, controller: "telegram_users", action: 'edit', id: telegram_user.id %>
+      </td>
+      <td>
+        <%= format_object telegram_user.active %>
+      </td>
+      <td>
+        <% if telegram_user.user.present? %>
+          <%= link_to_user telegram_user.user %>
+        <% else %>
+          -
+        <% end %>
+      </td>
+      <td class="buttons">
+        <%= link_to t('intouch.label.edit'), controller: "telegram_users", action: 'edit', id: telegram_user.id %>
+        <%= delete_link telegram_user_path(telegram_user) %>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
