@@ -15,14 +15,16 @@
                         try(:[], 'only_unassigned'),
                     id: "telegram_groups_#{telegram_group.id}_only_unassigned"
   %>
-  <%= label_tag "telegram_groups_#{telegram_group.id}_only_unassigned", 'Только неназначенные' %>
+  <%= label_tag "telegram_groups_#{telegram_group.id}_only_unassigned",
+                t('intouch.project.settings.issue_update.telegram_groups.only_unassigned') %>
 
   <%= check_box_tag "intouch_settings[telegram_settings][groups][#{telegram_group.id}][anytime]", '1',
                     settings_source.telegram_settings.try(:[], 'groups').try(:[], telegram_group.id.to_s).
                         try(:[], 'anytime'),
                     id: "telegram_groups_#{telegram_group.id}_anytime"
   %>
-  <%= label_tag "telegram_groups_#{telegram_group.id}_anytime", 'Круглосуточно и без выходных' %>
+  <%= label_tag "telegram_groups_#{telegram_group.id}_anytime",
+                t('intouch.project.settings.issue_update.telegram_groups.anytime') %>
   <table>
     <thead>
     <tr>

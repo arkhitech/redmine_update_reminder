@@ -45,6 +45,8 @@ en:
             description: Specify which notifications should be sent to the author of the issue
           telegram_groups:
             description: Specify which notifications and in which group should be sent
+            only_unassigned: "Only unassigned"
+            anytime: "Anytime (24/7)"
           watchers:
             description: Specify which notifications should be sent to the watchers of the issue
         reminder:
