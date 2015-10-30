@@ -6,7 +6,7 @@
 ### <%= t 'intouch.mailer.message.overdue_issues' %> ###
 
 <% @overdue_issues.each do |issue| %>
-  <%= "[#{format_date(issue.due_date)}] #{issue.to_s}" %> <%= url_for({controller: 'issues', action: 'show', id: issue}) %>
+  <%= "[#{format_date(issue.due_date)}] #{issue.assigned_to.try :name} #{issue.to_s}" %> <%= url_for({controller: 'issues', action: 'show', id: issue}) %>
 <% end %>
   <% end %>
 
@@ -14,7 +14,7 @@
 ### <%= t 'intouch.mailer.message.without_due_date_issues' %> ###
 
 <% @without_due_date_issues.each do |issue| %>
-  <%= "#{issue.to_s}" %> <%= url_for({controller: 'issues', action: 'show', id: issue}) %>
+  <%= "#{format_date issue.created_on} #{issue.assigned_to.try :name} #{issue.to_s}" %> <%= url_for({controller: 'issues', action: 'show', id: issue}) %>
 <% end %>
   <% end %>
 
@@ -22,7 +22,7 @@
 ### <%= t 'intouch.mailer.message.unassigned_issues' %> ###
 
 <% @unassigned_issues.each do |issue| %>
-  <%= "#{issue.to_s}" %> <%= url_for({controller: 'issues', action: 'show', id: issue}) %>
+  <%= "#{format_date issue.created_on} #{issue.to_s}" %> <%= url_for({controller: 'issues', action: 'show', id: issue}) %>
 <% end %>
   <% end %>
 
@@ -30,7 +30,7 @@
 ### <%= t 'intouch.mailer.message.group_assigned_issues' %> ###
 
 <% @group_assigned_issues.each do |issue| %>
-  <%= "#{issue.to_s}" %> <%= url_for({controller: 'issues', action: 'show', id: issue}) %>
+  <%= "#{format_date issue.created_on} #{issue.to_s}" %> <%= url_for({controller: 'issues', action: 'show', id: issue}) %>
 <% end %>
   <% end %>
 <% else %>
