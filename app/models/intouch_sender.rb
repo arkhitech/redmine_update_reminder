@@ -22,6 +22,8 @@ class IntouchSender
   end
 
   def self.send_live_telegram_group_message(issue_id, status_id, priority_id)
+    sleep 5 # waiting for issue save
+
     issue = Issue.find issue_id
     telegram_groups_settings = issue.project.active_telegram_settings.try(:[], 'groups')
 
