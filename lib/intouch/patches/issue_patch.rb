@@ -202,7 +202,7 @@ module Intouch
         end
 
         def telegram_live_message
-          message = "#{project.name}: #{subject}"
+          message = "[##{id}](#{Intouch.issue_url(id)}) ```#{project.name}: #{subject}```"
 
           message += "\n#{I18n.t('intouch.telegram_message.issue.updated_by')}: #{updated_by}" if updated_by.present?
 
@@ -220,17 +220,14 @@ module Intouch
 
           message += "\n#{I18n.t('field_status')}: #{status.name}" unless updated_details.include?('status')
 
-          message += "\n#{Intouch.issue_url(id)}"
-
           message
         end
 
         def telegram_message
           message = <<TEXT
-#{project.name}: #{subject}
+[##{id}](#{Intouch.issue_url(id)}) ```#{project.name}: #{subject}```
 #{I18n.t('field_assigned_to')}: #{performer}#{bold_for_alarm(priority.name)}
 #{I18n.t('field_status')}: #{status.name}
-#{Intouch.issue_url(id)}
 TEXT
           message = "*!!! #{inactive_message} !!!*\n#{message}" if inactive?
           message = "*!!! #{I18n.t('intouch.telegram_message.issue.notice.without_due_date')} !!!* \n#{message}" if without_due_date?
