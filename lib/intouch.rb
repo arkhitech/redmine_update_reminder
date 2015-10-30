@@ -94,12 +94,10 @@ module Intouch
 
           project_issues.each do |issue|
 
-            %w(owerdue unassigned).each do |state|
-              user_ids = issue.recipient_ids('email', state)
-              user_ids && user_ids.each do |user_id|
-                user_issues_ids[user_id] = [] if user_issues_ids[user_id].nil?
-                user_issues_ids[user_id] << issue.id
-              end
+            user_ids = issue.recipient_ids('email', state)
+            user_ids && user_ids.each do |user_id|
+              user_issues_ids[user_id] = [] if user_issues_ids[user_id].nil?
+              user_issues_ids[user_id] << issue.id
             end
 
           end
@@ -127,9 +125,9 @@ module Intouch
 
   def self.issue_url(issue_id)
     if Setting['protocol'] == 'https'
-      URI::HTTPS.build({host: Setting['host_name'],  path: "/issues/#{issue_id}"}).to_s
+      URI::HTTPS.build({host: Setting['host_name'], path: "/issues/#{issue_id}"}).to_s
     else
-      URI::HTTP.build({host: Setting['host_name'],  path: "/issues/#{issue_id}"}).to_s
+      URI::HTTP.build({host: Setting['host_name'], path: "/issues/#{issue_id}"}).to_s
     end
   end
 
