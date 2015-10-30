@@ -247,7 +247,7 @@ TEXT
               if Intouch.active_protocols.include? 'telegram'
 
                 if changed_attributes['priority_id'] or changed_attributes['status_id']
-                  IntouchSender.send_live_telegram_group_message(id, status_id, priority_id)
+                  IntouchSender.send_live_telegram_group_message(id)
                 end
 
                 IntouchSender.send_live_telegram_message(id)
@@ -270,7 +270,7 @@ TEXT
             end
 
             if Intouch.active_protocols.include? 'telegram'
-              IntouchSender.send_live_telegram_group_message(id, status_id, priority_id)
+              IntouchSender.send_live_telegram_group_message(id)
             end
           end
         end
