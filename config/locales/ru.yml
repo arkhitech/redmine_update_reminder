@@ -121,7 +121,7 @@ ru:
           unassigned: "Назначьте исполнителя"
           without_due_date: "Установите дату выполнения"
         performer:
-          unassigned: "не назначен"
+          unassigned: "Не назначена"
         updated_by: "Обновил"
         updated_details: "Изменения"
       recipient:
