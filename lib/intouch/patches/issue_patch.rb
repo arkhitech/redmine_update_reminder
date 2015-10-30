@@ -189,19 +189,31 @@ module Intouch
           "#{old_status.name} -> #{status.name}"
         end
 
+        def bold_for_alarm(text)
+          if alarm?
+            "\n*#{I18n.t('field_priority')}: !!! #{text} !!!*"
+          else
+            "\n#{I18n.t('field_priority')}: #{text}"
+          end
+        end
+
         def telegram_live_message
           message = "#{project.name}: #{subject}"
 
           message += "\n#{I18n.t('intouch.telegram_message.issue.updated_by')}: #{updated_by}" if updated_by.present?
 
           message += "\n#{I18n.t('field_assigned_to')}: #{updated_performer_text}" if updated_details.include?('assigned_to')
-          message += "\n#{I18n.t('field_priority')}: #{updated_priority_text}" if updated_details.include?('priority')
+
+          message += bold_for_alarm(updated_priority_text) if updated_details.include?('priority')
+
           message += "\n#{I18n.t('field_status')}: #{updated_status_text}" if updated_details.include?('status')
 
           message += "\n#{I18n.t('intouch.telegram_message.issue.updated_details')}: #{updated_details_text}" if updated_details_text.present?
 
           message += "\n#{I18n.t('field_assigned_to')}: #{performer}" unless updated_details.include?('assigned_to')
-          message += "\n#{I18n.t('field_priority')}: #{priority.name}" unless updated_details.include?('priority')
+
+          message += bold_for_alarm(priority.name) unless updated_details.include?('priority')
+
           message += "\n#{I18n.t('field_status')}: #{status.name}" unless updated_details.include?('status')
 
           message += "\n#{Intouch.issue_url(id)}"
@@ -213,8 +225,8 @@ module Intouch
           message = <<TEXT
 #{project.name}: #{subject}
 #{I18n.t('field_assigned_to')}: #{performer}
-#{I18n.t('field_priority')}: #{priority.try :name}
-#{I18n.t('field_status')}: #{status.try :name}
+#{bold_for_alarm(priority.name)}
+#{I18n.t('field_status')}: #{status.name}
 #{Intouch.issue_url(id)}
 TEXT
           message = "*** #{inactive_message} ***\n#{message}" if inactive?

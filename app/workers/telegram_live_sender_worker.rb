@@ -41,7 +41,7 @@ class TelegramLiveSenderWorker
       message = prefix.present? ? "#{prefix}\n#{base_message}" : base_message
 
       begin
-        bot.send_message(chat_id: telegram_user.tid, text: message, disable_web_page_preview: true)
+        bot.send_message(chat_id: telegram_user.tid, text: message, disable_web_page_preview: true, parse_mode: 'Markdown')
       rescue Telegrammer::Errors::BadRequestError => e
         if e.message.include? 'Bot was kicked'
           telegram_user.deactivate
