@@ -3,7 +3,7 @@ namespace :intouch do
     # bundle exec rake intouch:telegram:bot PID_DIR='/tmp'
     desc "Runs telegram bot process (options: PID_DIR='/pid/dir')"
     task :bot => :environment do
-      LOG = Rails.env.production? ? Logger.new(Rails.root.join('log', 'telegram-bot.log')) : Logger.new(STDOUT)
+      LOG = Rails.env.production? ? Logger.new(Rails.root.join('log/intouch', 'telegram-bot.log')) : Logger.new(STDOUT)
 
       Process.daemon(true, true) if Rails.env.production?
 
@@ -57,36 +57,40 @@ namespace :intouch do
       LOG.info "#{bot_name}: waiting for new users and group chats..."
 
       bot.get_updates(fail_silently: false) do |message|
-        if message.text == '/start'
-          user = message.from
-          t_user = TelegramUser.where(tid: user.id).first_or_initialize(username: user.username,
-                                                                        first_name: user.first_name,
-                                                                        last_name: user.last_name)
-          if t_user.new_record?
-            t_user.save
-            bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! I'm added your profile for Redmine notifications.")
-            LOG.info "#{bot_name}: new user #{user.first_name} #{user.last_name} @#{user.username} added!"
-          else
-            if t_user.active?
-              bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! You are already connected for Redmine notifications.")
+        begin
+          if message.text == '/start'
+            user = message.from
+            t_user = TelegramUser.where(tid: user.id).first_or_initialize(username: user.username,
+                                                                          first_name: user.first_name,
+                                                                          last_name: user.last_name)
+            if t_user.new_record?
+              t_user.save
+              bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! I'm added your profile for Redmine notifications.")
+              LOG.info "#{bot_name}: new user #{user.first_name} #{user.last_name} @#{user.username} added!"
             else
-              t_user.activate
-              bot.send_message(chat_id: message.chat.id, text: "Hello again, #{user.first_name}! I'm activate your profile for Redmine notifications.")
+              if t_user.active?
+                bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! You are already connected for Redmine notifications.")
+              else
+                t_user.activate
+                bot.send_message(chat_id: message.chat.id, text: "Hello again, #{user.first_name}! I'm activate your profile for Redmine notifications.")
+              end
+            end
+          elsif message.chat.id < 0
+            chat = message.chat
+            t_chat = TelegramGroupChat.where(tid: chat.id.abs).first_or_initialize(title: chat.title)
+            if t_chat.new_record?
+              t_chat.save
+              bot.send_message(chat_id: message.chat.id, text: "Hello, people! I'm added this group chat for Redmine notifications.")
+              LOG.info "#{bot_name}: new group #{chat.title} added!"
+            elsif message.text == '/rename'
+              user = message.from
+              t_chat.update title: chat.title
+              bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! I'm updated this group chat title in Redmine.")
+              LOG.info "#{bot_name}: rename group title #{chat.title}"
             end
           end
-        elsif message.chat.id < 0
-          chat = message.chat
-          t_chat = TelegramGroupChat.where(tid: chat.id.abs).first_or_initialize(title: chat.title)
-          if t_chat.new_record?
-            t_chat.save
-            bot.send_message(chat_id: message.chat.id, text: "Hello, people! I'm added this group chat for Redmine notifications.")
-            LOG.info "#{bot_name}: new group #{chat.title} added!"
-          elsif message.text == '/rename'
-            user = message.from
-            t_chat.update title: chat.title
-            bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! I'm updated this group chat title in Redmine.")
-            LOG.info "#{bot_name}: rename group title #{chat.title}"
-          end
+        rescue Exception => e
+          LOG.error "#{e.class}: #{e.message}"
         end
       end
     end

@@ -200,7 +200,7 @@ module Intouch
 
           message += "\n#{I18n.t('intouch.telegram_message.issue.updated_details')}: #{updated_details_text}" if updated_details_text.present?
 
-          message += "\n#{I18n.t('field_assigned_to')}: #{assigned_to.name}" unless updated_details.include?('assigned_to')
+          message += "\n#{I18n.t('field_assigned_to')}: #{performer}" unless updated_details.include?('assigned_to')
           message += "\n#{I18n.t('field_priority')}: #{priority.name}" unless updated_details.include?('priority')
           message += "\n#{I18n.t('field_status')}: #{status.name}" unless updated_details.include?('status')
 
