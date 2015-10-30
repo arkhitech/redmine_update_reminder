@@ -195,7 +195,7 @@ module Intouch
 
         def bold_for_alarm(text)
           if alarm?
-            "\n*#{I18n.t('field_priority')}: #{text}*"
+            "\n*#{I18n.t('field_priority')}: !!! #{text} !!!*"
           else
             "\n#{I18n.t('field_priority')}: #{text}"
           end
