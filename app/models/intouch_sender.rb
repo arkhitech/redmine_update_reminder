@@ -33,7 +33,7 @@ class IntouchSender
 
       only_unassigned_group_ids = telegram_groups_settings.select {|k,v| v.try(:[], 'only_unassigned').present?}.keys
 
-      group_ids -= only_unassigned_group_ids if !issue.unassigned? and !issue.assigned_to_group?
+      group_ids -= only_unassigned_group_ids unless issue.total_unassigned?
 
       if issue.alarm? or Intouch.work_time?
 
