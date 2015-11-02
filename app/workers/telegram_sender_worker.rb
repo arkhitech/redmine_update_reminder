@@ -6,6 +6,8 @@ class TelegramSenderWorker
     Intouch.set_locale
     issue = Issue.find issue_id
 
+    return unless issue.notification_states.include? state
+
     base_message = issue.telegram_message
 
     token = Setting.plugin_redmine_intouch['telegram_bot_token']

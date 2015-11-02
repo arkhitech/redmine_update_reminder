@@ -9,8 +9,8 @@ class IntouchSender
     TelegramSenderWorker.perform_in(5.seconds, issue_id, state)
   end
 
-  def self.send_telegram_group_message(issue_id, group_ids)
-    TelegramGroupSenderWorker.perform_in(5.seconds, issue_id, group_ids)
+  def self.send_telegram_group_message(issue_id, group_ids, state)
+    TelegramGroupSenderWorker.perform_in(5.seconds, issue_id, group_ids, state)
   end
 
   def self.send_live_email_message(issue_id)

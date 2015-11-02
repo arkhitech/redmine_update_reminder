@@ -54,6 +54,10 @@ module Intouch
           %w(unassigned assigned_to_group overdue without_due_date working feedback).select { |s| send("#{s}?") }.try :first
         end
 
+        def notification_states
+          %w(unassigned assigned_to_group overdue without_due_date working feedback).select { |s| send("#{s}?") }
+        end
+
         def recipient_ids(protocol, state = notification_state)
           if project.send("active_#{protocol}_settings") && state && project.send("active_#{protocol}_settings")[state]
             project.send("active_#{protocol}_settings")[state].map do |key, value|

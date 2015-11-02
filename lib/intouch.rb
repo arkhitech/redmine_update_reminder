@@ -67,7 +67,7 @@ module Intouch
                   IntouchSender.send_telegram_message(issue.id, state)
 
                   group_ids = telegram_settings.try(:[], state).try(:[], 'groups')
-                  IntouchSender.send_telegram_group_message(issue.id, group_ids) if group_ids.present?
+                  IntouchSender.send_telegram_group_message(issue.id, group_ids, state) if group_ids.present?
                 end
 
                 last_notification = issue.last_notification

@@ -2,11 +2,13 @@ class TelegramGroupSenderWorker
   include Sidekiq::Worker
   TELEGRAM_GROUP_SENDER_LOG = Logger.new(Rails.root.join('log/intouch', 'telegram-group-sender.log'))
 
-  def perform(issue_id, group_ids)
+  def perform(issue_id, group_ids, state)
     return unless group_ids.present?
 
     Intouch.set_locale
     issue = Issue.find issue_id
+
+    return unless issue.notification_states.include? state
 
     message = issue.telegram_message
 
