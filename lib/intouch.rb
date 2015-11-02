@@ -7,6 +7,11 @@ module Intouch
     I18n.locale = Setting['default_language']
   end
 
+  def self.sidekiq_cron_jobs
+    names = %w(cron_overdue_regular_notification cron_working_regular_notification cron_unassigned_regular_notification cron_feedback_regular_notification)
+    Sidekiq::Cron::Job.all.select{|job| names.include? job.name}
+  end
+
   def self.commit_hash
     INTOUCH_COMMIT_HASH
   end

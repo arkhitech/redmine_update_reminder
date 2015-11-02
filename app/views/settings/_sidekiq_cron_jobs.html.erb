@@ -2,32 +2,34 @@
 <p class="description">
   <%= t 'intouch.settings.sidekiq_cron_job.description' %><br>
   <%= t 'intouch.settings.sidekiq_cron_job.example' %> <br>
-  <ul>
+<ul>
   <li><%= t 'intouch.settings.sidekiq_cron_job.example_1' %>
   <li><%= t 'intouch.settings.sidekiq_cron_job.example_2' %>
   <li><%= t 'intouch.settings.sidekiq_cron_job.example_3' %>
-  </ul>
+</ul>
 </p>
-<% if Sidekiq::Cron::Job.all.present? %>
-<table class="list">
-  <thead><tr>
-    <th><%=l(:field_name)%></th>
-    <th>Cron</th>
-  </tr></thead>
-  <tbody>
-  <% for sidekiq_cron_job in Sidekiq::Cron::Job.all  %>
-    <tr class="<%= cycle("odd", "even") %>">
-      <td class="name"><%= link_to t("intouch.cron.#{sidekiq_cron_job.name}"), controller: "sidekiq_cron_jobs", action: 'edit', id: sidekiq_cron_job.name %></td>
-      <td class="name"><%= sidekiq_cron_job.cron %></td>
+<% if Intouch.sidekiq_cron_jobs.present? %>
+  <table class="list">
+    <thead>
+    <tr>
+      <th><%= l(:field_name) %></th>
+      <th>Cron</th>
     </tr>
-  <% end %>
-  </tbody>
-</table>
-<p>
-  <%= link_to t('intouch.settings.sidekiq_cron_job.default'), init_sidekiq_cron_jobs_path %>
-</p>
+    </thead>
+    <tbody>
+    <% for sidekiq_cron_job in Intouch.sidekiq_cron_jobs %>
+      <tr class="<%= cycle("odd", "even") %>">
+        <td class="name"><%= link_to t("intouch.cron.#{sidekiq_cron_job.name}"), controller: "sidekiq_cron_jobs", action: 'edit', id: sidekiq_cron_job.name %></td>
+        <td class="name"><%= sidekiq_cron_job.cron %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+  <p>
+    <%= link_to t('intouch.settings.sidekiq_cron_job.default'), init_sidekiq_cron_jobs_path %>
+  </p>
 <% else %>
-<p>
-  <%= link_to t('intouch.settings.sidekiq_cron_job.init'), init_sidekiq_cron_jobs_path %>
-</p>
+  <p>
+    <%= link_to t('intouch.settings.sidekiq_cron_job.init'), init_sidekiq_cron_jobs_path %>
+  </p>
 <% end %>
