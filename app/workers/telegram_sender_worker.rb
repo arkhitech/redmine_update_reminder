@@ -10,9 +10,6 @@ class TelegramSenderWorker
 
     base_message = issue.telegram_message
 
-    token = Setting.plugin_redmine_intouch['telegram_bot_token']
-    bot = Telegrammer::Bot.new(token)
-
     issue.intouch_recipients('telegram', state).each do |user|
 
       telegram_user = user.telegram_user
@@ -41,19 +38,7 @@ class TelegramSenderWorker
 
       message = prefix.present? ? "#{prefix}\n#{base_message}" : base_message
 
-      begin
-        bot.send_message(chat_id: telegram_user.tid, text: message, disable_web_page_preview: true, parse_mode: 'Markdown')
-      rescue Telegrammer::Errors::BadRequestError => e
-        if e.message.include? 'Bot was kicked'
-          telegram_user.deactivate
-          TELEGRAM_SENDER_LOG.info "Bot was kicked from chat. Deactivate #{telegram_user.inspect}"
-        else
-          TELEGRAM_SENDER_LOG.error "#{e.class}: #{e.message}"
-          TELEGRAM_SENDER_LOG.debug "#{issue.inspect}"
-          TELEGRAM_SENDER_LOG.debug "#{user.inspect}"
-          TELEGRAM_SENDER_LOG.debug "#{telegram_user.inspect}"
-        end
-      end
+      TelegramMessageSender.perform_async(telegram_user.tid, message)
     end
   end
 

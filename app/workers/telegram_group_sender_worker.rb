@@ -12,12 +12,9 @@ class TelegramGroupSenderWorker
 
     message = issue.telegram_message
 
-    token = Setting.plugin_redmine_intouch['telegram_bot_token']
-    bot = Telegrammer::Bot.new(token)
-
     TelegramGroupChat.where(id: group_ids).uniq.each do |group|
       next unless group.tid.present?
-      bot.send_message(chat_id: -group.tid, text: message, disable_web_page_preview: true, parse_mode: 'Markdown')
+      TelegramMessageSender.perform_async(-group.tid, message)
     end
   rescue ActiveRecord::RecordNotFound => e
     TELEGRAM_GROUP_LIVE_SENDER_LOG.error "#{e.class}: #{e.message}"
