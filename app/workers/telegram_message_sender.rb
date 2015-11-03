@@ -3,7 +3,7 @@ class TelegramMessageSender
   sidekiq_options queue: :telegram,
                   rate: {
                       name: 'telegram_rate_limit',
-                      limit: 30,
+                      limit: 25,
                       period: 1
                   }
 

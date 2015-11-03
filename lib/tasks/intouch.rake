@@ -68,9 +68,9 @@ namespace :intouch do
               bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! I've added your profile for Redmine notifications.")
               LOG.info "#{bot_name}: new user #{user.first_name} #{user.last_name} @#{user.username} added!"
             else
-              t_user.update username: user.username,
-                            first_name: user.first_name,
-                            last_name: user.last_name
+              t_user.update_columns username: user.username,
+                                    first_name: user.first_name,
+                                    last_name: user.last_name
               if t_user.active?
                 bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! I've updated your profile for Redmine notifications.")
               else
@@ -81,9 +81,9 @@ namespace :intouch do
           elsif message.text == '/update'
             user = message.from
             t_user = TelegramUser.where(tid: user.id).first_or_create
-            t_user.update username: user.username,
-                          first_name: user.first_name,
-                          last_name: user.last_name
+            t_user.update_columns username: user.username,
+                                  first_name: user.first_name,
+                                  last_name: user.last_name
 
             bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! I've updated your profile for Redmine notifications.")
           elsif message.chat.id < 0
