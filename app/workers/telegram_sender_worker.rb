@@ -6,7 +6,7 @@ class TelegramSenderWorker
     Intouch.set_locale
     issue = Issue.find issue_id
 
-    return unless issue.notification_states.include? state
+    return unless issue.notificable_for_state? state
 
     base_message = issue.telegram_message
 

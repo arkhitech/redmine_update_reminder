@@ -58,6 +58,21 @@ module Intouch
           %w(unassigned assigned_to_group overdue without_due_date working feedback).select { |s| send("#{s}?") }
         end
 
+        def notificable_for_state?(state)
+          case state
+            when 'unassigned'
+              notification_states.include?('unassigned') or notification_states.include?('assigned_to_group')
+            when 'overdue'
+              notification_states.include?('overdue') or notification_states.include?('without_due_date')
+            when 'working'
+              notification_states.include?('working')
+            when 'feedback'
+              notification_states.include?('feedback')
+            else
+              false
+          end
+        end
+
         def recipient_ids(protocol, state = notification_state)
           if project.send("active_#{protocol}_settings") && state && project.send("active_#{protocol}_settings")[state]
             project.send("active_#{protocol}_settings")[state].map do |key, value|
