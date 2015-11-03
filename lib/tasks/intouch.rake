@@ -65,16 +65,27 @@ namespace :intouch do
                                                                           last_name: user.last_name)
             if t_user.new_record?
               t_user.save
-              bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! I'm added your profile for Redmine notifications.")
+              bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! I've added your profile for Redmine notifications.")
               LOG.info "#{bot_name}: new user #{user.first_name} #{user.last_name} @#{user.username} added!"
             else
+              t_user.update username: user.username,
+                            first_name: user.first_name,
+                            last_name: user.last_name
               if t_user.active?
-                bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! You are already connected for Redmine notifications.")
+                bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! I've updated your profile for Redmine notifications.")
               else
                 t_user.activate
-                bot.send_message(chat_id: message.chat.id, text: "Hello again, #{user.first_name}! I'm activate your profile for Redmine notifications.")
+                bot.send_message(chat_id: message.chat.id, text: "Hello again, #{user.first_name}! I've activated your profile for Redmine notifications.")
               end
             end
+          elsif message.text == '/update'
+            user = message.from
+            t_user = TelegramUser.where(tid: user.id).first_or_create
+            t_user.update username: user.username,
+                          first_name: user.first_name,
+                          last_name: user.last_name
+
+            bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! I've updated your profile for Redmine notifications.")
           elsif message.chat.id < 0
             chat = message.chat
             t_chat = TelegramGroupChat.where(tid: chat.id.abs).first_or_initialize(title: chat.title)
