@@ -16,9 +16,13 @@ class TelegramMessageSender
     begin
       bot.send_message(chat_id: telegram_user_id, text: message, disable_web_page_preview: true, parse_mode: 'Markdown')
     rescue Telegrammer::Errors::BadRequestError => e
-      telegram_user = TelegramUser.find telegram_user_id
+      telegram_user = if telegram_user_id > 0
+                        TelegramUser.find_by tid: telegram_user_id
+                      else
+                        TelegramGroupChat.find_by tid: telegram_user_id.abs
+                      end
       if e.message.include? 'Bot was kicked'
-        telegram_user.deactivate
+        telegram_user.deactivate if telegram_user.is_a? TelegramUser
         TELEGRAM_MESSAGE_SENDER_LOG.info "Bot was kicked from chat. Deactivate #{telegram_user.inspect}"
       else
         TELEGRAM_MESSAGE_SENDER_LOG.error "#{e.class}: #{e.message}"

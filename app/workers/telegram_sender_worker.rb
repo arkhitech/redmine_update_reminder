@@ -40,6 +40,8 @@ class TelegramSenderWorker
 
       TelegramMessageSender.perform_async(telegram_user.tid, message)
     end
+  rescue ActiveRecord::RecordNotFound => e
+    # ignore
   end
 
 end

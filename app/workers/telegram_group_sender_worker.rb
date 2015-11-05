@@ -17,6 +17,6 @@ class TelegramGroupSenderWorker
       TelegramMessageSender.perform_async(-group.tid, message)
     end
   rescue ActiveRecord::RecordNotFound => e
-    TELEGRAM_GROUP_LIVE_SENDER_LOG.error "#{e.class}: #{e.message}"
+    # ignore
   end
 end
