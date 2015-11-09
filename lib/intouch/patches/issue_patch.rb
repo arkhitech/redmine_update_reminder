@@ -173,7 +173,13 @@ module Intouch
           last_journal = journals.last
           updated_details = []
           if last_journal.present?
-            updated_details = last_journal.visible_details.map{|detail| detail.prop_key.to_s.gsub(/_id$/, '')}
+            updated_details = last_journal.visible_details.map do |detail|
+              if detail.property == 'attr'
+                detail.prop_key.to_s.gsub(/_id$/, '')
+              elsif detail.property == 'cf'
+                detail.prop_key.to_i
+              end
+            end
             updated_details << 'notes' if last_journal.notes.present?
           end
           updated_details
@@ -182,7 +188,11 @@ module Intouch
         def updated_details_text
           if updated_details.present?
             (updated_details - %w(priority status assigned_to)).map do |field|
-              I18n.t(('field_' + field).to_sym)
+              if field.is_a? String
+                I18n.t(('field_' + field).to_sym)
+              elsif field.is_a? Fixnum
+                CustomField.find(field).try(:name)
+              end
             end.join(', ')
           end
         end
