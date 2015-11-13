@@ -178,6 +178,8 @@ module Intouch
                 detail.prop_key.to_s.gsub(/_id$/, '')
               elsif detail.property == 'cf'
                 detail.prop_key.to_i
+              elsif detail.property == 'attachment'
+                'attachment'
               end
             end
             updated_details << 'notes' if last_journal.notes.present?
@@ -189,7 +191,11 @@ module Intouch
           if updated_details.present?
             (updated_details - %w(priority status assigned_to)).map do |field|
               if field.is_a? String
-                I18n.t(('field_' + field).to_sym)
+                if field == 'attachment'
+                  I18n.t('label_attachment')
+                else
+                  I18n.t(('field_' + field).to_sym)
+                end
               elsif field.is_a? Fixnum
                 CustomField.find(field).try(:name)
               end
