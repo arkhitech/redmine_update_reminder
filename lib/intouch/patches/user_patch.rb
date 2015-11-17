@@ -3,7 +3,7 @@ module Intouch
     def self.included(base) # :nodoc:
 
       base.class_eval do
-        unloadable if Rails.env.production?
+        unloadable
 
         has_one :telegram_user, dependent: :destroy
 

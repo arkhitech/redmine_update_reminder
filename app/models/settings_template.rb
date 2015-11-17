@@ -1,5 +1,5 @@
 class SettingsTemplate < ActiveRecord::Base
-  unloadable if Rails.env.production?
+  unloadable
 
   attr_accessible :name, :intouch_settings
 

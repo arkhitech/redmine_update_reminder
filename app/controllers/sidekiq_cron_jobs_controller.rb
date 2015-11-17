@@ -1,5 +1,5 @@
 class SidekiqCronJobsController < ApplicationController
-  unloadable if Rails.env.production?
+  unloadable
 
   layout 'admin'
 

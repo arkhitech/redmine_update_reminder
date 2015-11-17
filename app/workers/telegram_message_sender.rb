@@ -16,6 +16,8 @@ class TelegramMessageSender
     begin
       bot.send_message(chat_id: telegram_user_id, text: message, disable_web_page_preview: true, parse_mode: 'Markdown')
     rescue Telegrammer::Errors::BadRequestError => e
+      TELEGRAM_MESSAGE_SENDER_LOG.info "MESSAGE: #{message}"
+
       telegram_user = if telegram_user_id > 0
                         TelegramUser.find_by tid: telegram_user_id
                       else

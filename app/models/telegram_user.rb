@@ -1,5 +1,5 @@
 class TelegramUser < ActiveRecord::Base
-  unloadable if Rails.env.production?
+  unloadable
 
   belongs_to :user
   attr_accessible :user_id

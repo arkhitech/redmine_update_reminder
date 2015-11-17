@@ -2,7 +2,7 @@ module Intouch
   module IssuePatch
     def self.included(base) # :nodoc:
       base.class_eval do
-        unloadable if Rails.env.production?
+        unloadable
 
         # noinspection RubyArgCount
         store :intouch_data, accessors: %w(last_notification)

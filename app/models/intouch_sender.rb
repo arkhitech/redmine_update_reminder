@@ -1,5 +1,5 @@
 class IntouchSender
-  unloadable if Rails.env.production?
+  unloadable
 
   def self.send_email_message(issue_id, state)
     EmailSenderWorker.perform_in(5.seconds, issue_id, state)
