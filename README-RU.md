@@ -6,6 +6,8 @@
 
 ## Requirements
 
+**Redmine 3.1.x**
+
 Для работы палагина необходимо установить плагин [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq)
 
 [Запуск Sidekiq как демона](https://github.com/mperham/sidekiq/wiki/Deployment#daemonization)

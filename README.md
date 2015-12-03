@@ -6,6 +6,8 @@ Plugin is designed to send notifications to Redmine’s users by Telegram or E-m
 
 ## Requirements
 
+**Redmine 3.1.x**
+
 To work with plugin, you must install a [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq) plugin
 
 [Launch Sidekiq as daemon](https://github.com/mperham/sidekiq/wiki/Deployment#daemonization)
