@@ -8,26 +8,26 @@ Plugin is designed to send notifications to Redmine’s users by Telegram or E-m
 
 **Redmine 3.1.x**
 
-To work with plugin, you must install a [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq) plugin
+This plugin relies on the [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq) plugin.
 
 [Launch Sidekiq as daemon](https://github.com/mperham/sidekiq/wiki/Deployment#daemonization)
 
-* Examples of configuration file and script for `init.d` are in the folder `tools`
+* The `tools` folder has the examples of the plugin config files and the `init.d` startup script
 
-# Plugin Setting
+# Plugin Setup
 
 ## General settings
 
-The required notification protocols are specified in the "Protocols" section. Telegram and email are currently available.
+You should specify all the necessary notification protocols in the "Protocols" section. These are 'telegram' and 'email' available at the moment.
 
-The "Working days" section shall contain:
+The section "Working days" should contain: 
 
-* the start and the end of the working day
-* what days of the week are working days
+* when the workday starts and when it ends
+* what days are considered as workdays
 
-In the "Urgent issues" section you should specify issue priorities, for which notifications should be **always** sent, regardless of time of day and day of the week.
+The section "Urgent Tasks" contains the ticket priorities, that will have notifications being sent despite of the time or day of a week.
 
-The plugin contains the functional of periodic notifications about the issues "In work" or with the "Feedback" status. To correctly interpret these statuses by plugin, specify them in the respective sections.
+The plugin contains the fuctionality that allows you send scheduled notifications tagged as "In work" or "Feedback". Specify these statuses in appropriate sections so the plugin could parse them correctly.
 
 ## Telegram
 
