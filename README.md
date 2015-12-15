@@ -79,12 +79,10 @@ The groups are added to Redmine, if the bot was added to them.
 
 The group name is saved on addition. Issue the `/rename` command in the group chat to change the group name in Redmine.
 
-## Setting Templates
+## Settings Templates
 
-Setting templates allow you to specify all the required settings for the project only one time
-and then to select the desired template in each project.
-Read below for more information on the plugin settings within the project.
-
+The settings templates allow you to set all the required project settings once, and then just choose the right template for each project.
+Read below of the settings of the plugin integrated into the project.
 
 ## Regular Notifications Schedule
 
