@@ -128,26 +128,25 @@ This section lets you set instant notifications for the following recipients:
 
 ### General settings
 
-The intervals of periodic notifications for different priorities are specified in general settings.
+The intervals of Periodic Notifications for different priority types are specified in General Settings.
 
 ### In work / Feedback
 
-The recipients of periodic notifications about the issues with the statuses
-"In work" and "Feedback" are specified on these tabs.
+These tabs contain recipients of the Periodic Notifications with the "In work" and "Feedback" statuses.
 
 ### Unassigned / Assigned to the group
 
-On this tab, one should specify recipients of periodic notifications about the issues
+This tab contains recipients of the Periodic Notifications that are:
 
-* without the designated assigner
+* not assigned to anyone
 * assigned to the group
 
 ### Overdue / Without a due date
 
-On this tab, one should specify recipients of periodic notifications about the issues
+This tab contains recipients of the Periodic Notifications that are:
 
-* the due date of which is in the past
-* with an unspecified due date
+* overdue
+* with unspecified due date
 
 # Author of the Plugin
 
