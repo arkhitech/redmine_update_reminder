@@ -31,19 +31,19 @@ The plugin contains the fuctionality that allows you send scheduled notification
 
 ## Telegram
 
-On this tab, you must specify the Telegram bot token.
+Specify the Telegram Bot token here.
 
 ### Creating a Telegram bot
 
-It is necessary to register a bot and get its token. For this purpose, there is a special bot in Telegram - @BotFather.
+It is necessary to register a bot and get its token. There is a special bot in Telegram for this purpose. It is called @BotFather.
 
-We should write for him `/start` and get a list of all its commands.
-The first and foremost - `/newbot`  - we send to it and the bot asks to come up with the name for our new bot.
-The only restriction on the name - it must be ended with “bot”.
-If successful, @BotFather returns a bot token and link to quickly add a bot to contacts;
-otherwise you'll have to break your head over the name.
+Start it by typing `/start` to get a list of all available commands.
+Issue the  `/newbot` command and it will ask you to come up with the name for our new bot.
+The name must end with "bot" word.
+On success @BotFather will give you token for your new bot and a link to quickly add the bot to contact list.
+You'll have to invent a new name if the registration fails.
 
-The resulting token must be entered in the plugin settings page.
+You should enter the token you've just created on the Plugin Settings page.
 
 ### Bot launch
 
