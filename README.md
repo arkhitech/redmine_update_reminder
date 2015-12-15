@@ -88,29 +88,24 @@ Read below of the settings of the plugin integrated into the project.
 
 The plugin is provided with:
 
-* Notification about issues with the status "In work"
-* Notification about issues with the status "Feedback"
-* Notifications about unassigned issues
-* Notifications about overdue issues
+* Notification about issues with the "In work" status;
+* Notification about issues with the "Feedback" status;
+* Notifications about unassigned issues;
+* Notifications about overdue issues.
 
-The frequency and recipients of these notifications are set for each project individually or using templates.
+The periodicity of the repeating messages and the recipients settings are configured separately for each project or with templates.
+The regular notifications schedule is set on the **Periodic tasks schedule** tab located on the Plugin Settings page.
 
-Regular notifications schedule regular is set on the plugin settings page, on the **Periodic tasks schedule** tab.
+One has to initialize the priodic tasks before the plugin's first run.
 
-When you set the plugin for the first time, you need to initialize the periodic tasks.
+You can also set periodic notifications schedule convenient to you.
 
-You can then set a periodic notifications schedule convenient to you.
-
-Schedule is set using the CRON syntax.
-
-It is important to note that on this tab you should set how often to check for availability of issues on which
-you want to send the notifications.
-The frequency of the notifications themselves is indicated in each project individually or using templates.
+Schedule is set using the cron syntax.
 
 # Setting the module within the project
 
 You must select the Intouch module in the project settings on the "Modules" tab.
-As a result, the "Intouch" tab appears in the settings.
+As a result, the "Intouch" tab in the settings will appear.
 
 This tab includes three sections:
 
@@ -120,15 +115,14 @@ This tab includes three sections:
 
 ## Instant notifications when changing the issue status/priority
 
-In this section, instant notifications are set for the following recipients:
+This section lets you set instant notifications for the following recipients:
 
 * Author
 * Assigner
 * Task watchers
 * Telegram groups
 
-**Important note: In order that the Telegram’s user can receive messages,
-the user must preliminarily write the `/start` command to the bot**
+**Important note: The Telegram user should issue the `/start` command to recieve messages.
 
 ## Periodic notifications
 
