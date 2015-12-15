@@ -40,7 +40,7 @@ It is necessary to register a bot and get its token. There is a special bot in T
 Start it by typing `/start` to get a list of all available commands.
 Issue the  `/newbot` command and it will ask you to come up with the name for our new bot.
 The name must end with "bot" word.
-On success @BotFather will give you token for your new bot and a link to quickly add the bot to contact list.
+On success @BotFather will give you token for your new bot and a link so you could quickly add the bot to contact list.
 You'll have to invent a new name if the registration fails.
 
 You should enter the token you've just created on the Plugin Settings page.
@@ -54,7 +54,7 @@ Specify the following things before launching the bot:
 * Specify what priorities should be considered as urgent ones
 * Specify what statuses should be considered _in work_ and _feedback_
 
-Run the bot after that by typing:
+Run the bot by typing:
 
 ```shell
 bundle exec rake intouch:telegram:bot PID_DIR='/pid/dir'
@@ -104,8 +104,8 @@ Schedule is set using the cron syntax.
 
 # Setting the module within the project
 
-You must select the Intouch module in the project settings on the "Modules" tab.
-As a result, the "Intouch" tab in the settings will appear.
+Select the Intouch module in the project settings on the "Modules" tab.
+As a result, the "Intouch" tab in the will appear in Settings.
 
 This tab includes three sections:
 
