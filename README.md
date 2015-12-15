@@ -47,42 +47,37 @@ You should enter the token you've just created on the Plugin Settings page.
 
 ### Bot launch
 
-Before launching the bot, you must specify in the plugin settings page:
+Specify the following things before launching the bot:
 
-* Telegram’s bot token (how to get it is described below)
-* working time - notifications about non-urgent issues are sent during this time
-* specify what priorities should be considered as urgent ones
-* specify what statuses should be considered _in work_ and _feedback_
+* The Telegram bot token (create a new one as described above if you haven't done it already)
+* Working Time - when and what notifications will be sent
+* Specify what priorities should be considered as urgent ones
+* Specify what statuses should be considered _in work_ and _feedback_
 
-After that you need to launch a bot by command:
+Run the bot after that by typing:
 
 ```shell
 bundle exec rake intouch:telegram:bot PID_DIR='/pid/dir'
 ```
 
-Example of the script for `init.d` in the `tools` folder.
+The `tools` folder has the examples of the plugin config files and the `init.d` startup script.
 
-This process adds Telegram’s users in Redmine, as well as creates the Telegram groups in Redmine,
-in which the bot was added.
+This will add the Telegram users to Redmine and create the Telegram groups in which it was added in Redmine.
 
 ### Adding a Telegram account to the user
 
-Once the bot was launched and the user welcomed it by `/start` command,
-it is possible to select the corresponding Telegram account for the user on the user’s editing page.
+It is also possible to choose the corresponding account for users added with the `/start` command on the user details page.
 
 #### If the bot has been changed
 
 If you have changed the bot, then each user needs to greet it personally.
-
-That is, to find @YourTelegramBot through the search and to write to it `/start`.
+One has to connect to the new bot if it has been changed. To do that all the participating Users should find the new bot via search and type the `/start` command again.
 
 ### Adding a Telegram Group
 
-The groups will be added automatically in Redmine, if the boat will be added to them.
+The groups are added to Redmine, if the bot was added to them.
 
-The name of the group is saved right away when adding.
-If some time later you change the name of the group and want to update the name in Redmine,
-perform the command `/rename` in the group chat.
+The group name is saved on addition. Issue the `/rename` command in the group chat to change the group name in Redmine.
 
 ## Setting Templates
 
