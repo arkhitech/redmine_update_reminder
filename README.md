@@ -148,6 +148,14 @@ This tab contains recipients of the Periodic Notifications that are:
 * overdue
 * with unspecified due date
 
+# FAQ
+## Why bot is not send messages to a group chat?
+
+Perhaps you have not initialized **Periodic tasks schedule**.
+
+In plugin settings go to the **Periodic tasks schedule** tab and click I**nitialize periodic tasks**.
+
+
 # Author of the Plugin
 
 The plugin is designed by [Centos-admin.ru](http://centos-admin.ru/).
