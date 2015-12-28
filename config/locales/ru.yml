@@ -114,6 +114,7 @@ ru:
         title: "Периодические задачи"
       telegram:
         users: Аккаунты Telegram
+        groups: "Групповые чаты Telegram"
     settings_templates:
       edit: "Редактирование шаблона настроек"
       new: "Новый шаблон настроек"

@@ -114,6 +114,7 @@ en:
         title: Periodic tasks
       telegram:
         users: "Telegram users"
+        groups: "Telegram Group Chats"
     settings_templates:
       edit: Editing setting template
       new: New setting template
