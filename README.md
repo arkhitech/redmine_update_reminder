@@ -20,7 +20,7 @@ This plugin relies on the [redmine_sidekiq](https://github.com/ogom/redmine_side
 
 You should specify all the necessary notification protocols in the "Protocols" section. These are 'telegram' and 'email' available at the moment.
 
-The section "Working days" should contain: 
+The section "Working days" should contain:
 
 * when the workday starts and when it ends
 * what days are considered as workdays
@@ -96,7 +96,9 @@ The plugin is provided with:
 The periodicity of the repeating messages and the recipients settings are configured separately for each project or with templates.
 The regular notifications schedule is set on the **Periodic tasks schedule** tab located on the Plugin Settings page.
 
-One has to initialize the priodic tasks before the plugin's first run.
+One has to initialize the periodic tasks before the plugin's first run.
+
+For do this, click "Initialize periodic tasks" in the "Schedule periodic tasks" tab in the plugin settings.
 
 You can also set periodic notifications schedule convenient to you.
 

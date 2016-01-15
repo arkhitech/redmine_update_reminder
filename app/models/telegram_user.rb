@@ -2,7 +2,7 @@ class TelegramUser < ActiveRecord::Base
   unloadable
 
   belongs_to :user
-  attr_accessible :user_id
+  attr_accessible :user_id, :first_name, :last_name, :username
 
   def name
     if username.present?
