@@ -23,6 +23,6 @@
 <% end %>
 
 <% content_for :header_tags do %>
-  <%= stylesheet_link_tag "intouch?#{Intouch.commit_hash}", plugin: 'redmine_intouch' %>
-  <%= javascript_include_tag "intouch?#{Intouch.commit_hash}", plugin: 'redmine_intouch' %>
+  <%= stylesheet_link_tag "intouch.css?#{Intouch.commit_hash}", plugin: 'redmine_intouch' %>
+  <%= javascript_include_tag "intouch.js?#{Intouch.commit_hash}", plugin: 'redmine_intouch' %>
 <% end %>

@@ -1,4 +1,4 @@
-gem 'telegrammer', '< 0.7.0'
+gem 'telegrammer'
 gem 'pidfile'
 gem 'sidekiq-failures'
 gem 'sidekiq-cron'
