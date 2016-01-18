@@ -27,7 +27,7 @@ class SidekiqCronJobsController < ApplicationController
       }
     }
 
-    Sidekiq::Cron::Job.load_from_hash! hash
+    Sidekiq::Cron::Job.load_from_hash hash
 
     redirect_to action: "plugin", id: "redmine_intouch", controller: "settings", tab: 'sidekiq_cron_jobs'
   end
