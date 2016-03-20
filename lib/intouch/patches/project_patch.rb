@@ -37,6 +37,18 @@ module Intouch
           @settings_template ||= SettingsTemplate.find_by(id: settings_template_id)
         end
 
+        def title
+          if self.root?
+            self.name
+          else
+            titles = []
+            ancestors = self.ancestors.visible.to_a
+            titles << ancestors
+            titles << name
+            titles.join(" » ")
+          end
+        end
+
         private
 
         def copy_settings_from_parent

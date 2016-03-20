@@ -262,7 +262,7 @@ module Intouch
 
         def telegram_message
           message = <<TEXT
-`#{project.name}: #{subject}`
+`#{project.title}: #{subject}`
 #{I18n.t('field_assigned_to')}: #{performer}#{bold_for_alarm(priority.name)}
 #{I18n.t('field_status')}: #{status.name}
 #{Intouch.issue_url(id)}
