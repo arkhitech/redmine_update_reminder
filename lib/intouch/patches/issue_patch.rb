@@ -237,7 +237,7 @@ module Intouch
         end
 
         def telegram_live_message
-          message = "`#{project.name}: #{subject}`"
+          message = "`#{project.title}: #{subject}`"
 
           message += "\n#{I18n.t('intouch.telegram_message.issue.updated_by')}: #{updated_by}" if updated_by.present?
 
