@@ -41,11 +41,7 @@ module Intouch
           if self.root?
             self.name
           else
-            titles = []
-            ancestors = self.ancestors.visible.to_a
-            titles << ancestors
-            titles << name
-            titles.join(" » ")
+            "#{ self.parent.name } » #{ self.name }"
           end
         end
 
