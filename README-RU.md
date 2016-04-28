@@ -4,7 +4,7 @@
 
 Плагин предназначен для рассылки уведомлений пользователям Redmine через Telegram или E-mail.
 
-Пожалуйста помогите нам сделать этот плагин лучше, сообщая во вкладке [Issues](https://github.com/centosadmin/redmine_intouch/issues) обо всех проблемах, с которыми Вы столкнётесь при его использовании. We are ready to answer all your questions regarding this plugin.
+Пожалуйста помогите нам сделать этот плагин лучше, сообщая во вкладке [Issues](https://github.com/centosadmin/redmine_intouch/issues) обо всех проблемах, с которыми Вы столкнётесь при его использовании. Мы готовы ответить на Все ваши вопросы, касающиеся этого плагина.
 
 ## Requirements
 
