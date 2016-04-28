@@ -4,7 +4,7 @@ Plugin is designed by [Centos-admin.ru](http://centos-admin.ru/).
 
 Plugin is designed to send notifications to Redmine’s users by Telegram or E-mail.
 
-Please help us make this plugin better telling us of any [issues](https://github.com/centosadmin/redmine_intouch/issues) you'll face using it.
+Please help us make this plugin better telling us of any [issues](https://github.com/centosadmin/redmine_intouch/issues) you'll face using it. We are ready to answer all your questions regarding this plugin.
 
 ## Requirements
 
