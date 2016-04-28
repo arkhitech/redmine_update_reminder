@@ -151,7 +151,7 @@ This tab contains recipients of the Periodic Notifications that are:
 * with unspecified due date
 
 # FAQ
-## Why the bot does not send messages to a group chat?
+## Why bot does not send messages to a group chat?
 
 Perhaps you have not initialized **Periodic tasks schedule**.
 
