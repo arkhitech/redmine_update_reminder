@@ -126,7 +126,7 @@ This section lets you set instant notifications for the following recipients:
 * Task watchers
 * Telegram groups
 
-**Important note: The Telegram user should issue the `/start` command to recieve messages.
+**Important note: The Telegram user should issue the `/start` command to recieve messages.**
 
 ## Periodic notifications
 
