@@ -19,7 +19,7 @@ class TelegramLiveSenderWorker
       roles_in_issue << 'watchers' if issue.watchers.pluck(:user_id).include? user.id
       roles_in_issue << 'author' if issue.author_id == user.id
 
-      project = issue.project
+      project  = issue.project
       settings = project.active_telegram_settings
 
       if settings.present?
