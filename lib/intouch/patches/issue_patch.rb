@@ -142,12 +142,12 @@ module Intouch
           if project.assigner_ids.include? assigned_to_id
             assigned_to_id
           else
-            journals.where(user_id: project.assigner_ids).last.try :user_id
+            journals.order(:id).where(user_id: project.assigner_ids).last.try :user_id
           end
         end
 
         def assigners_updated_on
-          assigners_updated_on = journals.where(user_id: project.assigner_ids).last.try :created_on
+          assigners_updated_on = journals.order(:id).where(user_id: project.assigner_ids).last.try :created_on
           assigners_updated_on.present? ? assigners_updated_on : updated_on
         end
 
@@ -166,11 +166,10 @@ module Intouch
         end
 
         def updated_by
-          journals.order(:id).last.user if journals.present?
+          last_journal.user if journals.present?
         end
 
         def updated_details
-          last_journal = journals.order(:id).last
           updated_details = []
           if last_journal.present?
             updated_details = last_journal.visible_details.map do |detail|
@@ -204,7 +203,6 @@ module Intouch
         end
 
         def updated_performer_text
-          last_journal = journals.last
           performer_journal = last_journal.details.find_by(prop_key: 'assigned_to_id')
           if performer_journal.old_value
             old_performer = Principal.find performer_journal.old_value
@@ -215,14 +213,12 @@ module Intouch
         end
 
         def updated_priority_text
-          last_journal = journals.last
           priority_journal = last_journal.details.find_by(prop_key: 'priority_id')
           old_priority = IssuePriority.find priority_journal.old_value
           "#{old_priority.name} -> #{priority.name}"
         end
 
         def updated_status_text
-          last_journal = journals.last
           status_journal = last_journal.details.find_by(prop_key: 'status_id')
           old_status = IssueStatus.find status_journal.old_value
           "#{old_status.name} -> #{status.name}"
@@ -311,6 +307,10 @@ TEXT
         end
 
       end
+    end
+
+    def last_journal
+      journals.order(:id).last
     end
 
   end
