@@ -166,11 +166,11 @@ module Intouch
         end
 
         def updated_by
-          journals.last.user if journals.present?
+          journals.order(:id).last.user if journals.present?
         end
 
         def updated_details
-          last_journal = journals.last
+          last_journal = journals.order(:id).last
           updated_details = []
           if last_journal.present?
             updated_details = last_journal.visible_details.map do |detail|
