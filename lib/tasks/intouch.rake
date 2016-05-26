@@ -57,6 +57,7 @@ namespace :intouch do
 
         bot.get_updates(fail_silently: false) do |message|
           begin
+            next unless message.is_a?(Telegrammer::DataTypes::Message) # Update for telegrammer gem 0.8.0
             if message.text == '/start'
               user   = message.from
               t_user = TelegramUser.where(tid: user.id).first_or_initialize(username:   user.username,
