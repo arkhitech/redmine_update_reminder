@@ -3,7 +3,9 @@ namespace :intouch do
     # bundle exec rake intouch:telegram:bot PID_DIR='/tmp'
     desc "Runs telegram bot process (options: PID_DIR='/pid/dir')"
     task :bot => :environment do
+      tries = 0
       begin
+        tries       += 1
         intouch_log = Rails.env.production? ? Logger.new(Rails.root.join('log/intouch', 'telegram-bot.log')) : Logger.new(STDOUT)
 
         Process.daemon(true, true) if Rails.env.production?
@@ -28,7 +30,7 @@ namespace :intouch do
           abort 'Aborted with HUP signal'
         end
 
-        intouch_log.info "Start daemon..."
+        intouch_log.info 'Start daemon...'
 
         token = Setting.plugin_redmine_intouch['telegram_bot_token']
 
@@ -105,9 +107,26 @@ namespace :intouch do
           end
         end
 
+      rescue PidFile::DuplicateProcessError => e
+        intouch_log.error "#{e.class}: #{e.message}"
+        pid = e.message.match(/Process \(.+ - (\d+)\) is already running./)[1].to_i
+
+        intouch_log.info "Kill process with pid: #{pid}"
+
+        Process.kill('HUP', pid)
+        if tries < 4
+          intouch_log.info 'Waiting for 5 seconds...'
+          sleep 5
+          intouch_log.info 'Retry...'
+          retry
+        end
       rescue Exception => e
         intouch_log.error "#{e.class}: #{e.message}"
-        retry
+        if tries < 4
+          sleep 2
+          intouch_log.info "Retry after error. Try #{tries}"
+          retry
+        end
       end
     end
   end
