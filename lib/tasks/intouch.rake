@@ -1,11 +1,9 @@
 namespace :intouch do
   namespace :telegram do
-    # bundle exec rake intouch:telegram:bot PID_DIR='/tmp'
-    desc "Runs telegram bot process (options: PID_DIR='/pid/dir')"
+    # bundle exec rake intouch:telegram:bot PID_DIR='tmp/pids'
+    desc "Runs telegram bot process (options: PID_DIR='tmp/pids')"
     task :bot => :environment do
-      tries = 0
       begin
-        tries       += 1
         intouch_log = Rails.env.production? ? Logger.new(Rails.root.join('log/intouch', 'telegram-bot.log')) : Logger.new(STDOUT)
 
         Process.daemon(true, true) if Rails.env.production?
@@ -103,30 +101,12 @@ namespace :intouch do
               end
             end
           rescue Exception => e
-            intouch_log.error "#{e.class}: #{e.message}"
+            intouch_log.error "UPDATE ERROR #{e.class}: #{e.message}"
           end
         end
 
-      rescue PidFile::DuplicateProcessError => e
-        intouch_log.error "#{e.class}: #{e.message}"
-        pid = e.message.match(/Process \(.+ - (\d+)\) is already running./)[1].to_i
-
-        intouch_log.info "Kill process with pid: #{pid}"
-
-        Process.kill('HUP', pid)
-        if tries < 4
-          intouch_log.info 'Waiting for 5 seconds...'
-          sleep 5
-          intouch_log.info 'Retry...'
-          retry
-        end
       rescue Exception => e
-        intouch_log.error "#{e.class}: #{e.message}"
-        if tries < 4
-          sleep 2
-          intouch_log.info "Retry after error. Try #{tries}"
-          retry
-        end
+        intouch_log.error "GLOBAL ERROR #{e.class}: #{e.message}"
       end
     end
   end
