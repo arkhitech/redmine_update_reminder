@@ -101,12 +101,12 @@ namespace :intouch do
               end
             end
           rescue Exception => e
-            intouch_log.error "UPDATE ERROR #{e.class}: #{e.message}"
+            intouch_log.error "UPDATE ERROR #{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
           end
         end
 
       rescue Exception => e
-        intouch_log.error "GLOBAL ERROR #{e.class}: #{e.message}"
+        intouch_log.error "GLOBAL ERROR #{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
       end
     end
   end
