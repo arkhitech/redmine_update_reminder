@@ -96,7 +96,7 @@ namespace :intouch do
               elsif message.text == '/rename'
                 user = message.from
                 t_chat.update title: chat.title
-                bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! I'm updated this group chat title in Redmine.")
+                bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! I've updated this group chat title in Redmine.")
                 intouch_log.info "#{bot_name}: rename group title #{chat.title}"
               end
             end
