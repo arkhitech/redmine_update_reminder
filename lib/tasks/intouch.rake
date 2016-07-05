@@ -105,6 +105,12 @@ namespace :intouch do
           end
         end
 
+      rescue HTTPClient::ConnectTimeoutError, Errno::EIO => e
+        intouch_log.error "GLOBAL ERROR WITH RESTART #{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
+        intouch_log.info 'Restart after 10 seconds...'
+        sleep 10
+        retry
+
       rescue Exception => e
         intouch_log.error "GLOBAL ERROR #{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
       end
