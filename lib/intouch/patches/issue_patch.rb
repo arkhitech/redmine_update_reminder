@@ -310,7 +310,7 @@ TEXT
     end
 
     def last_journal
-      journals.order(:id).last
+      @last_journal ||= journals.order(:id).last
     end
 
   end
