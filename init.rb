@@ -1,20 +1,19 @@
 FileUtils.mkdir_p(Rails.root.join('log/intouch')) unless Dir.exist?(Rails.root.join('log/intouch'))
 
-require 'redmine'
-require_dependency 'intouch'
-require_dependency 'intouch/hook_listener'
-require_dependency 'intouch/patches/projects_helper_patch'
-require_dependency 'intouch/patches/project_patch'
-require_dependency 'intouch/patches/issue_patch'
-require_dependency 'intouch/patches/issue_priority_patch'
-require_dependency 'intouch/patches/issue_status_patch'
-require_dependency 'intouch/patches/user_patch'
+require 'intouch'
+
+ActionDispatch::Callbacks.to_prepare do
+  paths = '/lib/intouch/{patches/*_patch,hooks/*_hook}.rb'
+  Dir.glob(File.dirname(__FILE__) + paths).each do |file|
+    require_dependency file
+  end
+end
 
 Redmine::Plugin.register :redmine_intouch do
   name 'Redmine Intouch plugin'
   url 'https://github.com/olemskoi/redmine_intouch'
   description 'This is a plugin for Redmine which sends a reminder email and Telegram messages to the assignee workign on a task, whose status is not updated with-in allowed duration'
-  version '0.1.31'
+  version '0.1.32'
   author 'Centos-admin.ru'
   author_url 'http://centos-admin.ru'
   settings(default: {'active_protocols' => %w(email), 'work_day_from' => '10:00', 'work_day_to' => '18:00'},

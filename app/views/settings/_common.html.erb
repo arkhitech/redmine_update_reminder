@@ -48,8 +48,8 @@
     <% IssuePriority.find_each do |priority| %>
       <li>
         <%= check_box_tag "settings[alarm_priority_#{priority.id}]", '1',
-                          @settings["alarm_priority_#{priority.id}"] %>
-        <label><%= priority.name %></label>
+                          @settings["alarm_priority_#{priority.id}"], id: dom_id(priority) %>
+        <%= label_tag dom_id(priority), priority.name %>
       </li>
 
     <% end %>
@@ -62,10 +62,9 @@
       <% IssueStatus.find_each do |status| %>
         <li>
           <%= check_box_tag "settings[#{notification_group}_status_#{status.id}]", '1',
-                            @settings["#{notification_group}_status_#{status.id}"] %>
-          <label><%= status.name %></label>
+                            @settings["#{notification_group}_status_#{status.id}"], id: dom_id(status, notification_group) %>
+          <%= label_tag dom_id(status, notification_group), status.name %>
         </li>
-
       <% end %>
     </ul>
   </div>

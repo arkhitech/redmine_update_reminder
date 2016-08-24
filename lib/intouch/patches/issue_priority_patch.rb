@@ -1,4 +1,5 @@
 module Intouch
+  module Patches
   module IssuePriorityPatch
     def self.included(base) # :nodoc:
 
@@ -12,7 +13,7 @@ module Intouch
 
       end
     end
-
+end
   end
 end
-IssuePriority.send(:include, Intouch::IssuePriorityPatch)
+IssuePriority.send(:include, Intouch::Patches::IssuePriorityPatch)
