@@ -19,6 +19,16 @@ class SettingsTemplatesController < ApplicationController
 
   def new
     @settings_template = SettingsTemplate.new
+    if params[:copy_from]
+      begin
+        @copy_from = SettingsTemplate.find(params[:copy_from])
+
+        @settings_template.copy_from(@copy_from)
+      rescue ActiveRecord::RecordNotFound
+        render_404
+        return
+      end
+    end
   end
 
   def create
