@@ -8,7 +8,7 @@ Please help us make this plugin better telling us of any [issues](https://github
 
 ## Requirements
 
-**Redmine 3.1.x**
+**Redmine 3.1+**
 
 This plugin relies on the [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq) plugin.
 
