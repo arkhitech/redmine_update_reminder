@@ -13,7 +13,12 @@
   <tr>
     <th><%= t('field_status') %> \ <%= t('field_priority') %></th>
     <% IssuePriority.order(:position).each do |priority| %>
-      <th><%= priority.name %></th>
+      <th>
+        <%= check_box_tag "#{kind}_priority_#{priority.id}", '1', false, class: 'prioritySelectAll',
+                          data: {kind: kind, priority_id: priority.id}
+        %>
+        <%= label_tag "#{kind}_priority_#{priority.id}", priority.name %>
+      </th>
     <% end %>
   </tr>
   </thead>
@@ -21,7 +26,10 @@
   <% IssueStatus.order(:position).each do |status| %>
     <tr>
       <th>
-        <%= status.name %>
+        <%= check_box_tag "#{kind}_status_#{status.id}", '1', false, class: 'statusSelectAll',
+                          data: {kind: kind, status_id: status.id}
+        %>
+        <%= label_tag "#{kind}_status_#{status.id}", status.name %>
       </th>
       <% IssuePriority.order(:position).each do |priority| %>
         <td>
@@ -29,8 +37,9 @@
             <%= check_box_tag "intouch_settings[#{protocol}_settings][#{kind}][#{status.id}][]", priority.id,
                               settings_source.send("#{protocol}_settings").try(:[], kind).
                                   try(:[], status.id.to_s).try(:include?, priority.id.to_s),
-                              class: "#{protocol}_#{status.id}_#{priority.id}",
-                              id:    "#{kind}_#{protocol}_priority_#{priority.id}_status_#{status.id}"
+                              class: 'intouchPriorityStatusCheckbox',
+                              id:    "#{kind}_#{protocol}_priority_#{priority.id}_status_#{status.id}",
+                              data:  {kind: kind, priority_id: priority.id, status_id: status.id}
             %>
             <%= label_tag "#{kind}_#{protocol}_priority_#{priority.id}_status_#{status.id}", l("intouch.protocols.#{protocol}") %>
             <br>
