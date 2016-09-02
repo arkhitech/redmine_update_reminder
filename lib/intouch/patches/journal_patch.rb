@@ -11,7 +11,7 @@ module Intouch
 
           def send_live_message
             project = issue.project
-            if project.module_enabled?(:intouch) and project.active? and !issue.closed?
+            if project.module_enabled?(:intouch) and project.active?
               if Intouch.work_time? or issue.alarm?
                 if Intouch.active_protocols.include? 'telegram'
 
