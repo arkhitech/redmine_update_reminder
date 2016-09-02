@@ -13,7 +13,7 @@ Redmine::Plugin.register :redmine_intouch do
   name 'Redmine Intouch plugin'
   url 'https://github.com/olemskoi/redmine_intouch'
   description 'This is a plugin for Redmine which sends a reminder email and Telegram messages to the assignee workign on a task, whose status is not updated with-in allowed duration'
-  version '0.2.1'
+  version '0.2.2'
   author 'Centos-admin.ru'
   author_url 'http://centos-admin.ru'
   settings(default: {'active_protocols' => %w(email), 'work_day_from' => '10:00', 'work_day_to' => '18:00'},
