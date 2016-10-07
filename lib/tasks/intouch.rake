@@ -91,7 +91,8 @@ namespace :intouch do
               t_chat = TelegramGroupChat.where(tid: chat.id.abs).first_or_initialize(title: chat.title)
               if t_chat.new_record?
                 t_chat.save
-                bot.send_message(chat_id: message.chat.id, text: "Hello, people! I'm added this group chat for Redmine notifications.")
+                bot.send_message(chat_id: message.chat.id,
+                                 text: "Hello, people! I've added this group chat for Redmine notifications.")
                 intouch_log.info "#{bot_name}: new group #{chat.title} added!"
               elsif message.text == '/rename'
                 user = message.from
