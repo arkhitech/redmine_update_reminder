@@ -1,3 +1,5 @@
+[![Code Climate](https://codeclimate.com/github/centosadmin/redmine_intouch/badges/gpa.svg)](https://codeclimate.com/github/centosadmin/redmine_intouch)
+
 # redmine_intouch
 
 Plugin is designed by [Centos-admin.ru](http://centos-admin.ru/).
