@@ -31,7 +31,7 @@ The section "Working days" should contain:
 
 The section "Urgent Tasks" contains the ticket priorities, that will have notifications being sent despite of the time or day of a week.
 
-The plugin contains the fuctionality that allows you send scheduled notifications tagged as "In work" or "Feedback". Specify these statuses in appropriate sections so the plugin could parse them correctly.
+The plugin contains the fuctionality that allows you to send scheduled notifications tagged as "In work" or "Feedback". Specify these statuses in appropriate sections so the plugin could parse them correctly.
 
 ## Telegram
 
@@ -44,7 +44,7 @@ It is necessary to register a bot and get its token. There is a special bot in T
 Start it by typing `/start` to get a list of all available commands.
 Issue the  `/newbot` command and it will ask you to come up with the name for our new bot.
 The name must end with "bot" word.
-On success @BotFather will give you token for your new bot and a link so you could quickly add the bot to contact list.
+On success @BotFather will give you a token for your new bot and a link so you could quickly add the bot to contact list.
 You'll have to invent a new name if the registration fails.
 
 You should enter the token you've just created on the Plugin Settings page.
@@ -102,16 +102,16 @@ The regular notifications schedule is set on the **Periodic tasks schedule** tab
 
 One has to initialize the periodic tasks before the plugin's first run.
 
-For do this, click "Initialize periodic tasks" in the "Schedule periodic tasks" tab in the plugin settings.
+To do this, click "Initialize periodic tasks" in the "Schedule periodic tasks" tab in the plugin settings.
 
-You can also set periodic notifications schedule convenient to you.
+You can also set periodic notifications schedule convenient for you.
 
 Schedule is set using the cron syntax.
 
 # Setting the module within the project
 
 Select the Intouch module in the project settings on the "Modules" tab.
-As a result, the "Intouch" tab in the will appear in Settings.
+As a result, the "Intouch" tab will appear in the Settings.
 
 This tab includes three sections:
 
@@ -121,7 +121,7 @@ This tab includes three sections:
 
 ## Instant notifications when changing the issue status/priority
 
-This section lets you set instant notifications for the following recipients:
+This section allows you to set instant notifications for the following recipients:
 
 * Author
 * Assigner
@@ -155,7 +155,7 @@ This tab contains recipients of the Periodic Notifications that are:
 * with unspecified due date
 
 # FAQ
-## Why bot does not send messages to a group chat?
+## Why does not the bot send messages to a group chat?
 
 Perhaps you have not initialized **Periodic tasks schedule**.
 
