@@ -11,7 +11,7 @@ class TelegramMessageSender
   TELEGRAM_MESSAGE_SENDER_ERRORS_LOG = Logger.new(Rails.root.join('log/intouch', 'telegram-message-sender-errors.log'))
 
   def perform(telegram_user_id, message)
-    token = Setting.plugin_redmine_intouch['telegram_bot_token']
+    token = Intouch.bot_token
     bot = Telegrammer::Bot.new(token)
 
     begin

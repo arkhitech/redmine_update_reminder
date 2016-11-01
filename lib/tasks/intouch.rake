@@ -40,7 +40,7 @@ namespace :intouch do
       intouch_log.info 'Start daemon...'
 
       begin
-        token = Setting.plugin_redmine_intouch['telegram_bot_token']
+        token = Intouch.bot_token
 
         unless token.present?
           intouch_log.error 'Telegram Bot Token not found. Please set it in the plugin config web-interface.'
@@ -57,34 +57,8 @@ namespace :intouch do
         bot.get_updates(fail_silently: false) do |message|
           begin
             next unless message.is_a?(Telegrammer::DataTypes::Message) # Update for telegrammer gem 0.8.0
-            if message.text == '/start'
-              user = message.from
-              t_user = TelegramCommon::Account.where(tid: user.id).first_or_initialize(username: user.username,
-                                                                            first_name: user.first_name,
-                                                                            last_name: user.last_name)
-              if t_user.new_record?
-                t_user.save
-                bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! I've added your profile for Redmine notifications.")
-                intouch_log.info "#{bot_name}: new user #{user.first_name} #{user.last_name} @#{user.username} added!"
-              else
-                t_user.update_columns username: user.username,
-                                      first_name: user.first_name,
-                                      last_name: user.last_name
-                if t_user.active?
-                  bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! I've updated your profile for Redmine notifications.")
-                else
-                  t_user.activate!
-                  bot.send_message(chat_id: message.chat.id, text: "Hello again, #{user.first_name}! I've activated your profile for Redmine notifications.")
-                end
-              end
-            elsif message.text == '/update'
-              user = message.from
-              t_user = TelegramCommon::Account.where(tid: user.id).first_or_create
-              t_user.update_columns username: user.username,
-                                    first_name: user.first_name,
-                                    last_name: user.last_name
-
-              bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! I've updated your profile for Redmine notifications.")
+            if message.text == '/start' or message.text == '/update'
+              Intouch::Service::TelegramBot.new(message).call
             elsif message.chat.id < 0
               chat = message.chat
               t_chat = TelegramGroupChat.where(tid: chat.id.abs).first_or_initialize(title: chat.title)
