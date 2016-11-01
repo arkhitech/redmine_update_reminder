@@ -12,11 +12,11 @@ class TelegramUser < ActiveRecord::Base
     end
   end
 
-  def activate
+  def activate!
     update(active: true) unless active?
   end
 
-  def deactivate
+  def deactivate!
     update(active: false) if active?
   end
 end

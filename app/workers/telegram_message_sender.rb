@@ -24,12 +24,12 @@ class TelegramMessageSender
       TELEGRAM_MESSAGE_SENDER_ERRORS_LOG.info "MESSAGE: #{message}"
 
       telegram_user = (telegram_user_id > 0) ?
-        TelegramUser.find_by(tid: telegram_user_id) :
+        TelegramCommon::Account.find_by(tid: telegram_user_id) :
         TelegramGroupChat.find_by(tid: telegram_user_id.abs)
 
       if e.message.include? 'Bot was kicked'
 
-        telegram_user.deactivate if telegram_user.is_a? TelegramUser
+        telegram_user.deactivate! if telegram_user.is_a? TelegramCommon::Account
         TELEGRAM_MESSAGE_SENDER_ERRORS_LOG.info "Bot was kicked from chat. Deactivate #{telegram_user.inspect}"
 
       elsif e.message.include? '429' or e.message.include? 'retry later'

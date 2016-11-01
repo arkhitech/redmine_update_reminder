@@ -1,4 +1,14 @@
 namespace :intouch do
+  namespace :common do
+    # bundle exec rake intouch:common:migrate
+    task migrate: :environment do
+      TelegramUser.find_each do |telegram_user|
+        TelegramCommon::Account.where(telegram_id: telegram_user.tid)
+          .first_or_create(telegram_user.slice(:user_id, :first_name, :last_name, :username, :active))
+      end
+    end
+  end
+
   namespace :telegram do
     # bundle exec rake intouch:telegram:bot PID_DIR='tmp/pids'
     desc "Runs telegram bot process (options: PID_DIR='tmp/pids')"
@@ -49,7 +59,7 @@ namespace :intouch do
             next unless message.is_a?(Telegrammer::DataTypes::Message) # Update for telegrammer gem 0.8.0
             if message.text == '/start'
               user = message.from
-              t_user = TelegramUser.where(tid: user.id).first_or_initialize(username: user.username,
+              t_user = TelegramCommon::Account.where(tid: user.id).first_or_initialize(username: user.username,
                                                                             first_name: user.first_name,
                                                                             last_name: user.last_name)
               if t_user.new_record?
@@ -63,13 +73,13 @@ namespace :intouch do
                 if t_user.active?
                   bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! I've updated your profile for Redmine notifications.")
                 else
-                  t_user.activate
+                  t_user.activate!
                   bot.send_message(chat_id: message.chat.id, text: "Hello again, #{user.first_name}! I've activated your profile for Redmine notifications.")
                 end
               end
             elsif message.text == '/update'
               user = message.from
-              t_user = TelegramUser.where(tid: user.id).first_or_create
+              t_user = TelegramCommon::Account.where(tid: user.id).first_or_create
               t_user.update_columns username: user.username,
                                     first_name: user.first_name,
                                     last_name: user.last_name

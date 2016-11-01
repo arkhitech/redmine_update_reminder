@@ -6,6 +6,17 @@ Plugin is designed to send notifications to Redmine’s users by Telegram or E-m
 
 Please help us make this plugin better telling us of any [issues](https://github.com/centosadmin/redmine_intouch/issues) you'll face using it. We are ready to answer all your questions regarding this plugin.
 
+### Upgrade form 0.2 to 0.3+
+
+Since version 0.2 this plugin uses [redmine_telegram_common](https://github.com/centosadmin/redmine_telegram_common) 
+plugin.
+
+Before upgrade install [this](https://github.com/centosadmin/redmine_telegram_common) plugin.
+
+Then upgrade and run `bundle exec rake intouch:common:migrate` for migrate data to new table.
+
+Since 0.4 version, model `TelegramUser` will be removed, also table `telegram_users` will be removed.
+
 ## Requirements
 
 **Redmine 3.1+**
