@@ -79,7 +79,13 @@ This will add the Telegram users to Redmine and create the Telegram groups in wh
 
 ### Adding a Telegram account to the user
 
-It is also possible to choose the corresponding account for users added with the `/start` command on the user details page.
+User needs to add a bot with `/start` command.
+
+After that the bot prompts to enter the command `/connect account@redmine.com`.
+
+After the command, the user will receive an email with a link.
+
+Following the link will connect the user's accounts.
 
 #### If the bot has been changed
 
