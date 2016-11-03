@@ -1,5 +1,4 @@
 class Intouch::TelegramBot < TelegramCommon::Bot
-
   def initialize(command)
     @bot = Telegrammer::Bot.new(Intouch.bot_token)
     @logger = Logger.new(Rails.root.join('log/intouch', 'bot.log'))
@@ -19,6 +18,4 @@ class Intouch::TelegramBot < TelegramCommon::Bot
       # rename not implemented yet
     end
   end
-
-
 end

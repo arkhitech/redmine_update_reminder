@@ -39,21 +39,18 @@ module Intouch
           end
 
           def title
-            if self.root?
-              self.name
+            if root?
+              name
             else
-              "#{ self.parent.name } » #{ self.name }"
+              "#{parent.name} » #{name}"
             end
           end
 
           private
 
           def copy_settings_from_parent
-            if parent.present?
-              self.intouch_settings = parent.intouch_settings
-            end
+            self.intouch_settings = parent.intouch_settings if parent.present?
           end
-
         end
       end
     end

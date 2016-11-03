@@ -12,7 +12,7 @@ namespace :intouch do
   namespace :telegram do
     # bundle exec rake intouch:telegram:bot PID_DIR='tmp/pids'
     desc "Runs telegram bot process (options: PID_DIR='tmp/pids')"
-    task :bot => :environment do
+    task bot: :environment do
       intouch_log = Rails.env.production? ? Logger.new(Rails.root.join('log/intouch', 'telegram-bot.log')) : Logger.new(STDOUT)
 
       Process.daemon(true, true) if Rails.env.production?
@@ -57,7 +57,7 @@ namespace :intouch do
         bot.get_updates(fail_silently: false) do |message|
           begin
             next unless message.is_a?(Telegrammer::DataTypes::Message) # Update for telegrammer gem 0.8.0
-            if message.text == '/start' or message.text == '/update' or message.text.include?('/connect')
+            if (message.text == '/start') || (message.text == '/update') || message.text.include?('/connect')
               Intouch::TelegramBot.new(message).call
             elsif message.chat.id < 0
               chat = message.chat
@@ -80,7 +80,7 @@ namespace :intouch do
         end
 
       rescue HTTPClient::ConnectTimeoutError, HTTPClient::KeepAliveDisconnected,
-        Telegrammer::Errors::TimeoutError, Telegrammer::Errors::ServiceUnavailableError, Errno::EIO => e
+             Telegrammer::Errors::TimeoutError, Telegrammer::Errors::ServiceUnavailableError, Errno::EIO => e
         intouch_log.error "GLOBAL ERROR WITH RESTART #{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
         intouch_log.info 'Restarting...'
         retry

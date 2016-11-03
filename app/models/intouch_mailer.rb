@@ -29,7 +29,7 @@ class IntouchMailer < ActionMailer::Base
     @without_due_date_issues = @issues.where(due_date: nil).where('created_on < ?', 1.day.ago).order(:created_on)
 
     @unassigned_issues = @issues.where(assigned_to_id: nil).order(:created_on)
-    @group_assigned_issues = @issues.joins(:assigned_to).where(users: {type: 'Group'}).order(:created_on)
+    @group_assigned_issues = @issues.joins(:assigned_to).where(users: { type: 'Group' }).order(:created_on)
 
     mail to: @user.mail,
          subject: t('intouch.mailer.subject', date: format_date(Date.today))

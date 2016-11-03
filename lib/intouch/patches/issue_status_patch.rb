@@ -14,7 +14,6 @@ module Intouch
             settings = Setting.plugin_redmine_intouch
             settings.keys.select { |key| key.include?('working_status') }.map { |key| key.split('_').last.to_i }
           end
-
         end
       end
     end

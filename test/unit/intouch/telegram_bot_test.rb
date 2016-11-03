@@ -100,10 +100,7 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
 
       @bot_service.connect
     end
-
   end
-
-
 
   # setup do
   #   Intouch.stubs(:bot_token)
@@ -177,23 +174,22 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
   #     end
   #   end
 
-    # context 'with user' do
-    #   setup do
-    #     Intouch::TelegramBot.any_instance
-    #         .expects(:send_message)
-    #         .with(123, I18n.t('redmine_2fa.redmine_telegram_connections.create.success'))
-    #
-    #     @user = User.find(2)
-    #     @telegram_account = TelegramUser.create(tid: 123, user_id: @user.id)
-    #
-    #     @bot_service.start
-    #   end
-    #
-    #   should 'set telegram auth source' do
-    #     @user.reload
-    #     assert_equal auth_sources(:telegram), @user.auth_source
-    #   end
-    # end
+  # context 'with user' do
+  #   setup do
+  #     Intouch::TelegramBot.any_instance
+  #         .expects(:send_message)
+  #         .with(123, I18n.t('redmine_2fa.redmine_telegram_connections.create.success'))
+  #
+  #     @user = User.find(2)
+  #     @telegram_account = TelegramUser.create(tid: 123, user_id: @user.id)
+  #
+  #     @bot_service.start
+  #   end
+  #
+  #   should 'set telegram auth source' do
+  #     @user.reload
+  #     assert_equal auth_sources(:telegram), @user.auth_source
+  #   end
   # end
-
+  # end
 end

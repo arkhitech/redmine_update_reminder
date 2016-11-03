@@ -14,13 +14,13 @@ class TelegramGroupLiveSenderWorker
 
     return unless telegram_groups_settings.present?
 
-    group_ids = telegram_groups_settings.select do |k, v|
+    group_ids = telegram_groups_settings.select do |_k, v|
       v.try(:[], issue.status_id.to_s).try(:include?, issue.priority_id.to_s)
     end.keys
 
     TELEGRAM_GROUP_LIVE_SENDER_LOG.debug "group_ids: #{group_ids.inspect}"
 
-    only_unassigned_group_ids = telegram_groups_settings.select { |k, v| v.try(:[], 'only_unassigned').present? }.keys
+    only_unassigned_group_ids = telegram_groups_settings.select { |_k, v| v.try(:[], 'only_unassigned').present? }.keys
 
     TELEGRAM_GROUP_LIVE_SENDER_LOG.debug "only_unassigned_group_ids: #{group_ids.inspect}"
 
@@ -28,7 +28,7 @@ class TelegramGroupLiveSenderWorker
 
     TELEGRAM_GROUP_LIVE_SENDER_LOG.debug "group_ids: #{group_ids.inspect} (total_unassigned? = #{issue.total_unassigned?.inspect})"
 
-    group_for_send_ids = if issue.alarm? or Intouch.work_time?
+    group_for_send_ids = if issue.alarm? || Intouch.work_time?
                            TELEGRAM_GROUP_LIVE_SENDER_LOG.debug 'Alarm or work time'
 
                            group_ids
@@ -36,7 +36,7 @@ class TelegramGroupLiveSenderWorker
                          else
                            TELEGRAM_GROUP_LIVE_SENDER_LOG.debug 'Anytime notifications'
 
-                           anytime_group_ids = telegram_groups_settings.select { |k, v| v.try(:[], 'anytime').present? }.keys
+                           anytime_group_ids = telegram_groups_settings.select { |_k, v| v.try(:[], 'anytime').present? }.keys
 
                            (group_ids & anytime_group_ids)
                          end

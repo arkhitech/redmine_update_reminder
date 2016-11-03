@@ -29,7 +29,7 @@ class SidekiqCronJobsController < ApplicationController
 
     Sidekiq::Cron::Job.load_from_hash hash
 
-    redirect_to action: "plugin", id: "redmine_intouch", controller: "settings", tab: 'sidekiq_cron_jobs'
+    redirect_to action: 'plugin', id: 'redmine_intouch', controller: 'settings', tab: 'sidekiq_cron_jobs'
   end
 
   def index
@@ -37,9 +37,8 @@ class SidekiqCronJobsController < ApplicationController
 
     respond_to do |format|
       format.api
-      format.html { render action: "index", layout: false if request.xhr? }
+      format.html { render action: 'index', layout: false if request.xhr? }
     end
-
   end
 
   def edit
@@ -53,10 +52,9 @@ class SidekiqCronJobsController < ApplicationController
     if @sidekiq_cron_job.valid?
       @sidekiq_cron_job.save
       flash[:notice] = l(:notice_successful_update)
-      redirect_to action: "plugin", id: "redmine_intouch", controller: "settings", tab: 'sidekiq_cron_jobs'
+      redirect_to action: 'plugin', id: 'redmine_intouch', controller: 'settings', tab: 'sidekiq_cron_jobs'
     else
       render action: 'edit'
     end
   end
-
 end

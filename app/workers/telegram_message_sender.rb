@@ -32,7 +32,7 @@ class TelegramMessageSender
         telegram_user.deactivate! if telegram_user.is_a? TelegramCommon::Account
         TELEGRAM_MESSAGE_SENDER_ERRORS_LOG.info "Bot was kicked from chat. Deactivate #{telegram_user.inspect}"
 
-      elsif e.message.include? '429' or e.message.include? 'retry later'
+      elsif e.message.include?('429') || e.message.include?('retry later')
 
         TELEGRAM_MESSAGE_SENDER_ERRORS_LOG.error "429 retry later error. retry to send after 5 seconds\ntelegram_user_id: #{telegram_user_id}\tmessage: #{message}"
         TelegramMessageSender.perform_in(5.seconds, telegram_user_id, message)
@@ -49,12 +49,11 @@ class TelegramMessageSender
       TELEGRAM_MESSAGE_SENDER_ERRORS_LOG.error "ServiceUnavailableError. retry to send after 5 seconds\ntelegram_user_id: #{telegram_user_id}\tmessage: #{message}"
       TelegramMessageSender.perform_in(5.seconds, telegram_user_id, message)
 
-    rescue 	Telegrammer::Errors::TimeoutError
+    rescue	Telegrammer::Errors::TimeoutError
 
       TELEGRAM_MESSAGE_SENDER_ERRORS_LOG.error "TimeoutError. retry to send after 5 seconds\ntelegram_user_id: #{telegram_user_id}\tmessage: #{message}"
       TelegramMessageSender.perform_in(5.seconds, telegram_user_id, message)
 
     end
   end
-
 end

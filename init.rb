@@ -19,13 +19,11 @@ Redmine::Plugin.register :redmine_intouch do
 
   requires_redmine version_or_higher: '3.0'
 
-  settings(default: {'active_protocols' => %w(email), 'work_day_from' => '10:00', 'work_day_to' => '18:00'},
+  settings(default: { 'active_protocols' => %w(email), 'work_day_from' => '10:00', 'work_day_to' => '18:00' },
            partial: 'settings/intouch')
 
   project_module :intouch do
-    permission :manage_intouch_settings, {
-        projects: :settings,
-        intouch_settings: :save,
-    }
+    permission :manage_intouch_settings, projects: :settings,
+                                         intouch_settings: :save
   end
 end

@@ -14,13 +14,12 @@ class TelegramLiveSenderWorker
 
     TELEGRAM_LIVE_SENDER_LOG.debug "base_message: #{base_message}"
 
-
     issue.intouch_live_recipients('telegram').each do |user|
       TELEGRAM_LIVE_SENDER_LOG.debug "user: #{user.inspect}"
 
       telegram_user = user.telegram_user
       TELEGRAM_LIVE_SENDER_LOG.debug "telegram_user: #{telegram_user.inspect}"
-      next unless telegram_user.present? and telegram_user.active?
+      next unless telegram_user.present? && telegram_user.active?
 
       roles_in_issue = []
 
@@ -35,8 +34,8 @@ class TelegramLiveSenderWorker
 
       if settings.present?
         recipients = settings.select do |key, value|
-          %w(author assigned_to watchers).include?(key) and
-              value.try(:[], issue.status_id.to_s).try(:include?, issue.priority_id.to_s)
+          %w(author assigned_to watchers).include?(key) &&
+            value.try(:[], issue.status_id.to_s).try(:include?, issue.priority_id.to_s)
         end.keys
 
         prefix = (roles_in_issue & recipients).map do |role|
@@ -59,5 +58,4 @@ class TelegramLiveSenderWorker
   rescue ActiveRecord::RecordNotFound => e
     # ignore
   end
-
 end

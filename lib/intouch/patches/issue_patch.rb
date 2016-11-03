@@ -35,7 +35,7 @@ module Intouch
           end
 
           def total_unassigned?
-            unassigned? or assigned_to_group? or !project.assigner_ids.include?(assigned_to_id)
+            unassigned? || assigned_to_group? || !project.assigner_ids.include?(assigned_to_id)
           end
 
           def working?
@@ -47,7 +47,7 @@ module Intouch
           end
 
           def without_due_date?
-            !due_date.present? and created_on < 1.day.ago
+            !due_date.present? && created_on < 1.day.ago
           end
 
           def notification_state
@@ -60,16 +60,16 @@ module Intouch
 
           def notificable_for_state?(state)
             case state
-              when 'unassigned'
-                notification_states.include?('unassigned') or notification_states.include?('assigned_to_group')
-              when 'overdue'
-                notification_states.include?('overdue') or notification_states.include?('without_due_date')
-              when 'working'
-                notification_states.include?('working')
-              when 'feedback'
-                notification_states.include?('feedback')
-              else
-                false
+            when 'unassigned'
+              notification_states.include?('unassigned') || notification_states.include?('assigned_to_group')
+            when 'overdue'
+              notification_states.include?('overdue') || notification_states.include?('without_due_date')
+            when 'working'
+              notification_states.include?('working')
+            when 'feedback'
+              notification_states.include?('feedback')
+            else
+              false
             end
           end
 
@@ -77,21 +77,19 @@ module Intouch
             if project.send("active_#{protocol}_settings") && state && project.send("active_#{protocol}_settings")[state]
               project.send("active_#{protocol}_settings")[state].map do |key, value|
                 case key
-                  when 'author'
-                    author.id
-                  when 'assigned_to'
-                    if assigned_to.class == Group
-                      # assigned_to.user_ids
-                    else
-                      assigned_to_id if project.assigner_ids.include?(assigned_to_id)
-                    end
-                  when 'watchers'
-                    watchers.pluck(:user_id)
-                  when 'user_groups'
-                    Group.where(id: value).map(&:user_ids).flatten if value.present?
+                when 'author'
+                  author.id
+                when 'assigned_to'
+                  if assigned_to.class == Group
+                    # assigned_to.user_ids
                   else
-                    nil
-                end
+                    assigned_to_id if project.assigner_ids.include?(assigned_to_id)
+                  end
+                when 'watchers'
+                  watchers.pluck(:user_id)
+                when 'user_groups'
+                  Group.where(id: value).map(&:user_ids).flatten if value.present?
+                  end
               end.flatten.uniq + [assigner_id]
             end
           end
@@ -99,26 +97,23 @@ module Intouch
           def live_recipient_ids(protocol)
             settings = project.send("active_#{protocol}_settings")
             if settings.present?
-              recipients = settings.select { |k, v| %w(author assigned_to watchers).include? k }
+              recipients = settings.select { |k, _v| %w(author assigned_to watchers).include? k }
 
               user_ids = []
               recipients.each_pair do |key, value|
-                if value.try(:[], status_id.to_s).try(:include?, priority_id.to_s)
-                  case key
-                    when 'author'
-                      user_ids << author.id
-                    when 'assigned_to'
-                      if assigned_to.class == Group
-                        # user_ids += assigned_to.user_ids
-                      else
-                        user_ids << assigned_to_id if project.assigner_ids.include?(assigned_to_id)
-                      end
-                    when 'watchers'
-                      user_ids += watchers.pluck(:user_id)
-                    else
-                      nil
+                next unless value.try(:[], status_id.to_s).try(:include?, priority_id.to_s)
+                case key
+                when 'author'
+                  user_ids << author.id
+                when 'assigned_to'
+                  if assigned_to.class == Group
+                  # user_ids += assigned_to.user_ids
+                  else
+                      user_ids << assigned_to_id if project.assigner_ids.include?(assigned_to_id)
+                    end
+                when 'watchers'
+                  user_ids += watchers.pluck(:user_id)
                   end
-                end
               end
               user_ids.flatten.uniq + [assigner_id] - [updated_by.try(:id)] # Не отправляем сообщение тому, то обновил задачу
             else
@@ -152,12 +147,12 @@ module Intouch
           end
 
           def inactive?
-            reminder_settings = project.active_intouch_settings.
-                try(:[], 'reminder_settings').
-                try(:[], "#{priority_id}")
+            reminder_settings = project.active_intouch_settings
+                .try(:[], 'reminder_settings')
+                .try(:[], "#{priority_id}")
             active            = reminder_settings.try(:[], 'active')
             interval          = reminder_settings.try(:[], 'interval')
-            active and interval.present? and assigners_updated_on < interval.to_i.hours.ago
+            active && interval.present? && assigners_updated_on < interval.to_i.hours.ago
           end
 
           def inactive_message
@@ -266,16 +261,16 @@ module Intouch
             message = "*!!! #{inactive_message} !!!*\n#{message}" if inactive?
             message = "*!!! #{I18n.t('intouch.telegram_message.issue.notice.without_due_date')} !!!* \n#{message}" if without_due_date?
             message = "*!!! #{I18n.t('intouch.telegram_message.issue.notice.overdue')} !!!*  \n#{message}" if overdue?
-            message = "*!!! #{I18n.t('intouch.telegram_message.issue.notice.unassigned')} !!!* \n#{message}" if unassigned? or assigned_to_group?
+            message = "*!!! #{I18n.t('intouch.telegram_message.issue.notice.unassigned')} !!!* \n#{message}" if unassigned? || assigned_to_group?
             message
           end
 
           private
 
           def send_new_message
-            if project.module_enabled?(:intouch) and project.active? and !closed?
+            if project.module_enabled?(:intouch) && project.active? && !closed?
 
-              if alarm? or Intouch.work_time?
+              if alarm? || Intouch.work_time?
 
                 IntouchSender.send_live_telegram_message(id) if Intouch.active_protocols.include? 'telegram'
 
@@ -288,14 +283,12 @@ module Intouch
               end
             end
           end
-
         end
       end
 
       def last_journal
         @last_journal ||= journals.order(:id).last
       end
-
     end
   end
 end
