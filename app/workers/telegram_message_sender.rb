@@ -25,7 +25,7 @@ class TelegramMessageSender
 
       telegram_account = (telegram_account_id > 0) ?
         TelegramCommon::Account.find_by(telegram_id: telegram_account_id) :
-        TelegramGroupChat.find_by(telegram_id: telegram_account_id.abs)
+        TelegramGroupChat.find_by(tid: telegram_account_id.abs)
 
       if e.message.include? 'Bot was kicked'
 
