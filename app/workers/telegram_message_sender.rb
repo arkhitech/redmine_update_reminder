@@ -11,7 +11,7 @@ class TelegramMessageSender
   TELEGRAM_MESSAGE_SENDER_ERRORS_LOG = Logger.new(Rails.root.join('log/intouch', 'telegram-message-sender-errors.log'))
 
   def perform(telegram_user_id, message)
-    token = Setting.plugin_redmine_intouch['telegram_bot_token']
+    token = Intouch.bot_token
     bot = Telegrammer::Bot.new(token)
 
     begin
@@ -24,15 +24,15 @@ class TelegramMessageSender
       TELEGRAM_MESSAGE_SENDER_ERRORS_LOG.info "MESSAGE: #{message}"
 
       telegram_user = (telegram_user_id > 0) ?
-        TelegramUser.find_by(tid: telegram_user_id) :
+        TelegramCommon::Account.find_by(tid: telegram_user_id) :
         TelegramGroupChat.find_by(tid: telegram_user_id.abs)
 
       if e.message.include? 'Bot was kicked'
 
-        telegram_user.deactivate if telegram_user.is_a? TelegramUser
+        telegram_user.deactivate! if telegram_user.is_a? TelegramCommon::Account
         TELEGRAM_MESSAGE_SENDER_ERRORS_LOG.info "Bot was kicked from chat. Deactivate #{telegram_user.inspect}"
 
-      elsif e.message.include? '429' or e.message.include? 'retry later'
+      elsif e.message.include?('429') || e.message.include?('retry later')
 
         TELEGRAM_MESSAGE_SENDER_ERRORS_LOG.error "429 retry later error. retry to send after 5 seconds\ntelegram_user_id: #{telegram_user_id}\tmessage: #{message}"
         TelegramMessageSender.perform_in(5.seconds, telegram_user_id, message)
@@ -49,12 +49,11 @@ class TelegramMessageSender
       TELEGRAM_MESSAGE_SENDER_ERRORS_LOG.error "ServiceUnavailableError. retry to send after 5 seconds\ntelegram_user_id: #{telegram_user_id}\tmessage: #{message}"
       TelegramMessageSender.perform_in(5.seconds, telegram_user_id, message)
 
-    rescue 	Telegrammer::Errors::TimeoutError
+    rescue	Telegrammer::Errors::TimeoutError
 
       TELEGRAM_MESSAGE_SENDER_ERRORS_LOG.error "TimeoutError. retry to send after 5 seconds\ntelegram_user_id: #{telegram_user_id}\tmessage: #{message}"
       TelegramMessageSender.perform_in(5.seconds, telegram_user_id, message)
 
     end
   end
-
 end

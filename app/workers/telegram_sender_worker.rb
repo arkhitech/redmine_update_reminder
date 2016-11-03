@@ -11,9 +11,8 @@ class TelegramSenderWorker
     base_message = issue.telegram_message
 
     issue.intouch_recipients('telegram', state).each do |user|
-
       telegram_user = user.telegram_user
-      next unless telegram_user.present? and telegram_user.active?
+      next unless telegram_user.present? && telegram_user.active?
 
       roles_in_issue = []
 
@@ -25,7 +24,7 @@ class TelegramSenderWorker
       settings = project.active_telegram_settings.try(:[], state)
 
       if settings.present?
-        recipients = settings.select do |key, value|
+        recipients = settings.select do |key, _value|
           %w(author assigned_to watchers).include?(key)
         end.keys
 
@@ -43,5 +42,4 @@ class TelegramSenderWorker
   rescue ActiveRecord::RecordNotFound => e
     # ignore
   end
-
 end

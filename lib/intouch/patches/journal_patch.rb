@@ -11,8 +11,8 @@ module Intouch
 
           def send_live_message
             project = issue.project
-            if project.module_enabled?(:intouch) and project.active?
-              if Intouch.work_time? or issue.alarm?
+            if project.module_enabled?(:intouch) && project.active?
+              if Intouch.work_time? || issue.alarm?
                 if Intouch.active_protocols.include? 'telegram'
 
                   if (details.pluck(:prop_key) & %w(priority_id status_id)).present?
@@ -26,11 +26,8 @@ module Intouch
               end
             end
           end
-
-
         end
       end
-
     end
   end
 end
