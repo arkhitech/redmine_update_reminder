@@ -17,9 +17,9 @@ class TelegramLiveSenderWorker
     issue.intouch_live_recipients('telegram').each do |user|
       TELEGRAM_LIVE_SENDER_LOG.debug "user: #{user.inspect}"
 
-      telegram_user = user.telegram_user
-      TELEGRAM_LIVE_SENDER_LOG.debug "telegram_user: #{telegram_user.inspect}"
-      next unless telegram_user.present? && telegram_user.active?
+      telegram_account = user.telegram_account
+      TELEGRAM_LIVE_SENDER_LOG.debug "telegram_account: #{telegram_account.inspect}"
+      next unless telegram_account.present? && telegram_account.active?
 
       roles_in_issue = []
 
@@ -49,7 +49,7 @@ class TelegramLiveSenderWorker
 
       TELEGRAM_LIVE_SENDER_LOG.debug message
 
-      job = TelegramMessageSender.perform_async(telegram_user.tid, message)
+      job = TelegramMessageSender.perform_async(telegram_account.telegram_id, message)
 
       TELEGRAM_LIVE_SENDER_LOG.debug job.inspect
     end
