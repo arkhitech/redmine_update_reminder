@@ -57,8 +57,8 @@ namespace :intouch do
         bot.get_updates(fail_silently: false) do |message|
           begin
             next unless message.is_a?(Telegrammer::DataTypes::Message) # Update for telegrammer gem 0.8.0
-            if message.text == '/start' or message.text == '/update'
-              Intouch::Service::TelegramBot.new(message).call
+            if message.text == '/start' or message.text == '/update' or message.text.include?('/connect')
+              Intouch::TelegramBot.new(message).call
             elsif message.chat.id < 0
               chat = message.chat
               t_chat = TelegramGroupChat.where(tid: chat.id.abs).first_or_initialize(title: chat.title)
