@@ -132,7 +132,7 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
   #       end
   #
   #       telegram_account = TelegramUser.last
-  #       assert_equal 123, telegram_account.tid
+  #       assert_equal 123, telegram_account.telegram_id
   #       assert_equal 'dhh', telegram_account.username
   #       assert_equal 'David', telegram_account.first_name
   #       assert_equal 'Haselman', telegram_account.last_name
@@ -144,7 +144,7 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
   #         .expects(:send_message)
   #         .with(123, "Hello, David! I've updated your profile for Redmine notifications.")
   #
-  #       telegram_account = TelegramUser.create(tid: 123, username: 'test', first_name: 'f', last_name: 'l')
+  #       telegram_account = TelegramUser.create(telegram_id: 123, username: 'test', first_name: 'f', last_name: 'l')
   #
   #       assert_no_difference('TelegramUser.count') do
   #         Intouch::TelegramBot.new(@telegram_message).start
@@ -162,7 +162,7 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
   #         .expects(:send_message)
   #         .with(123, "Hello again, David! I've activated your profile for Redmine notifications.")
   #
-  #       actual = TelegramUser.create(tid: 123, active: false)
+  #       actual = TelegramUser.create(telegram_id: 123, active: false)
   #
   #       assert_no_difference('TelegramUser.count') do
   #         Intouch::TelegramBot.new(@telegram_message).start
@@ -181,7 +181,7 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
   #         .with(123, I18n.t('redmine_2fa.redmine_telegram_connections.create.success'))
   #
   #     @user = User.find(2)
-  #     @telegram_account = TelegramUser.create(tid: 123, user_id: @user.id)
+  #     @telegram_account = TelegramUser.create(telegram_id: 123, user_id: @user.id)
   #
   #     @bot_service.start
   #   end

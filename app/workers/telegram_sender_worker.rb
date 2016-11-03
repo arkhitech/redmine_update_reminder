@@ -11,8 +11,8 @@ class TelegramSenderWorker
     base_message = issue.telegram_message
 
     issue.intouch_recipients('telegram', state).each do |user|
-      telegram_user = user.telegram_user
-      next unless telegram_user.present? && telegram_user.active?
+      telegram_account = user.telegram_account
+      next unless telegram_account.present? && telegram_account.active?
 
       roles_in_issue = []
 
@@ -37,7 +37,7 @@ class TelegramSenderWorker
 
       message = prefix.present? ? "#{prefix}\n#{base_message}" : base_message
 
-      TelegramMessageSender.perform_async(telegram_user.tid, message)
+      TelegramMessageSender.perform_async(telegram_account.telegram_id, message)
     end
   rescue ActiveRecord::RecordNotFound => e
     # ignore
