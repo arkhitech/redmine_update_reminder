@@ -95,6 +95,7 @@ en:
       unassigned: Unassigned/assigned to the group
       working: In work
     settings:
+      required: "required for this plugin"
       common:
         alarm:
           description_1: Notification about the issues with the selected priorities will be sent twenty-four seven.

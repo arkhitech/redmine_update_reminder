@@ -5,6 +5,20 @@
     {name: 'sidekiq_cron_jobs', partial: 'settings/sidekiq_cron_jobs', label: 'intouch.label.sidekiq_cron_jobs'}
 ] %>
 
+<% unless Redmine::Plugin.installed?('redmine_telegram_common') %>
+  <h1 style="text-align: center">
+    !!! <a href="https://github.com/centosadmin/redmine_telegram_common" target="_blank">redmine_telegram_common</a>
+    <%= t('intouch.settings.required') %> !!!
+  </h1>
+<% end %>
+
+<% unless Redmine::Plugin.installed?('redmine_sidekiq') %>
+  <h1 style="text-align: center">
+    !!! <a href="https://github.com/ogom/redmine_sidekiq" target="_blank">redmine_sidekiq</a>
+    <%= t('intouch.settings.required') %> !!!
+  </h1>
+<% end %>
+
 <%= render_tabs intouch_tabs %>
 
 <% html_title(l(:label_settings), l('intouch.label.base')) -%>
