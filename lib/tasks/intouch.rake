@@ -49,6 +49,7 @@ namespace :intouch do
 
         intouch_log.info 'Telegram Bot: Connecting to telegram...'
         bot = Telegrammer::Bot.new(token)
+        bot.set_webhook('') # reset webhook
         bot_name = bot.me.username
 
         intouch_log.info "#{bot_name}: connected"
@@ -57,7 +58,7 @@ namespace :intouch do
         bot.get_updates(fail_silently: false) do |message|
           begin
             next unless message.is_a?(Telegrammer::DataTypes::Message) # Update for telegrammer gem 0.8.0
-            if (message.text == '/start') || (message.text == '/update') || message.text.include?('/connect')
+            if (message.text == '/start') || (message.text == '/update') || message.text.to_s.include?('/connect')
               Intouch::TelegramBot.new(message).call
             elsif message.chat.id < 0
               chat = message.chat
@@ -80,7 +81,7 @@ namespace :intouch do
         end
 
       rescue HTTPClient::ConnectTimeoutError, HTTPClient::KeepAliveDisconnected,
-             Telegrammer::Errors::TimeoutError, Telegrammer::Errors::ServiceUnavailableError, Errno::EIO => e
+             Telegrammer::Errors::TimeoutError, Telegrammer::Errors::ServiceUnavailableError => e
         intouch_log.error "GLOBAL ERROR WITH RESTART #{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
         intouch_log.info 'Restarting...'
         retry
