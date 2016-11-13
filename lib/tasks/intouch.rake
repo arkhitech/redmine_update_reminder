@@ -82,6 +82,7 @@ namespace :intouch do
 
       rescue HTTPClient::ConnectTimeoutError, HTTPClient::KeepAliveDisconnected,
              Telegrammer::Errors::TimeoutError, Telegrammer::Errors::ServiceUnavailableError => e
+        ExceptionNotifier.notify_exception(e)
         intouch_log.error "GLOBAL ERROR WITH RESTART #{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
         intouch_log.info 'Restarting...'
         retry

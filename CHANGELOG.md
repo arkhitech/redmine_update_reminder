@@ -1,3 +1,7 @@
+# 0.3.1
+
+* Add exception notification on bot restart
+
 # 0.3.0
 
 Migrate to [redmine_telegram_common](https://github.com/centosadmin/redmine_telegram_common) plugin.
