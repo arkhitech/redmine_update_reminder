@@ -76,6 +76,7 @@ namespace :intouch do
               end
             end
           rescue Exception => e
+            ExceptionNotifier.notify_exception(e)
             intouch_log.error "UPDATE ERROR #{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
           end
         end
@@ -88,6 +89,7 @@ namespace :intouch do
         retry
 
       rescue Exception => e
+        ExceptionNotifier.notify_exception(e)
         intouch_log.error "GLOBAL ERROR #{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
       end
     end
