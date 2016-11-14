@@ -57,8 +57,9 @@ namespace :intouch do
 
         bot.get_updates(fail_silently: false) do |message|
           begin
-            next unless message.is_a?(Telegrammer::DataTypes::Message) # Update for telegrammer gem 0.8.0
-            if (message.text == '/start') || (message.text == '/update') || message.text.to_s.include?('/connect')
+            next unless message.is_a?(Telegrammer::DataTypes::Message)
+            message_text = message.text.to_s
+            if message_text.start_with?('/start') || message_text.start_with?('/update') || message_text.start_with?('/connect')
               Intouch::TelegramBot.new(message).call
             elsif message.chat.id < 0
               chat = message.chat
@@ -68,7 +69,7 @@ namespace :intouch do
                 bot.send_message(chat_id: message.chat.id,
                                  text: "Hello, people! I've added this group chat for Redmine notifications.")
                 intouch_log.info "#{bot_name}: new group #{chat.title} added!"
-              elsif message.text == '/rename'
+              elsif message_text == '/rename'
                 user = message.from
                 t_chat.update title: chat.title
                 bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! I've updated this group chat title in Redmine.")

@@ -10,9 +10,9 @@ class Intouch::TelegramBot < TelegramCommon::Bot
 
     command_text = command.text
 
-    if command_text&.include?('start') || command_text&.include?('update')
+    if command_text.start_with?('start') || command_text.start_with?('update')
       start
-    elsif command_text&.include?('/connect')
+    elsif command_text.start_with?('/connect')
       connect
     elsif command_text&.include?('/rename')
       # rename not implemented yet
