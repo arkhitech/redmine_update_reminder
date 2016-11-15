@@ -100,6 +100,19 @@ The groups are added to Redmine, if the bot was added to them.
 
 The group name is saved on addition. Issue the `/rename` command in the group chat to change the group name in Redmine.
 
+### Available commands
+
+- `/help` - list of available commands with its descriptions
+
+**Private chat with bot**
+
+- `/connect e@mail.com` - connect Telegram and Redmine accounts
+- `/update` - update Telegram account info (after change name or username)
+
+**Group chat**
+
+- `/rename` - update group name (after change Telegram group name)
+
 ## Settings Templates
 
 The settings templates allow you to set all the required project settings once, and then just choose the right template for each project.

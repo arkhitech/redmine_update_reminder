@@ -1,5 +1,10 @@
 ru:
   intouch:
+    bot:
+      help: справка по командам
+      connect: связать аккаунты Telegram и Redmine
+      update: обновить информацию об аккаунте Telegram (если сменили имя или ник)
+      rename: обновить название группы (если переименовали группу в Telegram)
     cron:
       cron_email_reminder_sender: "Уведомление по почте исполнителю задач, которые давно не обновлялись"
       cron_feedback_regular_notification: Уведомления о задачах со статусом "Обратная связь"

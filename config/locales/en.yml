@@ -1,5 +1,10 @@
 en:
   intouch:
+    bot:
+      help: list of available commands with its descriptions
+      connect: connect Telegram and Redmine accounts
+      update: update Telegram account info (after change name or username)
+      rename: update group name (after change Telegram group name)
     cron:
       cron_email_reminder_sender: Email notification to the assigner about the issues that have not been updated for a long time
       cron_feedback_regular_notification: Notification about the issues with the “Feedback” status

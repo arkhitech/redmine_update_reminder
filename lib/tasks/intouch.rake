@@ -59,7 +59,8 @@ namespace :intouch do
           begin
             next unless message.is_a?(Telegrammer::DataTypes::Message)
             message_text = message.text.to_s
-            if message_text.start_with?('/start') || message_text.start_with?('/update') || message_text.start_with?('/connect')
+            if message_text.start_with?('/start') || message_text.start_with?('/update') ||
+              message_text.start_with?('/connect') || message_text.start_with?('/help')
               Intouch::TelegramBot.new(message).call
             elsif message.chat.id < 0
               chat = message.chat

@@ -1,3 +1,7 @@
+# 0.3.3
+
+* Add help command
+
 # 0.3.1
 
 * Add exception notification on bot restart
