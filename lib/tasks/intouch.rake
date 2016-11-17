@@ -90,7 +90,7 @@ namespace :intouch do
         retry
 
       rescue Exception => e
-        ExceptionNotifier.notify_exception(e)
+        ExceptionNotifier.notify_exception(e) if defined?(ExceptionNotifier)
         intouch_log.error "GLOBAL ERROR #{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
       end
     end
