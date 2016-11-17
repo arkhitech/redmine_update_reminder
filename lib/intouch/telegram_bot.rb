@@ -5,28 +5,17 @@ class Intouch::TelegramBot < TelegramCommon::Bot
     @command = command.is_a?(Telegrammer::DataTypes::Message) ? command : Telegrammer::DataTypes::Message.new(command)
   end
 
-  COMMAND_LIST = %w(connect update rename help)
+  private
 
-  def call
-    Intouch.set_locale
-
-    command_text = command.text
-
-    if command_text.start_with?('/start') || command_text.start_with?('/update')
-      start
-    elsif command_text.start_with?('/connect')
-      connect
-    elsif command_text.start_with?('/help')
-      help
-    elsif command_text&.include?('/rename')
-      # rename not implemented yet
-    end
+  def private_commands
+    %w(start connect update help)
   end
 
-  def help
-    message = COMMAND_LIST.map do |command|
-      %(<b>#{command}</b> - #{I18n.t("intouch.bot.#{command}")})
-    end.join("\n")
-    send_message(command.chat.id, message)
+  def group_commands
+    %w(update help)
+  end
+
+  def private_help_message
+    help_command_list(private_commands, namespace: 'intouch')
   end
 end

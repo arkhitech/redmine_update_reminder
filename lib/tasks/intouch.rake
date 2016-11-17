@@ -26,15 +26,7 @@ namespace :intouch do
 
       Signal.trap('TERM') do
         at_exit { intouch_log.error 'Aborted with TERM signal' }
-        abort 'Aborted with TERM signal'
-      end
-      Signal.trap('QUIT') do
-        at_exit { intouch_log.error 'Aborted with QUIT signal' }
-        abort 'Aborted with QUIT signal'
-      end
-      Signal.trap('HUP') do
-        at_exit { intouch_log.error 'Aborted with HUP signal' }
-        abort 'Aborted with HUP signal'
+        abort
       end
 
       intouch_log.info 'Start daemon...'
@@ -57,6 +49,7 @@ namespace :intouch do
 
         bot.get_updates(fail_silently: false) do |message|
           begin
+            ap message
             next unless message.is_a?(Telegrammer::DataTypes::Message)
             message_text = message.text.to_s
             if message_text.start_with?('/start') || message_text.start_with?('/update') ||
