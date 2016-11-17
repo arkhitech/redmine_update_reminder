@@ -28,7 +28,7 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
       setup do
         Intouch::TelegramBot.any_instance
           .expects(:send_message)
-          .with(123, I18n.t('intouch.bot.start.instruction_html'))
+          .with(123, I18n.t('telegram_common.bot.start.instruction_html'))
       end
 
       should 'create telegram account' do
@@ -78,7 +78,7 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
 
       Intouch::TelegramBot.any_instance
         .expects(:send_message)
-        .with(123, I18n.t('intouch.bot.connect.wait_for_email', email: @user.mail))
+        .with(123, I18n.t('telegram_common.bot.connect.wait_for_email', email: @user.mail))
 
       @telegram_account = TelegramCommon::Account.create(telegram_id: 123)
       @telegram_message = ActionController::Parameters.new(
@@ -110,8 +110,8 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
                   username:   'abc',
                   first_name: 'Antony',
                   last_name:  'Brown' },
-          chat: { id: -123,
-                  type: 'group'},
+          chat: { id: 123,
+                  type: 'private'},
           text: '/update'
         )
 
@@ -127,14 +127,18 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
 
         telegram_account.reload
 
-        assert_equal 'dhh', telegram_account.username
-        assert_equal 'David', telegram_account.first_name
-        assert_equal 'Haselman', telegram_account.last_name
+        assert_equal 'abc', telegram_account.username
+        assert_equal 'Antony', telegram_account.first_name
+        assert_equal 'Brown', telegram_account.last_name
       end
     end
 
     context 'group' do
       setup do
+        Intouch::TelegramBot.any_instance
+          .expects(:send_message)
+          .with(-123, "Hello, Antony! I've updated this group chat title in Redmine.")
+
         @telegram_message = ActionController::Parameters.new(
           from: { id:         123,
                   username:   'abc',
@@ -146,12 +150,14 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
         )
 
         @bot_service = Intouch::TelegramBot.new(@telegram_message)
+
+
       end
 
       should 'update telegram group' do
         telegram_group = TelegramGroupChat.create(tid: 123, title: 'test')
 
-        assert_no_difference('TelegramCommon::Account.count') do
+        assert_no_difference('TelegramGroupChat.count') do
           @bot_service.call
         end
 
