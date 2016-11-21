@@ -111,7 +111,18 @@ The group name is saved on addition. Issue the `/rename` command in the group ch
 
 **Group chat**
 
-- `/rename` - update group name (after change Telegram group name)
+- `/update` - update group name (after change Telegram group name)
+
+#### Hints for bot commands
+
+Use command `/setcommands` with [@BotFather](https://telegram.me/botfather). Send this list for setup hints:
+
+```
+start - Start work with bot
+connect - Connect Redmine and Telegram account
+update - Update Telegram account info or group name
+help - Help about commands
+```
 
 ## Settings Templates
 

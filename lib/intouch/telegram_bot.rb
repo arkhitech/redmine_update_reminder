@@ -5,28 +5,59 @@ class Intouch::TelegramBot < TelegramCommon::Bot
     @command = command.is_a?(Telegrammer::DataTypes::Message) ? command : Telegrammer::DataTypes::Message.new(command)
   end
 
-  COMMAND_LIST = %w(connect update rename help)
-
   def call
-    Intouch.set_locale
-
-    command_text = command.text
-
-    if command_text.start_with?('/start') || command_text.start_with?('/update')
-      start
-    elsif command_text.start_with?('/connect')
-      connect
-    elsif command_text.start_with?('/help')
-      help
-    elsif command_text&.include?('/rename')
-      # rename not implemented yet
-    end
+    group_create_process if !private_command?(command) && group_chat.new_record?
+    super
   end
 
-  def help
-    message = COMMAND_LIST.map do |command|
-      %(<b>#{command}</b> - #{I18n.t("intouch.bot.#{command}")})
-    end.join("\n")
-    send_message(command.chat.id, message)
+  def update
+    private_command?(command) ? private_update_process : group_update_process
+  end
+
+  private
+
+  def private_update_process
+    update_account
+    send_message(command.chat.id, I18n.t('intouch.bot.private.update.message'))
+  end
+
+  def group_create_process
+    group_chat.save
+    send_message(chat.id, I18n.t('intouch.bot.group.start.message'))
+    logger.info "New group #{chat.title} added!"
+  end
+
+  def group_update_process
+    group_chat.update title: chat.title
+    send_message(chat.id, I18n.t('intouch.bot.group.update.message'))
+    logger.info "#{user.first_name} renamed group title #{chat.title}"
+  end
+
+  def group_chat
+    @group_chat ||= fetch_group_chat
+  end
+
+  def fetch_group_chat
+    TelegramGroupChat.where(tid: chat.id.abs).first_or_initialize(title: chat.title)
+  end
+
+  def chat
+    command.chat
+  end
+
+  def private_commands
+    %w(start connect update help)
+  end
+
+  def group_commands
+    %w(update help)
+  end
+
+  def private_help_message
+    help_command_list(private_commands, namespace: 'intouch', type: 'private')
+  end
+
+  def group_help_message
+    help_command_list(group_commands, namespace: 'intouch', type: 'group')
   end
 end
