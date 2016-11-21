@@ -5,23 +5,44 @@ class Intouch::TelegramBot < TelegramCommon::Bot
     @command = command.is_a?(Telegrammer::DataTypes::Message) ? command : Telegrammer::DataTypes::Message.new(command)
   end
 
-  # TODO: create group chat if it not exists
-  # TODO: send message on account update
+  def call
+    group_create_process if !private_command?(command) && group_chat.new_record?
+    super
+  end
+
   def update
-    private_command?(command) ? update_account : update_group
+    private_command?(command) ? private_update_process : group_update_process
   end
 
   private
 
-  def update_group
-    chat = command.chat
-    t_chat = TelegramGroupChat.where(tid: chat.id.abs).first_or_initialize(title: chat.title)
+  def private_update_process
+    update_account
+    send_message(command.chat.id, I18n.t('intouch.bot.private.update.message'))
+  end
 
-    user = command.from
-    t_chat.update title: chat.title
-    message = "Hello, #{user.first_name}! I've updated this group chat title in Redmine."
-    send_message(command.chat.id, message)
+  def group_create_process
+    group_chat.save
+    send_message(chat.id, I18n.t('intouch.bot.group.start.message'))
+    logger.info "New group #{chat.title} added!"
+  end
+
+  def group_update_process
+    group_chat.update title: chat.title
+    send_message(chat.id, I18n.t('intouch.bot.group.update.message'))
     logger.info "#{user.first_name} renamed group title #{chat.title}"
+  end
+
+  def group_chat
+    @group_chat ||= fetch_group_chat
+  end
+
+  def fetch_group_chat
+    TelegramGroupChat.where(tid: chat.id.abs).first_or_initialize(title: chat.title)
+  end
+
+  def chat
+    command.chat
   end
 
   def private_commands

@@ -49,27 +49,8 @@ namespace :intouch do
 
         bot.get_updates(fail_silently: false) do |message|
           begin
-            ap message
             next unless message.is_a?(Telegrammer::DataTypes::Message)
-            message_text = message.text.to_s
-            if message_text.start_with?('/start') || message_text.start_with?('/update') ||
-              message_text.start_with?('/connect') || message_text.start_with?('/help')
-              Intouch::TelegramBot.new(message).call
-            elsif message.chat.id < 0
-              chat = message.chat
-              t_chat = TelegramGroupChat.where(tid: chat.id.abs).first_or_initialize(title: chat.title)
-              if t_chat.new_record?
-                t_chat.save
-                bot.send_message(chat_id: message.chat.id,
-                                 text: "Hello, people! I've added this group chat for Redmine notifications.")
-                intouch_log.info "#{bot_name}: new group #{chat.title} added!"
-              elsif message_text == '/rename'
-                user = message.from
-                t_chat.update title: chat.title
-                bot.send_message(chat_id: message.chat.id, text: "Hello, #{user.first_name}! I've updated this group chat title in Redmine.")
-                intouch_log.info "#{bot_name}: rename group title #{chat.title}"
-              end
-            end
+            Intouch::TelegramBot.new(message).call
           rescue Exception => e
             ExceptionNotifier.notify_exception(e)
             intouch_log.error "UPDATE ERROR #{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"

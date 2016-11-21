@@ -3,11 +3,40 @@ require File.expand_path('../../../test_helper', __FILE__)
 class Intouch::TelegramBotTest < ActiveSupport::TestCase
   fixtures :users, :email_addresses, :roles
 
-  fixtures :users, :email_addresses, :roles
-
   setup do
     Intouch.stubs(:bot_token)
     Telegrammer::Bot.any_instance.stubs(:get_me)
+  end
+
+  context 'group create' do
+    setup do
+      @telegram_message = ActionController::Parameters.new(
+        from: { id:         123,
+                username:   'abc',
+                first_name: 'Antony',
+                last_name:  'Brown' },
+        chat: { id: -123,
+                type: 'group', title: 'Test Group' },
+        text: 'any message'
+      )
+
+      @bot_service = Intouch::TelegramBot.new(@telegram_message)
+    end
+
+    should 'create telegram group' do
+      Intouch::TelegramBot.any_instance
+        .expects(:send_message)
+        .with(-123, I18n.t('intouch.bot.group.start.message'))
+
+      assert_difference('TelegramGroupChat.count') do
+        @bot_service.call
+      end
+
+      telegram_group = TelegramGroupChat.last
+
+      assert_equal 'Test Group', telegram_group.title
+      assert_equal 123, telegram_group.tid
+    end
   end
 
   context '/start' do
@@ -17,7 +46,8 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
                 username:   'dhh',
                 first_name: 'David',
                 last_name:  'Haselman' },
-        chat: { id: 123 },
+        chat: { id: 123,
+                type: 'private' },
         text: '/start'
       )
 
@@ -86,7 +116,8 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
                 username:   'dhh',
                 first_name: 'David',
                 last_name:  'Haselman' },
-        chat: { id: 123 },
+        chat: { id: 123,
+                type: 'private' },
         text: "/connect #{@user.mail}"
       )
 
@@ -105,13 +136,17 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
   context '/update' do
     context 'private' do
       setup do
+        Intouch::TelegramBot.any_instance
+          .expects(:send_message)
+          .with(123, I18n.t('intouch.bot.private.update.message'))
+
         @telegram_message = ActionController::Parameters.new(
           from: { id:         123,
                   username:   'abc',
                   first_name: 'Antony',
                   last_name:  'Brown' },
           chat: { id: 123,
-                  type: 'private'},
+                  type: 'private' },
           text: '/update'
         )
 
@@ -137,7 +172,7 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
       setup do
         Intouch::TelegramBot.any_instance
           .expects(:send_message)
-          .with(-123, "Hello, Antony! I've updated this group chat title in Redmine.")
+          .with(-123, I18n.t('intouch.bot.group.update.message'))
 
         @telegram_message = ActionController::Parameters.new(
           from: { id:         123,
@@ -145,13 +180,11 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
                   first_name: 'Antony',
                   last_name:  'Brown' },
           chat: { id: -123,
-                  type: 'group', title: 'Updated!!!'},
+                  type: 'group', title: 'Updated!!!' },
           text: '/update'
         )
 
         @bot_service = Intouch::TelegramBot.new(@telegram_message)
-
-
       end
 
       should 'update telegram group' do
@@ -177,7 +210,7 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
                   first_name: 'Antony',
                   last_name:  'Brown' },
           chat: { id: 123,
-                  type: 'private'},
+                  type: 'private' },
           text: '/help'
         )
 
@@ -186,10 +219,10 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
 
       should 'send help for private chat' do
         text = <<~TEXT
-          /start - #{I18n.t('intouch.bot.private.start')}
-          /connect - #{I18n.t('intouch.bot.private.connect')}
-          /update - #{I18n.t('intouch.bot.private.update')}
-          /help - #{I18n.t('intouch.bot.private.help')}
+          /start - #{I18n.t('intouch.bot.private.help.start')}
+          /connect - #{I18n.t('intouch.bot.private.help.connect')}
+          /update - #{I18n.t('intouch.bot.private.help.update')}
+          /help - #{I18n.t('intouch.bot.private.help.help')}
         TEXT
 
         Intouch::TelegramBot.any_instance.expects(:send_message).with(123, text.chomp)
@@ -199,13 +232,15 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
 
     context 'group' do
       setup do
+        telegram_group = TelegramGroupChat.create(tid: 123, title: 'test')
+
         @telegram_message = ActionController::Parameters.new(
           from: { id:         123,
                   username:   'abc',
                   first_name: 'Antony',
                   last_name:  'Brown' },
           chat: { id: -123,
-                  type: 'group'},
+                  type: 'group' },
           text: '/help'
         )
 
@@ -214,8 +249,8 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
 
       should 'send help for private chat' do
         text = <<~TEXT
-          /update - #{I18n.t('intouch.bot.group.update')}
-          /help - #{I18n.t('intouch.bot.group.help')}
+          /update - #{I18n.t('intouch.bot.group.help.update')}
+          /help - #{I18n.t('intouch.bot.group.help.help')}
         TEXT
 
         Intouch::TelegramBot.any_instance.expects(:send_message).with(-123, text.chomp)

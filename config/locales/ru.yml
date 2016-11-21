@@ -2,13 +2,21 @@ ru:
   intouch:
     bot:
       private:
-        start: "Начало работы с ботом"
-        help: справка по командам
-        connect: связать аккаунты Telegram и Redmine
-        update: обновить информацию об аккаунте Telegram (если сменили имя или ник)
+        help:
+          start: "Начало работы с ботом"
+          help: справка по командам
+          connect: связать аккаунты Telegram и Redmine
+          update: обновить информацию об аккаунте Telegram (если сменили имя или ник)
+        update:
+          message: "Здравствуйте! Я обновил ваше имя и ник в Redmine."
       group:
-        update: обновить название группы (если переименовали группу в Telegram)
-        help: справка по командам
+        help:
+          update: обновить название группы (если переименовали группу в Telegram)
+          help: справка по командам
+        start:
+          message: "Здравствуйте! Я добавил этот чат для уведомлений из Redmine."
+        update:
+          message: "Здравствуйте! Я обновил название этой группы в Redmine."
     cron:
       cron_email_reminder_sender: "Уведомление по почте исполнителю задач, которые давно не обновлялись"
       cron_feedback_regular_notification: Уведомления о задачах со статусом "Обратная связь"

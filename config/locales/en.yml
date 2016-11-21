@@ -2,13 +2,21 @@ en:
   intouch:
     bot:
       private:
-        start: "Start work with bot"
-        connect: connect Telegram and Redmine accounts
-        update: update Telegram account info (after change name or username)
-        help: list of available commands with its descriptions
+        help:
+          start: "Start work with bot"
+          connect: connect Telegram and Redmine accounts
+          update: update Telegram account info (after change name or username)
+          help: list of available commands with its descriptions
+        update:
+          message: "Hello! I've updated your name and username in Redmine."
       group:
-        update: update group name (after change Telegram group name)
-        help: list of available commands with its descriptions
+        help:
+          update: update group name (after change Telegram group name)
+          help: list of available commands with its descriptions
+        start:
+          message: "Hello, people! I've added this group chat for Redmine notifications."
+        update:
+          message: "Hello! I've updated this group chat title in Redmine."
     cron:
       cron_email_reminder_sender: Email notification to the assigner about the issues that have not been updated for a long time
       cron_feedback_regular_notification: Notification about the issues with the “Feedback” status
