@@ -48,13 +48,8 @@ namespace :intouch do
         intouch_log.info "#{bot_name}: waiting for new users and group chats..."
 
         bot.get_updates(fail_silently: false) do |message|
-          begin
-            next unless message.is_a?(Telegrammer::DataTypes::Message)
-            Intouch::TelegramBot.new(message).call
-          rescue Exception => e
-            ExceptionNotifier.notify_exception(e) if defined?(ExceptionNotifier)
-            intouch_log.error "UPDATE ERROR #{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
-          end
+          next unless message.is_a?(Telegrammer::DataTypes::Message)
+          Intouch::TelegramBot.new(message).call
         end
 
       rescue HTTPClient::ConnectTimeoutError, HTTPClient::KeepAliveDisconnected,
@@ -63,7 +58,7 @@ namespace :intouch do
         intouch_log.info 'Restarting...'
         retry
 
-      rescue Exception => e
+      rescue => e
         ExceptionNotifier.notify_exception(e) if defined?(ExceptionNotifier)
         intouch_log.error "GLOBAL ERROR #{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
       end
