@@ -232,7 +232,7 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
 
     context 'group' do
       setup do
-        telegram_group = TelegramGroupChat.create(tid: 123, title: 'test')
+        TelegramGroupChat.create(tid: 123, title: 'test')
 
         @telegram_message = ActionController::Parameters.new(
           from: { id:         123,

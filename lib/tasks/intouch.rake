@@ -52,7 +52,7 @@ namespace :intouch do
             next unless message.is_a?(Telegrammer::DataTypes::Message)
             Intouch::TelegramBot.new(message).call
           rescue Exception => e
-            ExceptionNotifier.notify_exception(e)
+            ExceptionNotifier.notify_exception(e) if defined?(ExceptionNotifier)
             intouch_log.error "UPDATE ERROR #{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
           end
         end

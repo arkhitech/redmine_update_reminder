@@ -6,12 +6,12 @@ class Intouch::TelegramBot < TelegramCommon::Bot
   end
 
   def call
-    group_create_process if !private_command?(command) && group_chat.new_record?
+    group_create_process if !private_command? && group_chat.new_record?
     super
   end
 
   def update
-    private_command?(command) ? private_update_process : group_update_process
+    private_command? ? private_update_process : group_update_process
   end
 
   private
