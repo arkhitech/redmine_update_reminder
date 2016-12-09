@@ -21,7 +21,7 @@ ru:
       cron_email_reminder_sender: "Уведомление по почте исполнителю задач, которые давно не обновлялись"
       cron_feedback_regular_notification: Уведомления о задачах со статусом "Обратная связь"
       cron_overdue_regular_notification: "Уведомления о просроченных задачах"
-      cron_unassigned_regular_notification: "Уведомления о не назначенных задачах"
+      cron_unassigned_regular_notification: "Уведомления о неназначенных задачах"
       cron_working_regular_notification: Уведомления о задачах со статусом  "В работе"
     label:
       assigner_groups: "Группы исполнителей"
@@ -42,7 +42,7 @@ ru:
         no_overdue_issues: "На сегодня просроченных задач нет."
         overdue_issues: "Просроченные задачи"
         without_due_date_issues: "Не указана дата завершения"
-        unassigned_issues: "Не назначенные задачи"
+        unassigned_issues: "Неназначенные задачи"
         group_assigned_issues: "Назначенные на группу"
       subject: "Просроченные задачи по состоянию на %{date}"
     priorities:
