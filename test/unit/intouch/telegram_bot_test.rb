@@ -26,7 +26,7 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
     should 'create telegram group' do
       Intouch::TelegramBot.any_instance
         .expects(:send_message)
-        .with(-123, I18n.t('intouch.bot.group.start.message'))
+        .with(I18n.t('intouch.bot.group.start.message'))
 
       assert_difference('TelegramGroupChat.count') do
         @bot_service.call
@@ -58,7 +58,7 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
       setup do
         Intouch::TelegramBot.any_instance
           .expects(:send_message)
-          .with(123, I18n.t('telegram_common.bot.start.instruction_html'))
+          .with(I18n.t('telegram_common.bot.start.instruction_html'))
       end
 
       should 'create telegram account' do
@@ -108,7 +108,7 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
 
       Intouch::TelegramBot.any_instance
         .expects(:send_message)
-        .with(123, I18n.t('telegram_common.bot.connect.wait_for_email', email: @user.mail))
+        .with(I18n.t('telegram_common.bot.connect.wait_for_email', email: @user.mail))
 
       @telegram_account = TelegramCommon::Account.create(telegram_id: 123)
       @telegram_message = ActionController::Parameters.new(
@@ -138,7 +138,7 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
       setup do
         Intouch::TelegramBot.any_instance
           .expects(:send_message)
-          .with(123, I18n.t('intouch.bot.private.update.message'))
+          .with(I18n.t('intouch.bot.private.update.message'))
 
         @telegram_message = ActionController::Parameters.new(
           from: { id:         123,
@@ -172,7 +172,7 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
       setup do
         Intouch::TelegramBot.any_instance
           .expects(:send_message)
-          .with(-123, I18n.t('intouch.bot.group.update.message'))
+          .with(I18n.t('intouch.bot.group.update.message'))
 
         @telegram_message = ActionController::Parameters.new(
           from: { id:         123,
@@ -225,7 +225,7 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
           /help - #{I18n.t('intouch.bot.private.help.help')}
         TEXT
 
-        Intouch::TelegramBot.any_instance.expects(:send_message).with(123, text.chomp)
+        Intouch::TelegramBot.any_instance.expects(:send_message).with(text.chomp)
         @bot_service.call
       end
     end
@@ -253,7 +253,7 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
           /help - #{I18n.t('intouch.bot.group.help.help')}
         TEXT
 
-        Intouch::TelegramBot.any_instance.expects(:send_message).with(-123, text.chomp)
+        Intouch::TelegramBot.any_instance.expects(:send_message).with(text.chomp)
         @bot_service.call
       end
     end

@@ -1,3 +1,7 @@
+# 0.4.0
+
+* Update for use [redmine_telegram_common](https://github.com/centosadmin/redmine_telegram_common) version 0.0.12
+
 # 0.3.3
 
 * Add help command

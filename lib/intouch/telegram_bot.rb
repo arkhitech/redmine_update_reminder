@@ -1,6 +1,5 @@
 class Intouch::TelegramBot < TelegramCommon::Bot
   def initialize(command)
-    @bot = Telegrammer::Bot.new(Intouch.bot_token)
     @logger = Logger.new(Rails.root.join('log/intouch', 'bot.log'))
     @command = command.is_a?(Telegrammer::DataTypes::Message) ? command : Telegrammer::DataTypes::Message.new(command)
   end
@@ -18,18 +17,18 @@ class Intouch::TelegramBot < TelegramCommon::Bot
 
   def private_update_process
     update_account
-    send_message(command.chat.id, I18n.t('intouch.bot.private.update.message'))
+    send_message(I18n.t('intouch.bot.private.update.message'))
   end
 
   def group_create_process
     group_chat.save
-    send_message(chat.id, I18n.t('intouch.bot.group.start.message'))
+    send_message(I18n.t('intouch.bot.group.start.message'))
     logger.info "New group #{chat.title} added!"
   end
 
   def group_update_process
     group_chat.update title: chat.title
-    send_message(chat.id, I18n.t('intouch.bot.group.update.message'))
+    send_message(I18n.t('intouch.bot.group.update.message'))
     logger.info "#{user.first_name} renamed group title #{chat.title}"
   end
 
@@ -38,7 +37,7 @@ class Intouch::TelegramBot < TelegramCommon::Bot
   end
 
   def fetch_group_chat
-    TelegramGroupChat.where(tid: chat.id.abs).first_or_initialize(title: chat.title)
+    TelegramGroupChat.where(tid: chat_id.abs).first_or_initialize(title: chat.title)
   end
 
   def chat
@@ -59,5 +58,9 @@ class Intouch::TelegramBot < TelegramCommon::Bot
 
   def group_help_message
     help_command_list(group_commands, namespace: 'intouch', type: 'group')
+  end
+
+  def bot_token
+    Intouch.bot_token
   end
 end
