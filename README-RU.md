@@ -19,7 +19,8 @@
 
 ## Requirements
 
-**Redmine 3.1.x**
+**Ruby 2.3+**
+**Redmine 3.1+**
 
 Для работы палагина необходимо установить плагин [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq)
 

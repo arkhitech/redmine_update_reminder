@@ -21,6 +21,7 @@ Since 0.4 version, model `TelegramUser` will be removed, also table `telegram_us
 
 ## Requirements
 
+**Ruby 2.3+**
 **Redmine 3.1+**
 
 This plugin relies on the [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq) plugin.
