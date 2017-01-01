@@ -6,6 +6,28 @@
 
 Пожалуйста помогите нам сделать этот плагин лучше, сообщая во вкладке [Issues](https://github.com/centosadmin/redmine_intouch/issues) обо всех проблемах, с которыми Вы столкнётесь при его использовании. Мы готовы ответить на Все ваши вопросы, касающиеся этого плагина.
 
+# Установка
+
+## Требования
+
+* **Ruby 2.3+**
+* **Redmine 3.1+**
+* [redmine_telegram_common](https://github.com/centosadmin/redmine_telegram_common)
+* У Вас должен быть аккаунт пользователя Telegram
+* У Вас должен быть аккаунт для создания ботов в Telegram
+* Плагин [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq) должен быть установлен
+* Sidekiq должен обрабатывать очереди `default` и `telegram`. [Пример конфига](https://github.com/centosadmin/redmine_intouch/blob/master/tools/sidekiq.yml) - разместите его в папке `redmine/config`
+* Standart install plugin:
+
+```
+cd {REDMINE_ROOT}
+git clone https://github.com/centosadmin/redmine_intouch.git plugins/redmine_intouch
+bundle install
+bundle exec rake redmine:plugins:migrate RAILS_ENV=production
+```
+
+Примеры конфигурационного файла и скрипта для `init.d` находятся в папке `tools`
+
 ### Обновление с 0.2 на 0.3+
 
 Начиная с версии 0.3 это плагин использует [redmine_telegram_common](https://github
@@ -13,20 +35,9 @@
 
 Перед обновлением установите [этот](https://github.com/centosadmin/redmine_telegram_common) плагин.
 
-После обновления запустите `bundle exec rake intouch:common:migrate` для миграции пользоватльских данных в новую таблицу. 
+После обновления запустите `bundle exec rake intouch:common:migrate RAILS_ENV=production` для миграции пользоватльских данных в новую таблицу.
 
 В версии 0.4 модель `TelegramUser` будет упразднена, в месте с ней будет удалена старая таблица `telegram_users`.
-
-## Requirements
-
-**Ruby 2.3+**
-**Redmine 3.1+**
-
-Для работы палагина необходимо установить плагин [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq)
-
-[Запуск Sidekiq как демона](https://github.com/mperham/sidekiq/wiki/Deployment#daemonization)
-
-* примеры конфигурационного файла и скрипта для `init.d` находятся в папке `tools`
 
 # Настройка плагина
 
@@ -73,7 +84,7 @@
 После этого необходимо запустить бота командой:
 
 ```shell
-bundle exec rake intouch:telegram:bot PID_DIR='/pid/dir'
+bundle exec rake intouch:telegram:bot PID_DIR='/pid/dir' RAILS_ENV=production
 ```
 
 * пример скрипта для `init.d` в папке `tools`
@@ -99,7 +110,7 @@ bundle exec rake intouch:telegram:bot PID_DIR='/pid/dir'
 Название группы сохраняется сразу при добавлении. Если, какое-то время спустя, вы изменили название группы и хотите,
 чтобы в Redmine название также обновилось - выполните команду `/rename` в групповом чате.
 
-### Доступные команды 
+### Доступные команды
 
 - `/help` - справка по командам
 
@@ -114,13 +125,13 @@ bundle exec rake intouch:telegram:bot PID_DIR='/pid/dir'
 
 #### Подсказки для команд бота
 
-Чтобы добавить подсказки команд для бота, используйте команду `/setcommands` в беседе с [@BotFather](https://telegram.me/botfather). Нужно написать боту список команд с 
+Чтобы добавить подсказки команд для бота, используйте команду `/setcommands` в беседе с [@BotFather](https://telegram.me/botfather). Нужно написать боту список команд с
 описанием:
 
 ```
 start - Начало работы с ботом
 connect - Связывание аккаунтов Redmine и Telegram
-update - Обновить информацию об аккаунте Telegram или групповом чате (в зависимости от контекста) 
+update - Обновить информацию об аккаунте Telegram или групповом чате (в зависимости от контекста)
 help - Справка по командам
 ```
 

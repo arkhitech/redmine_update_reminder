@@ -8,27 +8,38 @@ Plugin is designed to send notifications to Redmine’s users by Telegram or E-m
 
 Please help us make this plugin better telling us of any [issues](https://github.com/centosadmin/redmine_intouch/issues) you'll face using it. We are ready to answer all your questions regarding this plugin.
 
+# Installation
+
+## Requirements
+
+* **Ruby 2.3+**
+* **Redmine 3.1+**
+* [redmine_telegram_common](https://github.com/centosadmin/redmine_telegram_common)
+* You should have Telegram user account
+* You should have Telegram bot account
+* Install the [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq) plugin
+* You need to configure Sidekiq queues `default` and `telegram`. [Config example](https://github.com/centosadmin/redmine_intouch/blob/master/tools/sidekiq.yml) - place it to `redmine/config` directory
+* Standart install plugin:
+
+```
+cd {REDMINE_ROOT}
+git clone https://github.com/centosadmin/redmine_intouch.git plugins/redmine_intouch
+bundle install
+bundle exec rake redmine:plugins:migrate RAILS_ENV=production
+```
+
+The `tools` folder has the examples of the plugin config files and the `init.d` startup script
+
 ### Upgrade form 0.2 to 0.3+
 
-Since version 0.2 this plugin uses [redmine_telegram_common](https://github.com/centosadmin/redmine_telegram_common) 
+Since version 0.2 this plugin uses [redmine_telegram_common](https://github.com/centosadmin/redmine_telegram_common)
 plugin.
 
 Before upgrade install [this](https://github.com/centosadmin/redmine_telegram_common) plugin.
 
-Then upgrade and run `bundle exec rake intouch:common:migrate` for migrate data to new table.
+Then upgrade and run `bundle exec rake intouch:common:migrate RAILS_ENV=production` for migrate data to new table.
 
 Since 0.4 version, model `TelegramUser` will be removed, also table `telegram_users` will be removed.
-
-## Requirements
-
-**Ruby 2.3+**
-**Redmine 3.1+**
-
-This plugin relies on the [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq) plugin.
-
-[Launch Sidekiq as daemon](https://github.com/mperham/sidekiq/wiki/Deployment#daemonization)
-
-* The `tools` folder has the examples of the plugin config files and the `init.d` startup script
 
 # Plugin Setup
 
@@ -73,7 +84,7 @@ Specify the following things before launching the bot:
 Run the bot by typing:
 
 ```shell
-bundle exec rake intouch:telegram:bot PID_DIR='/pid/dir'
+bundle exec rake intouch:telegram:bot PID_DIR='/pid/dir' RAILS_ENV=production
 ```
 
 The `tools` folder has the examples of the plugin config files and the `init.d` startup script.

@@ -18,7 +18,8 @@ USERNAME=redmine
 APP_ROOT=/opt/redmine
 PID_DIR=$APP_ROOT/tmp/pids
 PID=$PID_DIR/sidekiq.pid
-CMD="bundle exec sidekiq -d -c 2 -C config/sidekiq.yml"
+ENV=production
+CMD="RAILS_ENV=$ENV bundle exec sidekiq -d -c 2 -C config/sidekiq.yml"
 action="$1"
 set -u
 

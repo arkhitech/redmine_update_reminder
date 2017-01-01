@@ -18,7 +18,8 @@ USERNAME=redmine
 APP_ROOT=/opt/redmine
 PID_DIR=$APP_ROOT/tmp/pids
 PID=$PID_DIR/telegram-bot.pid
-CMD="bundle exec rake intouch:telegram:bot PID_DIR='$PID_DIR'"
+ENV=production
+CMD="RAILS_ENV=$ENV bundle exec rake intouch:telegram:bot PID_DIR='$PID_DIR'"
 action="$1"
 set -u
 
