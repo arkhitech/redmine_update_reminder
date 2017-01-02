@@ -16,7 +16,7 @@
 * У Вас должен быть аккаунт пользователя Telegram
 * У Вас должен быть аккаунт для создания ботов в Telegram
 * Плагин [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq) должен быть установлен
-* Sidekiq должен обрабатывать очереди `default` и `telegram`. [Пример конфига](https://github.com/centosadmin/redmine_intouch/blob/master/tools/sidekiq.yml) - разместите его в папке `redmine/config`
+* Sidekiq должен обрабатывать очереди `default` и `telegram`. [Пример конфига](https://github.com/centosadmin/redmine_intouch/blob/master/extras/sidekiq.yml) - разместите его в папке `redmine/config`
 * Standart install plugin:
 
 ```
@@ -26,7 +26,7 @@ bundle install
 bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 ```
 
-Примеры конфигурационного файла и скрипта для `init.d` находятся в папке `tools`
+Примеры конфигурационного файла и скрипта для `init.d` находятся в папке `extras`
 
 ### Обновление с 0.2 на 0.3+
 
@@ -87,7 +87,7 @@ bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 bundle exec rake intouch:telegram:bot PID_DIR='/pid/dir' RAILS_ENV=production
 ```
 
-* пример скрипта для `init.d` в папке `tools`
+* пример скрипта для `init.d` в папке `extras`
 
 Этот процесс добавляет пользователей Telegram в Redmine, а также создает в Redmine группы Telegram, в которые добавили бота.
 

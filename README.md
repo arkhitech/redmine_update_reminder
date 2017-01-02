@@ -18,7 +18,7 @@ Please help us make this plugin better telling us of any [issues](https://github
 * You should have Telegram user account
 * You should have Telegram bot account
 * Install the [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq) plugin
-* You need to configure Sidekiq queues `default` and `telegram`. [Config example](https://github.com/centosadmin/redmine_intouch/blob/master/tools/sidekiq.yml) - place it to `redmine/config` directory
+* You need to configure Sidekiq queues `default` and `telegram`. [Config example](https://github.com/centosadmin/redmine_intouch/blob/master/extras/sidekiq.yml) - place it to `redmine/config` directory
 * Standart install plugin:
 
 ```
@@ -28,7 +28,7 @@ bundle install
 bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 ```
 
-The `tools` folder has the examples of the plugin config files and the `init.d` startup script
+The `extras` folder has the examples of the plugin config files and the `init.d` startup script
 
 ### Upgrade form 0.2 to 0.3+
 
@@ -87,7 +87,7 @@ Run the bot by typing:
 bundle exec rake intouch:telegram:bot PID_DIR='/pid/dir' RAILS_ENV=production
 ```
 
-The `tools` folder has the examples of the plugin config files and the `init.d` startup script.
+The `extras` folder has the examples of the plugin config files and the `init.d` startup script.
 
 This will add the Telegram users to Redmine and create the Telegram groups in which it was added in Redmine.
 
