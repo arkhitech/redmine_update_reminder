@@ -1,5 +1,7 @@
 [![Code Climate](https://codeclimate.com/github/centosadmin/redmine_intouch/badges/gpa.svg)](https://codeclimate.com/github/centosadmin/redmine_intouch)
 
+[Русская версия](https://github.com/centosadmin/redmine_intouch/blob/master/README-RU.md)
+
 # redmine_intouch
 
 Plugin is designed by [Centos-admin.ru](http://centos-admin.ru/).
@@ -17,7 +19,7 @@ Please help us make this plugin better telling us of any [issues](https://github
 * [redmine_telegram_common](https://github.com/centosadmin/redmine_telegram_common)
 * You should have Telegram user account
 * You should have Telegram bot account
-* Install the [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq) plugin
+* Install the [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq) plugin. [Redis](https://redis.io) 2.8 or greater is required.
 * You need to configure Sidekiq queues `default` and `telegram`. [Config example](https://github.com/centosadmin/redmine_intouch/blob/master/extras/sidekiq.yml) - place it to `redmine/config` directory
 * Standart install plugin:
 

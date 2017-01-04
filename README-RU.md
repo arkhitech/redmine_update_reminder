@@ -1,3 +1,7 @@
+[![Code Climate](https://codeclimate.com/github/centosadmin/redmine_intouch/badges/gpa.svg)](https://codeclimate.com/github/centosadmin/redmine_intouch)
+
+[English version](https://github.com/centosadmin/redmine_intouch/blob/master/README.md)
+
 # redmine_intouch
 
 Плагин разработан [Centos-admin.ru](https://centos-admin.ru/).
@@ -15,9 +19,9 @@
 * [redmine_telegram_common](https://github.com/centosadmin/redmine_telegram_common)
 * У Вас должен быть аккаунт пользователя Telegram
 * У Вас должен быть аккаунт для создания ботов в Telegram
-* Плагин [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq) должен быть установлен
-* Sidekiq должен обрабатывать очереди `default` и `telegram`. [Пример конфига](https://github.com/centosadmin/redmine_intouch/blob/master/extras/sidekiq.yml) - разместите его в папке `redmine/config`
-* Standart install plugin:
+* Установите плагин [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq). [Redis](https://redis.io) 2.8 или выше требуется.
+* Настройте Sidekiq на обработку очереди `default` и `telegram`. [Пример конфига](https://github.com/centosadmin/redmine_intouch/blob/master/extras/sidekiq.yml) - разместите его в папке `redmine/config`
+* Плагин устанавливается стандартно:
 
 ```
 cd {REDMINE_ROOT}
