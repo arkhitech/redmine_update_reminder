@@ -1,0 +1,18 @@
+<h2><%=l(:label_intouch_sidekiq_cron_job_plural)%></h2>
+
+<table class="list">
+  <thead><tr>
+    <th><%=l(:field_name)%></th>
+    <th>Cron</th>
+  </tr></thead>
+  <tbody>
+  <% for sidekiq_cron_job in @sidekiq_cron_jobs %>
+    <tr class="<%= cycle("odd", "even") %>">
+      <td class="name"><%= link_to t("intouch.cron.#{sidekiq_cron_job.name}"), :action => 'edit', :id => sidekiq_cron_job.name %></td>
+      <td class="name"><%= sidekiq_cron_job.cron %></td>
+    </tr>
+  <% end unless @sidekiq_cron_jobs.blank? %>
+  </tbody>
+</table>
+
+<% html_title(l(:label_intouch_sidekiq_cron_job_plural)) -%>

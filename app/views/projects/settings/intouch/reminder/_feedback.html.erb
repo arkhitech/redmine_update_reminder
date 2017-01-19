@@ -1,0 +1,14 @@
+<div class="box">
+  <p class="description">
+    <%= raw t('intouch.project.settings.reminder.feedback.description') %><br>
+    <%= raw t('intouch.project.settings.reminder.feedback.notice') %>
+  </p>
+  <div>
+    <%= t('intouch.project.settings.common.copy_settings_from_tab') %>
+    <%= select_tag 'r', options_for_select(%w(working unassigned overdue).collect{ |r| [l("intouch.reminder.#{r}"), r] }) %>
+    <%= button_tag t('intouch.project.settings.common.copy'), class: 'copySettingsFromOtherTab' %>
+  </div>
+  <br>
+  <%= render partial: 'projects/settings/intouch/reminder/common',
+             locals:  { status: 'feedback', settings_source: settings_source } %>
+</div>

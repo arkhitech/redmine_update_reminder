@@ -1,0 +1,116 @@
+#intouch_settings .linkToPluginSettings {
+    float: right;
+    margin-right: 10px;
+}
+
+.intouch-settings label {
+    float: none;
+    margin-left: 0;
+}
+
+.intouch-settings table {
+    border-collapse: collapse;
+    margin-top: 5px;
+}
+.intouch-settings table th {
+    border: 1px solid #555;
+    padding: 0 5px;
+
+}
+.intouch-settings table td {
+    padding: 7px;
+    border: 1px solid #555;
+    /*border-left: 1px solid #555;*/
+}
+
+.intouch-settings .ui-widget-content {
+  background: none;
+}
+
+.intouch-settings p.description, .tabular.settings p.description {
+    margin: 10px;
+    padding: 0;
+}
+
+.intouch-settings h4 {
+    margin-top: 15px;
+}
+.intouch-settings h5 {
+    margin: 0;
+}
+
+.intouch-settings .hours_input, .tabular.settings .hours_input {
+  width: 35px;
+}
+
+.half {
+    display: inline-block;
+    width: 44%;
+    vertical-align: top;
+}
+
+.fourth {
+    display: inline-block;
+    width: 22%;
+    vertical-align: top;
+}
+
+.fourth.alarm {
+    margin-right: 20px;
+    background-color: #ffd9d9;
+}
+
+.tabular.settings .fourth p {
+    padding-left: 180px;
+}
+
+ul.inline-checkboxes li {
+    display: inline-block;
+}
+
+.tabular.settings ul.inline-checkboxes li label {
+    margin-left: 0;
+    float: none;
+}
+
+/**** Tabs ****/
+
+.intouch-tabs {height: 2.6em; margin-bottom:1.2em; position:relative; overflow:hidden;}
+.intouch-tabs ul {margin:0; position:absolute; bottom:0; padding-left:0.5em; width: 2000px; border-bottom: 1px solid #bbbbbb;}
+.intouch-tabs ul li {
+  float:left;
+  list-style-type:none;
+  white-space:nowrap;
+  margin-right:4px;
+  background:#fff;
+  position:relative;
+  margin-bottom:-1px;
+}
+.intouch-tabs ul li a{
+  display:block;
+  font-size: 0.9em;
+  text-decoration:none;
+  line-height:1.3em;
+  padding:4px 6px 4px 6px;
+  border: 1px solid #ccc;
+  border-bottom: 1px solid #bbbbbb;
+  background-color: #f6f6f6;
+  color:#999;
+  font-weight:bold;
+  border-top-left-radius:3px;
+  border-top-right-radius:3px;
+}
+
+.intouch-tabs ul li a:hover {
+  background-color: #ffffdd;
+  text-decoration:none;
+}
+
+.intouch-tabs ul li a.selected {
+  background-color: #fff;
+  border: 1px solid #bbbbbb;
+  border-bottom: 1px solid #fff;
+  color:#444;
+}
+
+.intouch-tabs ul li a.selected:hover {background-color: #fff;}

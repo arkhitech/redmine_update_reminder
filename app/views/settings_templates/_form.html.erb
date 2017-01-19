@@ -1,0 +1,11 @@
+<%= error_messages_for 'settings_template' %>
+
+<div class="box tabular">
+  <p><label for="settings_template_name"><%= l(:field_name) %><span class="required"> *</span></label>
+    <%= text_field 'settings_template', 'name' %></p>
+</div>
+
+<div class="intouch-settings">
+  <%= render partial: 'projects/settings/intouch/common/settings', locals: { settings_source: @settings_template} %>
+
+</div>

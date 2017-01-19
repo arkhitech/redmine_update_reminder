@@ -1,0 +1,71 @@
+<div class="box tabular settings">
+  <h4><%= l 'intouch.protocols.title' %></h4>
+
+  <p class="description"><%= t 'intouch.settings.common.protocols.description' %></p>
+
+  <ul class="inline-checkboxes">
+    <% Intouch::AVAILABLE_PROTOCOLS.each do |protocol| %>
+      <li>
+        <%= check_box_tag "settings[active_protocols][]", protocol,
+                          @settings["active_protocols"].try(:include?, protocol),
+                          id: "settings_active_protocols_#{protocol}"
+        %>
+        <%= label_tag "settings_active_protocols_#{protocol}", l("intouch.protocols.#{protocol}") %>
+      </li>
+    <% end %>
+  </ul>
+</div>
+<div class="box tabular settings">
+  <h4><%= l 'intouch.work_days.title' %></h4>
+
+  <ul class="inline-checkboxes">
+    <li>
+      <label for="settings_work_day_from"><%= l 'intouch.work_days.from' %></label>
+      <%= time_field_tag "settings[work_day_from]", @settings["work_day_from"] %>
+    </li>
+    <li>
+      <label for="settings_work_day_to"><%= l 'intouch.work_days.to' %></label>
+      <%= time_field_tag "settings[work_day_to]", @settings["work_day_to"] %>
+    </li>
+    <% Date::DAYNAMES.each_with_index do |day, i| %>
+      <li>
+        <%= check_box_tag "settings[work_days_#{i}]", '1',
+                          @settings["work_days_#{i}"] %>
+        <label for="settings_work_days_<%= i %>"><%= day %></label>
+      </li>
+    <% end %>
+  </ul>
+  <i><%= t('intouch.settings.common.work_time_hint') %></i>
+</div>
+
+<div class="box tabular settings alarm">
+  <h4><%= t 'intouch.settings.common.alarm.title' %></h4>
+  <p class="description">
+    <%= t 'intouch.settings.common.alarm.description_1' %><br>
+    <%= t 'intouch.settings.common.alarm.description_2' %>
+  </p>
+  <ul class="inline-checkboxes">
+    <% IssuePriority.find_each do |priority| %>
+      <li>
+        <%= check_box_tag "settings[alarm_priority_#{priority.id}]", '1',
+                          @settings["alarm_priority_#{priority.id}"], id: dom_id(priority) %>
+        <%= label_tag dom_id(priority), priority.name %>
+      </li>
+
+    <% end %>
+  </ul>
+</div>
+<% %w(working feedback).each do |notification_group| %>
+  <div class="box tabular settings">
+    <h4><%= l 'intouch.reminder.title' %> "<%= l "intouch.reminder.#{notification_group}" %>"</h4>
+    <ul class="inline-checkboxes">
+      <% IssueStatus.find_each do |status| %>
+        <li>
+          <%= check_box_tag "settings[#{notification_group}_status_#{status.id}]", '1',
+                            @settings["#{notification_group}_status_#{status.id}"], id: dom_id(status, notification_group) %>
+          <%= label_tag dom_id(status, notification_group), status.name %>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

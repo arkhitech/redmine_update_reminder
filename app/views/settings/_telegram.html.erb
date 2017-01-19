@@ -1,0 +1,22 @@
+<p>
+  <label for="settings_telegram_bot_token">Bot Token</label>
+  <%= text_field_tag 'settings[telegram_bot_token]', @settings['telegram_bot_token'], size: 50 %>
+</p>
+
+<h3><%= t 'intouch.settings.telegram.groups' %></h3>
+
+<table class="list">
+  <tbody>
+  <% for telegram_group in TelegramGroupChat.all %>
+    <tr class="<%= cycle("odd", "even") %>">
+      <td class="name">
+        <%= telegram_group.title %>
+      </td>
+
+      <td class="buttons">
+        <%= delete_link telegram_group_path(telegram_group) %>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

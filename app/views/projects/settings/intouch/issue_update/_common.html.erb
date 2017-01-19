@@ -1,0 +1,54 @@
+<p class="description">
+  <%= t("intouch.project.settings.issue_update.#{kind}.description") %>
+</p>
+
+<div>
+  <%= t('intouch.project.settings.common.copy_settings_from_tab') %>
+  <%= select_tag 'r', options_for_select(Intouch.available_recipients_without(kind).collect { |r| [l("intouch.recipient.#{r}"), r] }) %>
+  <%= button_tag t('intouch.project.settings.common.copy'), class: 'copySettingsFromOtherTab' %>
+</div>
+<br>
+<table>
+  <thead>
+  <tr>
+    <th><%= t('field_status') %> \ <%= t('field_priority') %></th>
+    <% IssuePriority.order(:position).each do |priority| %>
+      <th>
+        <%= check_box_tag "#{kind}_priority_#{priority.id}", '1', false, class: 'prioritySelectAll',
+                          data: {kind: kind, priority_id: priority.id}
+        %>
+        <%= label_tag "#{kind}_priority_#{priority.id}", priority.name %>
+      </th>
+    <% end %>
+  </tr>
+  </thead>
+  <tbody>
+  <% IssueStatus.order(:position).each do |status| %>
+    <tr>
+      <th>
+        <%= check_box_tag "#{kind}_status_#{status.id}", '1', false, class: 'statusSelectAll',
+                          data: {kind: kind, status_id: status.id}
+        %>
+        <%= label_tag "#{kind}_status_#{status.id}", status.name %>
+      </th>
+      <% IssuePriority.order(:position).each do |priority| %>
+        <td>
+          <% Intouch.active_protocols.each do |protocol| %>
+            <%= check_box_tag "intouch_settings[#{protocol}_settings][#{kind}][#{status.id}][]", priority.id,
+                              settings_source.send("#{protocol}_settings").try(:[], kind).
+                                  try(:[], status.id.to_s).try(:include?, priority.id.to_s),
+                              class: 'intouchPriorityStatusCheckbox',
+                              id:    "#{kind}_#{protocol}_priority_#{priority.id}_status_#{status.id}",
+                              data:  {kind: kind, priority_id: priority.id, status_id: status.id}
+            %>
+            <%= label_tag "#{kind}_#{protocol}_priority_#{priority.id}_status_#{status.id}", l("intouch.protocols.#{protocol}") %>
+            <br>
+          <% end %>
+        </td>
+      <% end %>
+    </tr>
+
+
+  <% end %>
+  </tbody>
+</table>

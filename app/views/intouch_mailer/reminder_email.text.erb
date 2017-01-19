@@ -1,0 +1,7 @@
+<%=@user.name%>,
+
+<%="#{h(@issue.tracker)} ##{@issue.id}"%>,
+<%= url_for({controller: 'issues', action: 'show', id: @issue}) %>
+
+<%= @issue.telegram_message %>
+

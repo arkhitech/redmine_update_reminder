@@ -1,0 +1,29 @@
+<% intouch_tabs = [
+    {name: 'common', partial: 'settings/common', label: 'intouch.label.common'},
+    {name: 'telegram', partial: 'settings/telegram', label: 'intouch.label.telegram'},
+    {name: 'settings_templates', partial: 'settings/settings_templates', label: 'intouch.label.settings_templates'},
+    {name: 'sidekiq_cron_jobs', partial: 'settings/sidekiq_cron_jobs', label: 'intouch.label.sidekiq_cron_jobs'}
+] %>
+
+<% unless Redmine::Plugin.installed?('redmine_telegram_common') %>
+  <h1 style="text-align: center">
+    !!! <a href="https://github.com/centosadmin/redmine_telegram_common" target="_blank">redmine_telegram_common</a>
+    <%= t('intouch.settings.required') %> !!!
+  </h1>
+<% end %>
+
+<% unless Redmine::Plugin.installed?('redmine_sidekiq') %>
+  <h1 style="text-align: center">
+    !!! <a href="https://github.com/ogom/redmine_sidekiq" target="_blank">redmine_sidekiq</a>
+    <%= t('intouch.settings.required') %> !!!
+  </h1>
+<% end %>
+
+<%= render_tabs intouch_tabs %>
+
+<% html_title(l(:label_settings), l('intouch.label.base')) -%>
+
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag "intouch.css?#{Intouch.commit_hash}", plugin: 'redmine_intouch' %>
+  <%= javascript_include_tag "intouch.js?#{Intouch.commit_hash}", plugin: 'redmine_intouch' %>
+<% end %>

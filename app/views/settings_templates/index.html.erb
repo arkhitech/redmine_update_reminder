@@ -1,0 +1,28 @@
+<div class="contextual">
+  <%= link_to l(:label_intouch_settings_template_new),
+              {controller: "settings_templates", action: 'new'},
+              class: 'icon icon-add' %>
+</div>
+
+<h2><%=l(:label_intouch_settings_template_plural)%></h2>
+
+<table class="list">
+  <thead><tr>
+    <th><%=l(:field_name)%></th>
+    <th></th>
+  </tr></thead>
+  <tbody>
+  <% for settings_template in @settings_templates %>
+    <tr class="<%= cycle("odd", "even") %>">
+      <td class="name"><%= link_to settings_template.name, action: 'edit', id: settings_template %></td>
+      <td class="buttons">
+        <%= link_to l(:button_edit), edit_settings_template_path(settings_template.id), class: 'icon icon-edit' %>
+        <%= link_to l(:button_copy), copy_settings_template_path(settings_template.id), class: 'icon icon-copy' %>
+        <%= delete_link settings_template_path(settings_template) %>
+      </td>
+    </tr>
+  <% end unless @settings_templates.blank? %>
+  </tbody>
+</table>
+
+<% html_title(l(:label_intouch_settings_template_plural)) -%>

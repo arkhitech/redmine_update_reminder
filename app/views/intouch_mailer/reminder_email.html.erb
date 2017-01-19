@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+
+    <%= @user.name %>,
+    <!--<p>-->
+      <!--<%#= link_to("#{h(@issue.tracker)} ##{@issue.id}",-->
+          <!--{controller: 'issues', action: 'show', id: @issue.id, only_path: false}) %>-->
+    <!--</p>-->
+    <%= simple_format @issue.telegram_message %>
+
+  </body>
+</html>

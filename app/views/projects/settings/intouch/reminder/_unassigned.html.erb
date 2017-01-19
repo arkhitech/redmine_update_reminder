@@ -1,0 +1,55 @@
+<div class="box">
+  <p class="description">
+    <%= t('intouch.project.settings.reminder.unassigned.description') %><br>
+    <%= t('intouch.project.settings.reminder.unassigned.notice') %>
+  </p>
+
+  <div>
+    <%= t('intouch.project.settings.common.copy_settings_from_tab') %>
+    <%= select_tag 'r', options_for_select(%w(working feedback overdue).collect { |r| [l("intouch.reminder.#{r}"), r] }) %>
+    <%= button_tag t('intouch.project.settings.common.copy'), class: 'copySettingsFromOtherTab' %>
+  </div>
+  <br>
+  <table>
+    <thead>
+    <tr>
+      <% (Intouch.available_recipients_without('assigned_to') + ['user_groups']).each do |recipient| %>
+        <th><%= l "intouch.recipient.#{recipient}" %></th>
+      <% end %>
+    </tr>
+    </thead>
+
+    <tr>
+      <% %w(author watchers).each do |receiver| %>
+        <td>
+          <% Intouch.active_protocols.each do |protocol| %>
+            <%= check_box_tag "intouch_settings[#{protocol}_settings][unassigned][#{receiver}]", '1',
+                              settings_source.send("#{protocol}_settings").try(:[], 'unassigned').try(:[], receiver),
+                              class: "#{protocol}_#{receiver}" %>
+            <%= label_tag l "intouch.protocols.#{protocol}" %><br>
+          <% end %>
+        </td>
+      <% end %>
+      <% if Intouch.available_recipients_without('assigned_to').include? 'telegram_groups' %>
+        <td>
+          <% TelegramGroupChat.find_each do |group| %>
+            <%= check_box_tag "intouch_settings[telegram_settings][unassigned][groups][]", group.id.to_s,
+                              settings_source.telegram_settings.try(:[], 'unassigned').
+                                  try(:[], 'groups').try(:include?, group.id.to_s),
+                              class: "groups_#{group.id}" %>
+            <%= label_tag group.title %><br>
+          <% end %>
+        </td>
+      <% end %>
+      <td>
+        <% Group.find_each do |group| %>
+          <%= check_box_tag "intouch_settings[email_settings][unassigned][user_groups][]", group.id.to_s,
+                            settings_source.email_settings.try(:[], 'unassigned').
+                                try(:[], 'user_groups').try(:include?, group.id.to_s),
+                            class: "user_groups_#{group.id}" %>
+          <%= label_tag group.name %><br>
+        <% end %>
+      </td>
+    </tr>
+  </table>
+</div>

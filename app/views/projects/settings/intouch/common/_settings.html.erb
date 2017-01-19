@@ -1,0 +1,38 @@
+<div class='accordion'>
+  <h3><%= l('intouch.label.issue_update') %></h3>
+
+  <div class="box">
+    <% issue_update_tabs = Intouch.available_recipients.map do |recipient|
+      {
+          name: recipient,
+          partial: "projects/settings/intouch/issue_update/#{recipient}",
+          label: "intouch.recipient.#{recipient}"
+      }
+    end %>
+
+    <%= render_intouch_tabs settings_source, issue_update_tabs %>
+
+  </div>
+
+  <h3><%= l('intouch.label.reminder') %></h3>
+
+  <div class="box">
+    <% reminder_tabs = %w(intervals working feedback unassigned overdue).map do |tab|
+      {
+          name: tab,
+          partial: "projects/settings/intouch/reminder/#{tab}",
+          label: "intouch.reminder.#{tab}"
+      }
+    end %>
+
+    <%= render_intouch_tabs settings_source, reminder_tabs %>
+
+  </div>
+
+  <h3><%= l('intouch.label.assigner_groups') %></h3>
+
+  <div class="box">
+    <%= render partial: 'projects/settings/intouch/common/assigner_groups', locals: { settings_source: settings_source} %>
+  </div>
+</div>
+<br>
