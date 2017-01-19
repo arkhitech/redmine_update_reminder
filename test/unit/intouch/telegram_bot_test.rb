@@ -127,7 +127,7 @@ class Intouch::TelegramBotTest < ActiveSupport::TestCase
     should 'send connect instruction by email' do
       TelegramCommon::Mailer.any_instance
         .expects(:telegram_connect)
-        .with(@user, @telegram_account)
+        .with(@user, @telegram_account, nil)
 
       @bot_service.call
     end
