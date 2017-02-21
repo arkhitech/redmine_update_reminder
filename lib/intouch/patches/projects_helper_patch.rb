@@ -6,8 +6,9 @@ module Intouch
     module ProjectsHelperPatch
       def self.included(base)
         base.send(:include, MethodsPatch)
+        base.send(:include, IntouchHelper)
 
-        base.class_eval do
+        base.module_eval do
           unloadable
 
           alias_method_chain :project_settings_tabs, :intouch
@@ -35,4 +36,3 @@ module Intouch
 end
 
 ProjectsHelper.send(:include, Intouch::Patches::ProjectsHelperPatch)
-ProjectsHelper.send(:include, IntouchHelper)
