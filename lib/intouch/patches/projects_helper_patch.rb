@@ -1,12 +1,10 @@
 require_dependency 'projects_helper'
-require_dependency 'intouch_helper'
 
 module Intouch
   module Patches
     module ProjectsHelperPatch
       def self.included(base)
         base.send(:include, MethodsPatch)
-        base.send(:include, IntouchHelper)
 
         base.module_eval do
           unloadable

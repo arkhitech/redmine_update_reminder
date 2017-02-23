@@ -1,0 +1,14 @@
+<% if tabs.any? %>
+    <%
+      selected = params[:tab]
+      selected = nil unless tabs.detect { |tab| tab[:name] == selected }
+      selected ||= tabs.first[:name]
+    %>
+
+    <%= render partial: 'projects/settings/intouch/common/tabs',
+        locals: { tabs: tabs, selected_tab: selected, settings_source: settings_source } %>
+<% else %>
+    <p class="nodata">
+      <%= l(:label_no_data) %>
+    </p>
+<% end %>
