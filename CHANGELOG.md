@@ -1,3 +1,7 @@
+# 0.4.1
+
+* Fix projects helper patch
+
 # 0.4.0
 
 * Update for use [redmine_telegram_common](https://github.com/centosadmin/redmine_telegram_common) version 0.0.12
