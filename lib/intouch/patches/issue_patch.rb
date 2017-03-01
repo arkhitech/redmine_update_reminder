@@ -238,7 +238,11 @@ module Intouch
 
             message += "\n#{I18n.t('field_status')}: #{status.name}" unless updated_details.include?('status')
 
-            message += "\n#{Intouch.issue_url(id)}"
+            message += "\n[#{I18n.t('intouch.telegram_message.issue.link')}](#{Intouch.issue_url(id)})"
+
+            if telegram_group.present? && telegram_group.shared_url.present?
+              message += "\n[#{I18n.t('redmine_chat_telegram.link.enter_chat')}](#{telegram_group.shared_url})"
+            end
 
             message
           end
