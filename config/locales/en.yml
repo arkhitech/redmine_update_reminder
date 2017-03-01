@@ -139,7 +139,8 @@ en:
       new: New setting template
     telegram_message:
       issue:
-        link: Link to issue
+        link: in browser
+        telegram_link: in Telegram
         inactive: Please update issue status (inactive %{hours} h)
         notice:
           overdue: Take for work (overdue issue)

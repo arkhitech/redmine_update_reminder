@@ -139,7 +139,8 @@ ru:
       new: "Новый шаблон настроек"
     telegram_message:
       issue:
-        link: "Ссылка на задачу"
+        link: "в браузере"
+        telegram_link: в Telegram
         inactive: "Напишите статус в задаче (бездействие %{hours} ч)"
         notice:
           overdue: "Возьмите в работу (просроченная задача)"
