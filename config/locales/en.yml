@@ -139,7 +139,6 @@ en:
       new: New setting template
     telegram_message:
       issue:
-        link: in browser
         telegram_link: in Telegram
         inactive: Please update issue status (inactive %{hours} h)
         notice:
