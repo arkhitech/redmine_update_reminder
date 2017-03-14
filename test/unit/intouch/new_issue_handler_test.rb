@@ -21,12 +21,8 @@ class NewIssueHandlerTest < ActiveSupport::TestCase
       it { subject.must_equal true }
     end
 
-
     describe 'no' do
-
-
       describe 'project without enabled intouch module' do
-
         before do
           Project.any_instance.stubs(:module_enabled?).with(:intouch).returns(false)
         end
@@ -35,14 +31,12 @@ class NewIssueHandlerTest < ActiveSupport::TestCase
       end
 
       describe 'inactive project' do
-
         before do
           Project.any_instance.stubs(:module_enabled?).with(:intouch).returns(true)
           Project.any_instance.stubs(:active?).returns(false)
         end
 
         it { subject.must_equal false }
-
       end
 
       describe 'closed issue' do
@@ -53,12 +47,9 @@ class NewIssueHandlerTest < ActiveSupport::TestCase
         end
 
         it { subject.must_equal false }
-
       end
-
     end
   end
-
 
   describe 'notifications' do
     before do
@@ -71,7 +62,7 @@ class NewIssueHandlerTest < ActiveSupport::TestCase
       describe '.need_private_message?' do
         subject { instance.need_private_message? }
         describe 'alarm issue' do
-          before { issue.stubs(:alarm?).returns(true)}
+          before { issue.stubs(:alarm?).returns(true) }
 
           it { subject.must_equal true }
         end
@@ -86,14 +77,8 @@ class NewIssueHandlerTest < ActiveSupport::TestCase
         end
 
         describe 'private_message_required?' do
-
         end
-
       end
-
     end
   end
-
-
-
 end
