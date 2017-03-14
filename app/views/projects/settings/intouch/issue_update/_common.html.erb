@@ -8,18 +8,18 @@
   <%= button_tag t('intouch.project.settings.common.copy'), class: 'copySettingsFromOtherTab' %>
 </div>
 <div>
-  <%= check_box_tag "intouch_settings[live_notify_always][#{kind}]",
+  <%= check_box_tag "intouch_settings[always_notify][#{kind}]",
       '1',
-      settings_source.intouch_settings.try(:[], "live_notify_always").try(:[], kind).present?,
-      id: "#{kind}_live_notify_always",
+      settings_source.intouch_settings.try(:[], "always_notify").try(:[], kind).present?,
+      id: "#{kind}_always_notify",
       data: {
           kind: kind,
-          priority_id: 'live_notify_always',
-          status_id: 'live_notify_always',
-          protocol: 'live_notify_always',
+          priority_id: 'always_notify',
+          status_id: 'always_notify',
+          protocol: 'always_notify',
       }
   %>
-  <%= label_tag "#{kind}_live_notify_always", t('intouch.project.settings.issue_update.notify_always') %>
+  <%= label_tag "#{kind}_always_notify", t('intouch.project.settings.issue_update.notify_always') %>
 </div>
 <br>
 <table>

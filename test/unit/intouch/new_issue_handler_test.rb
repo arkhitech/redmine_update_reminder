@@ -3,50 +3,97 @@ require File.expand_path('../../../test_helper', __FILE__)
 class NewIssueHandlerTest < ActiveSupport::TestCase
   fixtures :projects
 
-  subject { Intouch::NewIssueHandler.new(issue).call }
+  let(:instance) { Intouch::NewIssueHandler.new(issue) }
 
   let(:project) { Project.first }
-  let(:issue) { Issue.new(project_id: project.id)}
+  let(:issue) { Issue.new(project_id: project.id) }
 
-  describe 'without notification' do
-    describe 'project without enabled intouch module' do
+  describe '.need_notification?' do
+    subject { instance.need_notification? }
 
+    describe 'yes' do
       before do
-        project.stubs(:module_enabled?).with(:intouch).returns(false)
+        Project.any_instance.stubs(:module_enabled?).with(:intouch).returns(true)
+        Project.any_instance.stubs(:active?).returns(true)
+        issue.stubs(:closed?).returns(false)
       end
 
-      it { project.module_enabled?(:intouch).must_equal false}
-      it { subject.must_equal -1 }
+      it { subject.must_equal true }
     end
 
-    describe 'inactive project' do
 
-      before do
-        project.stubs(:module_enabled?).with(:intouch).returns(true)
-        project.stubs(:active?).returns(false)
+    describe 'no' do
+
+
+      describe 'project without enabled intouch module' do
+
+        before do
+          Project.any_instance.stubs(:module_enabled?).with(:intouch).returns(false)
+        end
+
+        it { subject.must_equal false }
       end
 
-      it { project.module_enabled?(:intouch).must_equal true}
-      it { project.active?.must_equal false}
+      describe 'inactive project' do
 
-      it { subject.must_equal -1 }
+        before do
+          Project.any_instance.stubs(:module_enabled?).with(:intouch).returns(true)
+          Project.any_instance.stubs(:active?).returns(false)
+        end
 
-    end
+        it { subject.must_equal false }
 
-    describe 'closed issue' do
-      before do
-        project.stubs(:module_enabled?).with(:intouch).returns(true)
-        project.stubs(:active?).returns(true)
-        issue.stubs(:closed?).returns(true)
       end
 
-      it { project.module_enabled?(:intouch).must_equal true}
-      it { project.active?.must_equal true}
-      it { issue.closed?.must_equal true}
+      describe 'closed issue' do
+        before do
+          Project.any_instance.stubs(:module_enabled?).with(:intouch).returns(true)
+          Project.any_instance.stubs(:active?).returns(true)
+          issue.stubs(:closed?).returns(true)
+        end
 
-      it { subject.must_equal -1 }
+        it { subject.must_equal false }
+
+      end
 
     end
   end
+
+
+  describe 'notifications' do
+    before do
+      Intouch::NewIssueHandler.any_instance
+        .stubs(:need_notification?)
+        .returns(true)
+    end
+
+    describe 'private' do
+      describe '.need_private_message?' do
+        subject { instance.need_private_message? }
+        describe 'alarm issue' do
+          before { issue.stubs(:alarm?).returns(true)}
+
+          it { subject.must_equal true }
+        end
+
+        describe 'work time' do
+          before do
+            issue.stubs(:alarm?).returns(false)
+            Intouch.stubs(:work_time?).returns(true)
+          end
+
+          it { subject.must_equal true }
+        end
+
+        describe 'private_message_required?' do
+
+        end
+
+      end
+
+    end
+  end
+
+
 
 end
