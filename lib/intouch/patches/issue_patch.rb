@@ -10,7 +10,7 @@ module Intouch
           # noinspection RubyArgCount
           store :intouch_data, accessors: %w(last_notification)
 
-          after_create :send_new_message
+          after_create :handle_new_issue
 
           def self.alarms
             Issue.where(priority_id: IssuePriority.alarm_ids)
@@ -265,21 +265,10 @@ module Intouch
 
           private
 
-          def send_new_message
-            if project.module_enabled?(:intouch) && project.active? && !closed?
+          require_relative '../new_issue_handler'
 
-              if alarm? || Intouch.work_time?
-
-                IntouchSender.send_live_telegram_message(id) if Intouch.active_protocols.include? 'telegram'
-
-                IntouchSender.send_live_email_message(id) if Intouch.active_protocols.include? 'email'
-
-              end
-
-              if Intouch.active_protocols.include? 'telegram'
-                IntouchSender.send_live_telegram_group_message(id)
-              end
-            end
+          def handle_new_issue
+            Intouch::NewIssueHandler.new(self).call
           end
         end
       end

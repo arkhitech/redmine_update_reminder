@@ -6,4 +6,5 @@ gem 'sidekiq-rate-limiter', require: 'sidekiq-rate-limiter/server'
 
 group :test do
   gem 'minitest-reporters'
+  gem 'mocha'
 end
