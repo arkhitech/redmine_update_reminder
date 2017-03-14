@@ -1,6 +1,8 @@
 module Intouch
   module Patches
     module IssuePatch
+      NOTIFICATION_STATES = %w(unassigned assigned_to_group overdue without_due_date working feedback)
+
       def self.included(base) # :nodoc:
         base.class_eval do
           unloadable
@@ -51,11 +53,11 @@ module Intouch
           end
 
           def notification_state
-            %w(unassigned assigned_to_group overdue without_due_date working feedback).select { |s| send("#{s}?") }.try :first
+            NOTIFICATION_STATES.select { |s| send("#{s}?") }.try :first
           end
 
           def notification_states
-            %w(unassigned assigned_to_group overdue without_due_date working feedback).select { |s| send("#{s}?") }
+            NOTIFICATION_STATES.select { |s| send("#{s}?") }
           end
 
           def notificable_for_state?(state)

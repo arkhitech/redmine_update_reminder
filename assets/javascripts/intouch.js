@@ -42,14 +42,19 @@ $(function () {
     });
 
     $('.copySettingsFromOtherTab').click(function () {
-        currentTabContent = $('.copySettingsFromOtherTab').parents('.intouch-tab-content');
         var currentTabContent = $(this).parents('.intouch-tab-content');
         var otherTabId = currentTabContent.find('option:selected').val();
         var otherTabContent = $('#intouch-tab-content-' + otherTabId);
 
         otherTabContent.find('input[type="checkbox"]:checked').each(function (index, element) {
-            currentTabContent.find('input[type="checkbox"].' + $(element).attr('class')).prop('checked', true);
+            var priorityId = $(element).data('priorityId');
+            var statusId = $(element).data('statusId');
+            var protocol = $(element).data('protocol');
+
+            var selector = 'input[type="checkbox"][data-protocol="'+ protocol +'"][data-priority-id="'+ priorityId + '"][data-status-id="'+statusId +'"]';
+            currentTabContent.find(selector).prop('checked', true);
         });
+
 
         return false;
     });

@@ -13,7 +13,14 @@
         <% Intouch.active_protocols.each do |protocol| %>
           <%= check_box_tag "intouch_settings[#{protocol}_settings][#{status}][#{receiver}]", '1',
                             settings_source.send("#{protocol}_settings").try(:[], status).try(:[], receiver),
-                            class: "#{protocol}_#{receiver}" %>
+                            class: "#{protocol}_#{receiver}",
+              data: {
+                  kind: status,
+                  priority_id: receiver,
+                  status_id: receiver,
+                  protocol: protocol,
+              }
+          %>
           <%= label_tag l "intouch.protocols.#{protocol}" %><br>
         <% end %>
       </td>
@@ -24,7 +31,14 @@
           <%= check_box_tag "intouch_settings[telegram_settings][#{status}][groups][]", group.id.to_s,
                             settings_source.telegram_settings.try(:[], status).
                                 try(:[], 'groups').try(:include?, group.id.to_s),
-                            class: "groups_#{group.id}" %>
+                            class: "groups_#{group.id}",
+              data: {
+                  kind: status,
+                  priority_id: group.id,
+                  status_id: group.id,
+                  protocol: 'groups',
+              }
+          %>
           <%= label_tag group.title %><br>
         <% end %>
       </td>

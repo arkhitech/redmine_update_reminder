@@ -7,6 +7,20 @@
   <%= select_tag 'r', options_for_select(Intouch.available_recipients_without(kind).collect { |r| [l("intouch.recipient.#{r}"), r] }) %>
   <%= button_tag t('intouch.project.settings.common.copy'), class: 'copySettingsFromOtherTab' %>
 </div>
+<div>
+  <%= check_box_tag "intouch_settings[live_notify_always][#{kind}]",
+      '1',
+      settings_source.intouch_settings.try(:[], "live_notify_always").try(:[], kind).present?,
+      id: "#{kind}_live_notify_always",
+      data: {
+          kind: kind,
+          priority_id: 'live_notify_always',
+          status_id: 'live_notify_always',
+          protocol: 'live_notify_always',
+      }
+  %>
+  <%= label_tag "#{kind}_live_notify_always", t('intouch.project.settings.issue_update.notify_always') %>
+</div>
 <br>
 <table>
   <thead>
@@ -15,7 +29,7 @@
     <% IssuePriority.order(:position).each do |priority| %>
       <th>
         <%= check_box_tag "#{kind}_priority_#{priority.id}", '1', false, class: 'prioritySelectAll',
-                          data: {kind: kind, priority_id: priority.id}
+            data: { kind: kind, priority_id: priority.id }
         %>
         <%= label_tag "#{kind}_priority_#{priority.id}", priority.name %>
       </th>
@@ -27,19 +41,25 @@
     <tr>
       <th>
         <%= check_box_tag "#{kind}_status_#{status.id}", '1', false, class: 'statusSelectAll',
-                          data: {kind: kind, status_id: status.id}
+            data: { kind: kind, status_id: status.id }
         %>
         <%= label_tag "#{kind}_status_#{status.id}", status.name %>
       </th>
       <% IssuePriority.order(:position).each do |priority| %>
         <td>
           <% Intouch.active_protocols.each do |protocol| %>
-            <%= check_box_tag "intouch_settings[#{protocol}_settings][#{kind}][#{status.id}][]", priority.id,
-                              settings_source.send("#{protocol}_settings").try(:[], kind).
-                                  try(:[], status.id.to_s).try(:include?, priority.id.to_s),
-                              class: 'intouchPriorityStatusCheckbox',
-                              id:    "#{kind}_#{protocol}_priority_#{priority.id}_status_#{status.id}",
-                              data:  {kind: kind, priority_id: priority.id, status_id: status.id}
+            <%= check_box_tag "intouch_settings[#{protocol}_settings][#{kind}][#{status.id}][]",
+                priority.id,
+                settings_source.send("#{protocol}_settings").try(:[], kind).
+                    try(:[], status.id.to_s).try(:include?, priority.id.to_s),
+                class: 'intouchPriorityStatusCheckbox',
+                id: "#{kind}_#{protocol}_priority_#{priority.id}_status_#{status.id}",
+                data: {
+                    kind: kind,
+                    priority_id: priority.id,
+                    status_id: status.id,
+                    protocol: protocol,
+                }
             %>
             <%= label_tag "#{kind}_#{protocol}_priority_#{priority.id}_status_#{status.id}", l("intouch.protocols.#{protocol}") %>
             <br>
@@ -47,8 +67,6 @@
         </td>
       <% end %>
     </tr>
-
-
   <% end %>
   </tbody>
 </table>
