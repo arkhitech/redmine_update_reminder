@@ -6,7 +6,6 @@ class PrivateMessageRequiredTest < ActiveSupport::TestCase
   let(:project) { Object.new }
   let(:issue) { Object.new }
 
-
   let(:always_notify_settings) do
     {
       'always_notify' => {
@@ -16,7 +15,6 @@ class PrivateMessageRequiredTest < ActiveSupport::TestCase
   end
 
   let(:empty_settings) { {} }
-
 
   describe 'yes' do
     describe 'alarm issue' do
@@ -29,7 +27,6 @@ class PrivateMessageRequiredTest < ActiveSupport::TestCase
 
       it { subject.must_equal true }
     end
-
 
     describe 'work time' do
       before do
@@ -52,8 +49,6 @@ class PrivateMessageRequiredTest < ActiveSupport::TestCase
 
       it { subject.must_equal true }
     end
-
-
   end
 
   describe 'no' do
@@ -65,6 +60,4 @@ class PrivateMessageRequiredTest < ActiveSupport::TestCase
 
     it { subject.must_equal false }
   end
-
-
 end

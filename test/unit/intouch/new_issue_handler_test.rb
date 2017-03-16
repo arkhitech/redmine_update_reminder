@@ -8,7 +8,6 @@ class NewIssueHandlerTest < ActiveSupport::TestCase
   let(:project) { Project.first }
   let(:issue) { Issue.new(project: project) }
 
-
   describe 'send' do
     before do
       Intouch::Checker::NotificationRequired.any_instance

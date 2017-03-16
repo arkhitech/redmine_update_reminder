@@ -6,7 +6,6 @@ class NotificationRequiredCheckerTest < ActiveSupport::TestCase
   let(:project) { Object.new }
   let(:issue) { Object.new }
 
-
   describe 'yes' do
     before do
       project.stubs(:module_enabled?).with(:intouch).returns(true)

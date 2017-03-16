@@ -1,7 +1,6 @@
 module Intouch
   module Checker
     class NotificationRequired
-
       attr_reader :project, :issue
 
       def initialize(issue, project)
@@ -17,4 +16,3 @@ module Intouch
     end
   end
 end
-

@@ -1,7 +1,6 @@
 module Intouch
   module Checker
     class PrivateMessageRequired
-
       attr_reader :project, :issue
 
       def initialize(issue, project)
@@ -29,4 +28,3 @@ module Intouch
     end
   end
 end
-
