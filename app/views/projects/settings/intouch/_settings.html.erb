@@ -5,28 +5,34 @@
   <% errors << l('intouch.label.enable_module') unless @project.module_enabled?(:intouch) %>
 
   <% if errors.empty? %>
-    <%= form_tag({controller: :intouch, action: :save_settings, project_id: @project, tab: 'intouch_settings'}, method: :put, class: "tabular", multipart: true, id: 'intouch_settings') do %>
+    <%= form_tag(
+            { controller: :intouch, action: :save_settings, project_id: @project, tab: 'intouch_settings' },
+            method: :put,
+            multipart: true,
+            id: 'intouch_settings',
+            class: 'tabular',
+        ) do %>
       <div class="box">
         <p>
           <label for="settings_template_id"><%= t 'intouch.project.settings.settings_template_label' %></label>
           <%= select_tag('intouch_settings[settings_template_id]',
-                         options_for_select(SettingsTemplate.order(:name).collect { |u| [u.name, u.id] }, @project.settings_template_id),
-                         include_blank: true) %>
+              options_for_select(SettingsTemplate.order(:name).collect { |u| [u.name, u.id] }, @project.settings_template_id),
+              include_blank: true) %>
           <% if @project.settings_template.present? %>
             <%= link_to t('intouch.project.settings.settings_template_edit'),
-                        controller: "settings_templates", action: 'edit', id: @project.settings_template.id %>
+                controller: 'settings_templates', action: 'edit', id: @project.settings_template.id %>
           <% end %>
           <%= link_to l(:label_intouch_settings_template_new),
-                      {controller: "settings_templates", action: 'new'}, class: 'icon icon-add' %>
+              { controller: 'settings_templates', action: 'new' }, class: 'icon icon-add' %>
 
           <%= link_to t('intouch.project.settings.plugin_settings'),
-                      '/settings/plugin/redmine_intouch', target: '_blank', class: 'linkToPluginSettings' %>
+              '/settings/plugin/redmine_intouch', target: '_blank', class: 'linkToPluginSettings' %>
         </p>
 
       </div>
 
       <div class="intouch-settings" <%= raw('style="display: none;"') if @project.settings_template.present? %>>
-        <%= render partial: 'projects/settings/intouch/common/settings', locals: {settings_source: @project} %>
+        <%= render partial: 'projects/settings/intouch/common/settings', locals: { settings_source: @project } %>
       </div>
 
       <div style="clear:both;"></div>
@@ -36,7 +42,7 @@
     <% end %>
 
   <% else %>
-    <p class="nodata"><%= errors.join("<br/>").html_safe %></p>
+    <p class="nodata"><%= errors.join('<br/>').html_safe %></p>
   <% end %>
 <% else %>
   <p class="nodata">

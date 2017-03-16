@@ -66,6 +66,7 @@ en:
             anytime: "Anytime (24/7)"
           watchers:
             description: Specify which notifications should be sent to the watchers of the issue
+          notify_always: "notify anytime (24/7)"
         reminder:
           feedback:
             description: 'Every working day, during working hours, if the issue has not been updated for a number of hours specified in the general settings and is in the status <strong>Feedback</strong>, the following users will receive the messages.'

@@ -13,12 +13,12 @@ class IntouchSender
     TelegramGroupSenderWorker.perform_in(5.seconds, issue_id, group_ids, state)
   end
 
-  def self.send_live_email_message(issue_id)
-    EmailLiveSenderWorker.perform_in(5.seconds, issue_id)
+  def self.send_live_email_message(issue_id, required_recipients = [])
+    EmailLiveSenderWorker.perform_in(5.seconds, issue_id, required_recipients)
   end
 
-  def self.send_live_telegram_message(issue_id)
-    TelegramLiveSenderWorker.perform_in(5.seconds, issue_id)
+  def self.send_live_telegram_message(issue_id, required_recipients = [])
+    TelegramLiveSenderWorker.perform_in(5.seconds, issue_id, required_recipients)
   end
 
   def self.send_live_telegram_group_message(issue_id)

@@ -1,6 +1,8 @@
 module Intouch
   module Patches
     module IssuePatch
+      NOTIFICATION_STATES = %w(unassigned assigned_to_group overdue without_due_date working feedback)
+
       def self.included(base) # :nodoc:
         base.class_eval do
           unloadable
@@ -8,7 +10,7 @@ module Intouch
           # noinspection RubyArgCount
           store :intouch_data, accessors: %w(last_notification)
 
-          after_create :send_new_message
+          after_create :handle_new_issue
 
           def self.alarms
             Issue.where(priority_id: IssuePriority.alarm_ids)
@@ -51,11 +53,11 @@ module Intouch
           end
 
           def notification_state
-            %w(unassigned assigned_to_group overdue without_due_date working feedback).select { |s| send("#{s}?") }.try :first
+            NOTIFICATION_STATES.select { |s| send("#{s}?") }.try :first
           end
 
           def notification_states
-            %w(unassigned assigned_to_group overdue without_due_date working feedback).select { |s| send("#{s}?") }
+            NOTIFICATION_STATES.select { |s| send("#{s}?") }
           end
 
           def notificable_for_state?(state)
@@ -263,21 +265,10 @@ module Intouch
 
           private
 
-          def send_new_message
-            if project.module_enabled?(:intouch) && project.active? && !closed?
+          require_relative '../new_issue_handler'
 
-              if alarm? || Intouch.work_time?
-
-                IntouchSender.send_live_telegram_message(id) if Intouch.active_protocols.include? 'telegram'
-
-                IntouchSender.send_live_email_message(id) if Intouch.active_protocols.include? 'email'
-
-              end
-
-              if Intouch.active_protocols.include? 'telegram'
-                IntouchSender.send_live_telegram_group_message(id)
-              end
-            end
+          def handle_new_issue
+            Intouch::NewIssueHandler.new(self).call
           end
         end
       end

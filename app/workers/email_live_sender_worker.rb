@@ -2,7 +2,7 @@ class EmailLiveSenderWorker
   include Sidekiq::Worker
   EMAIL_LIVE_SENDER_LOG = Logger.new(Rails.root.join('log/intouch', 'email-live-sender.log'))
 
-  def perform(issue_id)
+  def perform(issue_id, _required_recipients = [])
     Intouch.set_locale
     issue = Issue.find issue_id
 

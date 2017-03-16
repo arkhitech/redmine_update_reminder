@@ -1,24 +1,24 @@
 class TelegramLiveSenderWorker
   include Sidekiq::Worker
-  TELEGRAM_LIVE_SENDER_LOG = Logger.new(Rails.root.join('log/intouch', 'telegram-live-sender.log'))
 
-  def perform(issue_id)
-    TELEGRAM_LIVE_SENDER_LOG.debug "START for issue_id #{issue_id}"
+  def perform(issue_id, required_recipients = [])
+    @required_recipients = required_recipients
+    logger.debug "START for issue_id #{issue_id}"
 
     Intouch.set_locale
 
     issue = Issue.find issue_id
-    TELEGRAM_LIVE_SENDER_LOG.debug issue.inspect
+    logger.debug issue.inspect
 
     base_message = issue.telegram_live_message
 
-    TELEGRAM_LIVE_SENDER_LOG.debug "base_message: #{base_message}"
+    logger.debug "base_message: #{base_message}"
 
     issue.intouch_live_recipients('telegram').each do |user|
-      TELEGRAM_LIVE_SENDER_LOG.debug "user: #{user.inspect}"
+      logger.debug "user: #{user.inspect}"
 
       telegram_account = user.telegram_account
-      TELEGRAM_LIVE_SENDER_LOG.debug "telegram_account: #{telegram_account.inspect}"
+      logger.debug "telegram_account: #{telegram_account.inspect}"
       next unless telegram_account.present? && telegram_account.active?
 
       roles_in_issue = []
@@ -27,7 +27,9 @@ class TelegramLiveSenderWorker
       roles_in_issue << 'watchers' if issue.watchers.pluck(:user_id).include? user.id
       roles_in_issue << 'author' if issue.author_id == user.id
 
-      TELEGRAM_LIVE_SENDER_LOG.debug "roles_in_issue: #{roles_in_issue.inspect}"
+      logger.debug "roles_in_issue: #{roles_in_issue.inspect}"
+
+      next unless need_notification?(roles_in_issue)
 
       project  = issue.project
       settings = project.active_telegram_settings
@@ -38,7 +40,7 @@ class TelegramLiveSenderWorker
             value.try(:[], issue.status_id.to_s).try(:include?, issue.priority_id.to_s)
         end.keys
 
-        prefix = (roles_in_issue & recipients).map do |role|
+        prefix = roles_for_prefix(recipients, roles_in_issue).map do |role|
           I18n.t("intouch.telegram_message.recipient.#{role}")
         end.join(', ')
       else
@@ -47,15 +49,35 @@ class TelegramLiveSenderWorker
 
       message = prefix.present? ? "#{prefix}\n#{base_message}" : base_message
 
-      TELEGRAM_LIVE_SENDER_LOG.debug message
+      logger.debug message
 
       job = TelegramMessageSender.perform_async(telegram_account.telegram_id, message)
 
-      TELEGRAM_LIVE_SENDER_LOG.debug job.inspect
+      logger.debug job.inspect
     end
 
-    TELEGRAM_LIVE_SENDER_LOG.debug "FINISH for issue_id #{issue_id}"
+    logger.debug "FINISH for issue_id #{issue_id}"
   rescue ActiveRecord::RecordNotFound => e
     # ignore
+  end
+
+  private
+
+  attr_reader :required_recipients
+
+  def logger
+    @logger ||= Logger.new(Rails.root.join('log/intouch', 'telegram-live-sender.log'))
+  end
+
+  def need_notification?(roles_in_issue)
+    return roles_in_issue unless required_recipients.present?
+
+    (roles_in_issue & required_recipients).present?
+  end
+
+  def roles_for_prefix(recipients, roles_in_issue)
+    return roles_in_issue & recipients unless required_recipients.present?
+
+    roles_in_issue & recipients & required_recipients
   end
 end
