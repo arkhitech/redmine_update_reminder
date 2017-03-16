@@ -1,6 +1,6 @@
 # 0.5.0
 
-* New feature: allow to receive private message always 
+* New feature: Always send live message for required recipients
 
 # 0.4.1
 
