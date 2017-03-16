@@ -18,7 +18,7 @@ module Intouch
     attr_reader :issue, :project, :journal
 
     def notification_required?
-      NotificationRequiredChecker.new(issue, project).call
+      Checker::NotificationRequired.new(issue, project).call
     end
 
     def send_private_messages

@@ -3,82 +3,49 @@ require File.expand_path('../../../test_helper', __FILE__)
 class NewIssueHandlerTest < ActiveSupport::TestCase
   fixtures :projects
 
-  let(:instance) { Intouch::NewIssueHandler.new(issue) }
+  subject { Intouch::NewIssueHandler.new(issue).call }
 
   let(:project) { Project.first }
-  let(:issue) { Issue.new(project_id: project.id) }
+  let(:issue) { Issue.new(project: project) }
 
-  describe '.need_notification?' do
-    subject { instance.notification_required? }
 
-    describe 'yes' do
-      before do
-        Project.any_instance.stubs(:module_enabled?).with(:intouch).returns(true)
-        Project.any_instance.stubs(:active?).returns(true)
-        issue.stubs(:closed?).returns(false)
-      end
-
-      it { subject.must_equal true }
-    end
-
-    describe 'no' do
-      describe 'project without enabled intouch module' do
-        before do
-          Project.any_instance.stubs(:module_enabled?).with(:intouch).returns(false)
-        end
-
-        it { subject.must_equal false }
-      end
-
-      describe 'inactive project' do
-        before do
-          Project.any_instance.stubs(:module_enabled?).with(:intouch).returns(true)
-          Project.any_instance.stubs(:active?).returns(false)
-        end
-
-        it { subject.must_equal false }
-      end
-
-      describe 'closed issue' do
-        before do
-          Project.any_instance.stubs(:module_enabled?).with(:intouch).returns(true)
-          Project.any_instance.stubs(:active?).returns(true)
-          issue.stubs(:closed?).returns(true)
-        end
-
-        it { subject.must_equal false }
-      end
-    end
-  end
-
-  describe 'notifications' do
+  describe 'send' do
     before do
-      Intouch::NewIssueHandler.any_instance
-        .stubs(:notification_required?)
+      Intouch::Checker::NotificationRequired.any_instance
+        .stubs(:call)
         .returns(true)
     end
 
-    describe 'private' do
-      describe '.need_private_message?' do
-        subject { instance.need_private_message? }
-        describe 'alarm issue' do
-          before { issue.stubs(:alarm?).returns(true) }
+    it 'private message' do
+      Intouch::PrivateMessageSender.expects(:call).with(issue, project)
 
-          it { subject.must_equal true }
-        end
+      subject
+    end
 
-        describe 'work time' do
-          before do
-            issue.stubs(:alarm?).returns(false)
-            Intouch.stubs(:work_time?).returns(true)
-          end
+    it 'group message' do
+      Intouch::GroupMessageSender.expects(:call).with(issue, project)
 
-          it { subject.must_equal true }
-        end
+      subject
+    end
+  end
 
-        describe 'private_message_required?' do
-        end
-      end
+  describe 'not send' do
+    before do
+      Intouch::Checker::NotificationRequired.any_instance
+        .stubs(:call)
+        .returns(false)
+    end
+
+    it 'private message' do
+      Intouch::PrivateMessageSender.expects(:call).never
+
+      subject
+    end
+
+    it 'group message' do
+      Intouch::GroupMessageSender.expects(:call).never
+
+      subject
     end
   end
 end

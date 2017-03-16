@@ -1,5 +1,7 @@
 module Intouch
   class GroupMessageSender
+    extend ServiceInitializer
+
     attr_reader :project, :issue
 
     def initialize(issue, project)

@@ -1,5 +1,7 @@
 module Intouch
   class PrivateMessageSender
+    extend ServiceInitializer
+
     attr_reader :project, :issue
 
     def initialize(issue, project)
@@ -17,7 +19,11 @@ module Intouch
     private
 
     def need_private_message?
-      issue.alarm? || Intouch.work_time? || private_message_required?
+      required_checker.call
+    end
+
+    def required_recipients
+      required_checker.required_recipients
     end
 
     def send_telegram_private_messages
@@ -32,24 +38,16 @@ module Intouch
       IntouchSender.send_live_email_message(issue.id, required_recipients)
     end
 
-    def private_message_required?
-      required_recipients.present?
-    end
-
-    def required_recipients
-      always_notify_settings.keys
-    end
-
-    def always_notify_settings
-      @always_notify_settings ||= project.intouch_settings['always_notify'] || {}
-    end
-
     def telegram_enabled?
       Intouch.active_protocols.include?('telegram')
     end
 
     def email_enabled?
       Intouch.active_protocols.include?('email')
+    end
+
+    def required_checker
+      @required_checker ||= Checker::PrivateMessageRequired.new(issue, project)
     end
   end
 end

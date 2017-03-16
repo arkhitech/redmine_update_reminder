@@ -17,15 +17,15 @@ module Intouch
     attr_reader :issue, :project
 
     def notification_required?
-      NotificationRequiredChecker.new(issue, project).call
+      Checker::NotificationRequired.new(issue, project).call
     end
 
     def send_private_messages
-      PrivateMessageSender.new(issue, project).call
+      PrivateMessageSender.call(issue, project)
     end
 
     def send_group_messages
-      GroupMessageSender.new(issue, project).call
+      GroupMessageSender.call(issue, project)
     end
   end
 end
