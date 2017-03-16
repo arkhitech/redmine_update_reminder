@@ -1,3 +1,7 @@
+# 0.5.0
+
+* New feature: allow to receive private message always 
+
 # 0.4.1
 
 * Fix projects helper patch
