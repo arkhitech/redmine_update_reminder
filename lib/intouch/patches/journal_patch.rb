@@ -5,26 +5,12 @@ module Intouch
         base.class_eval do
           unloadable
 
-          after_create :send_live_message
+          after_create :handle_updated_issue
 
           private
 
-          def send_live_message
-            project = issue.project
-            if project.module_enabled?(:intouch) && project.active?
-              if Intouch.work_time? || issue.alarm?
-                if Intouch.active_protocols.include? 'telegram'
-
-                  if (details.pluck(:prop_key) & %w(priority_id status_id)).present?
-                    IntouchSender.send_live_telegram_group_message(issue.id)
-                  end
-
-                  IntouchSender.send_live_telegram_message(issue.id)
-                end
-
-                IntouchSender.send_live_email_message(issue.id) if Intouch.active_protocols.include? 'email'
-              end
-            end
+          def handle_updated_issue
+            Intouch::UpdatedIssueHandler.new(self).call
           end
         end
       end

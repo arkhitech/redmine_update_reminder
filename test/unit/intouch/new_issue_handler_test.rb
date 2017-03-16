@@ -9,7 +9,7 @@ class NewIssueHandlerTest < ActiveSupport::TestCase
   let(:issue) { Issue.new(project_id: project.id) }
 
   describe '.need_notification?' do
-    subject { instance.need_notification? }
+    subject { instance.notification_required? }
 
     describe 'yes' do
       before do
@@ -54,7 +54,7 @@ class NewIssueHandlerTest < ActiveSupport::TestCase
   describe 'notifications' do
     before do
       Intouch::NewIssueHandler.any_instance
-        .stubs(:need_notification?)
+        .stubs(:notification_required?)
         .returns(true)
     end
 

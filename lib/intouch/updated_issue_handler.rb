@@ -1,7 +1,8 @@
 module Intouch
-  class NewIssueHandler
-    def initialize(issue)
-      @issue = issue
+  class UpdatedIssueHandler
+    def initialize(journal)
+      @journal = journal
+      @issue = @journal.issue
       @project = @issue.project
     end
 
@@ -14,7 +15,7 @@ module Intouch
 
     private
 
-    attr_reader :issue, :project
+    attr_reader :issue, :project, :journal
 
     def notification_required?
       NotificationRequiredChecker.new(issue, project).call
@@ -25,7 +26,13 @@ module Intouch
     end
 
     def send_group_messages
+      return unless need_group_message?
+
       GroupMessageSender.new(issue, project).call
+    end
+
+    def need_group_message?
+      (journal.details.pluck(:prop_key) & %w(priority_id status_id)).present?
     end
   end
 end
