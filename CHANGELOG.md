@@ -1,3 +1,7 @@
+# 0.5.1
+
+* Extract regular notification text to service class
+
 # 0.5.0
 
 * New feature: Always send live message for required recipients

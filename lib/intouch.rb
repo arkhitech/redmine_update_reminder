@@ -1,7 +1,6 @@
 module Intouch
   AVAILABLE_PROTOCOLS = %w(telegram email)
   INTOUCH_COMMIT_HASH = `cd #{Rails.root}/plugins/redmine_intouch && git rev-parse --short HEAD`.chomp
-  INTOUCH_SEND_NOTIFICATIONS_LOG = Logger.new(Rails.root.join('log/intouch', 'send-notifications.log'))
 
   def self.set_locale
     I18n.locale = Setting['default_language']
@@ -58,7 +57,7 @@ module Intouch
 
           if active &&
              interval.present? &&
-             issue.assigners_updated_on < interval.to_i.hours.ago &&
+             Intouch::Message::Regular.new(issue).latest_action_on < interval.to_i.hours.ago &&
              (last_notification.nil? || last_notification < interval.to_i.hours.ago)
 
             if active_protocols.include? 'email'
@@ -78,10 +77,10 @@ module Intouch
             issue.update_column :intouch_data, 'last_notification' => last_notification
           end
         rescue NoMethodError => e
-          INTOUCH_SEND_NOTIFICATIONS_LOG.error "#{e.class}: #{e.message}"
-          INTOUCH_SEND_NOTIFICATIONS_LOG.debug "State: #{state} Priority: #{priority} Active: #{active} Interval: #{interval} Last notification: #{last_notification}"
-          INTOUCH_SEND_NOTIFICATIONS_LOG.debug issue.inspect
-          INTOUCH_SEND_NOTIFICATIONS_LOG.debug project.inspect
+          logger.error "#{e.class}: #{e.message}"
+          logger.debug "State: #{state} Priority: #{priority} Active: #{active} Interval: #{interval} Last notification: #{last_notification}"
+          logger.debug issue.inspect
+          logger.debug project.inspect
         end
       end
     end
@@ -125,5 +124,11 @@ module Intouch
 
   def self.issue_url(issue_id)
     "#{Setting['protocol']}://#{Setting['host_name']}/issues/#{issue_id}"
+  end
+
+  private
+
+  def self.logger
+    Logger.new(Rails.root.join('log/intouch', 'send-notifications.log'))
   end
 end
