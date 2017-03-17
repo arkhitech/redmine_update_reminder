@@ -1,3 +1,7 @@
+# 0.5.2
+
+* `without_due_date?` regression hot fix
+
 # 0.5.1
 
 * Extract regular notification text to service class
