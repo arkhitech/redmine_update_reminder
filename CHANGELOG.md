@@ -1,3 +1,7 @@
+# 0.5.3
+
+* Fix: Always send live message for required recipients for settings template
+
 # 0.5.2
 
 * `without_due_date?` regression hot fix
