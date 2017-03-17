@@ -23,7 +23,7 @@ module Intouch
       end
 
       def always_notify_settings
-        project.intouch_settings['always_notify'] || {}
+        project.active_intouch_settings['always_notify'] || {}
       end
     end
   end
