@@ -22,7 +22,7 @@ class PrivateMessageRequiredTest < ActiveSupport::TestCase
         issue.stubs(:alarm?).returns(true)
 
         Intouch.stubs(:work_time?).returns(false)
-        project.stubs(:intouch_settings).returns(empty_settings)
+        project.stubs(:active_intouch_settings).returns(empty_settings)
       end
 
       it { subject.must_equal true }
@@ -33,7 +33,7 @@ class PrivateMessageRequiredTest < ActiveSupport::TestCase
         Intouch.stubs(:work_time?).returns(true)
 
         issue.stubs(:alarm?).returns(false)
-        project.stubs(:intouch_settings).returns(empty_settings)
+        project.stubs(:active_intouch_settings).returns(empty_settings)
       end
 
       it { subject.must_equal true }
@@ -41,7 +41,7 @@ class PrivateMessageRequiredTest < ActiveSupport::TestCase
 
     describe 'project with always notify' do
       before do
-        project.stubs(:intouch_settings).returns(always_notify_settings)
+        project.stubs(:active_intouch_settings).returns(always_notify_settings)
 
         Intouch.stubs(:work_time?).returns(false)
         issue.stubs(:alarm?).returns(false)
@@ -55,7 +55,7 @@ class PrivateMessageRequiredTest < ActiveSupport::TestCase
     before do
       Intouch.stubs(:work_time?).returns(false)
       issue.stubs(:alarm?).returns(false)
-      project.stubs(:intouch_settings).returns(empty_settings)
+      project.stubs(:active_intouch_settings).returns(empty_settings)
     end
 
     it { subject.must_equal false }
