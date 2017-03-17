@@ -48,10 +48,6 @@ module Intouch
             IssueStatus.feedback_ids.include? status_id
           end
 
-          def without_due_date?
-            !due_date.present? && created_on < 1.day.ago
-          end
-
           def notification_state
             NOTIFICATION_STATES.select { |s| send("#{s}?") }.try :first
           end
@@ -133,25 +129,6 @@ module Intouch
             else
               journals.order(:id).where(user_id: project.assigner_ids).last.try :user_id
             end
-          end
-
-          def assigners_updated_on
-            assigners_updated_on = journals.order(:id).where(user_id: project.assigner_ids).last.try :created_on
-            assigners_updated_on.present? ? assigners_updated_on : updated_on
-          end
-
-          def inactive?
-            reminder_settings = project.active_intouch_settings
-                .try(:[], 'reminder_settings')
-                .try(:[], "#{priority_id}")
-            active            = reminder_settings.try(:[], 'active')
-            interval          = reminder_settings.try(:[], 'interval')
-            active && interval.present? && assigners_updated_on < interval.to_i.hours.ago
-          end
-
-          def inactive_message
-            hours = ((Time.now - assigners_updated_on) / 3600).round(1)
-            I18n.t 'intouch.telegram_message.issue.inactive', hours: hours
           end
 
           def updated_by
@@ -250,17 +227,7 @@ module Intouch
           end
 
           def telegram_message
-            message = <<~TEXT
-              `#{project.title}: #{subject}`
-              #{I18n.t('field_assigned_to')}: #{performer}#{bold_for_alarm(priority.name)}
-              #{I18n.t('field_status')}: #{status.name}
-              #{Intouch.issue_url(id)}
-            TEXT
-            message = "*!!! #{inactive_message} !!!*\n#{message}" if inactive?
-            message = "*!!! #{I18n.t('intouch.telegram_message.issue.notice.without_due_date')} !!!* \n#{message}" if without_due_date?
-            message = "*!!! #{I18n.t('intouch.telegram_message.issue.notice.overdue')} !!!*  \n#{message}" if overdue?
-            message = "*!!! #{I18n.t('intouch.telegram_message.issue.notice.unassigned')} !!!* \n#{message}" if unassigned? || assigned_to_group?
-            message
+            Intouch::Message::Regular.call(self)
           end
 
           private
@@ -268,7 +235,7 @@ module Intouch
           require_relative '../new_issue_handler'
 
           def handle_new_issue
-            Intouch::NewIssueHandler.new(self).call
+            Intouch::NewIssueHandler.call(self)
           end
         end
       end

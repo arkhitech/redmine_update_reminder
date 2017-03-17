@@ -1,5 +1,7 @@
 module Intouch
   class NewIssueHandler
+    extend ServiceInitializer
+
     def initialize(issue)
       @issue = issue
       @project = @issue.project
