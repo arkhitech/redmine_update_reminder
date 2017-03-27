@@ -7,7 +7,7 @@ module Intouch::Regular::Message
     attr_reader :issue
 
     delegate :title, :assigned_to, :priority, :status, :link,
-      to: :formatter
+             to: :formatter
 
     def initialize(issue)
       @issue = issue

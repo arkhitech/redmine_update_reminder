@@ -47,7 +47,6 @@ class Intouch::Regular::Checker::BaseTest < ActiveSupport::TestCase
     describe 'issue assigned to assigner' do
       let(:issue) { Issue.new(assigned_to_id: assigner_id) }
 
-
       describe 'working' do
         let(:state) { 'working' }
 

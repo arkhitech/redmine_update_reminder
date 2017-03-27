@@ -51,5 +51,4 @@ class TelegramSenderWorker
   def logger
     @logger ||= Logger.new(Rails.root.join('log/intouch', 'telegram-sender.log'))
   end
-
 end

@@ -64,16 +64,16 @@ module Intouch
 
           def notificable_for_state?(state)
             case state
-              when 'unassigned'
-                notification_states.include?('unassigned') || notification_states.include?('assigned_to_group')
-              when 'overdue'
-                notification_states.include?('overdue') || notification_states.include?('without_due_date')
-              when 'working'
-                notification_states.include?('working')
-              when 'feedback'
-                notification_states.include?('feedback')
-              else
-                false
+            when 'unassigned'
+              notification_states.include?('unassigned') || notification_states.include?('assigned_to_group')
+            when 'overdue'
+              notification_states.include?('overdue') || notification_states.include?('without_due_date')
+            when 'working'
+              notification_states.include?('working')
+            when 'feedback'
+              notification_states.include?('feedback')
+            else
+              false
             end
           end
 
@@ -81,14 +81,14 @@ module Intouch
             if project.send("active_#{protocol}_settings") && state && project.send("active_#{protocol}_settings")[state]
               project.send("active_#{protocol}_settings")[state].map do |key, value|
                 case key
-                  when 'author'
-                    author.id
-                  when 'assigned_to'
-                    assigned_to_id if assigned_to.class == User
-                  when 'watchers'
-                    watchers.pluck(:user_id)
-                  when 'user_groups'
-                    Group.where(id: value).map(&:user_ids).flatten if value.present?
+                when 'author'
+                  author.id
+                when 'assigned_to'
+                  assigned_to_id if assigned_to.class == User
+                when 'watchers'
+                  watchers.pluck(:user_id)
+                when 'user_groups'
+                  Group.where(id: value).map(&:user_ids).flatten if value.present?
                 end
               end.flatten.uniq + [assigner_id]
             end
@@ -103,12 +103,12 @@ module Intouch
               recipients.each_pair do |key, value|
                 next unless value.try(:[], status_id.to_s).try(:include?, priority_id.to_s)
                 case key
-                  when 'author'
-                    user_ids << author.id
-                  when 'assigned_to'
-                    user_ids << assigned_to_id if assigned_to.class == User
-                  when 'watchers'
-                    user_ids += watchers.pluck(:user_id)
+                when 'author'
+                  user_ids << author.id
+                when 'assigned_to'
+                  user_ids << assigned_to_id if assigned_to.class == User
+                when 'watchers'
+                  user_ids += watchers.pluck(:user_id)
                 end
               end
               user_ids.flatten.uniq + [assigner_id] - [updated_by.try(:id)] # Не отправляем сообщение тому, то обновил задачу

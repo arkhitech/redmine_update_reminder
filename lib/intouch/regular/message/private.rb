@@ -1,6 +1,5 @@
 module Intouch::Regular::Message
   class Private < Base
-
     def initialize(issue:, user:, state:, project:)
       @issue = issue
       @user = user
