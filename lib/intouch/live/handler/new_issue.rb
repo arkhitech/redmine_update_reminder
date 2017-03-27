@@ -21,7 +21,10 @@ module Intouch::Live::Handler
     attr_reader :issue, :project
 
     def notification_required?
-      Intouch::Live::Checker::Base.new(issue, project).required?
+      Intouch::Live::Checker::Base.new(
+        issue: issue,
+        project: project
+      ).required?
     end
 
     def send_private_messages
