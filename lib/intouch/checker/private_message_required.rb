@@ -1,3 +1,5 @@
+# this is for live
+
 module Intouch
   module Checker
     class PrivateMessageRequired
