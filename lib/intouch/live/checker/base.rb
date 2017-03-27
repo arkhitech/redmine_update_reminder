@@ -17,7 +17,7 @@ module Intouch::Live::Checker
     end
 
     def issue_open?
-      !issue.reload.closed? || journal_issue_state_open?
+      !issue.closed? || journal_issue_state_open?
     end
 
     def journal_issue_state_open?
