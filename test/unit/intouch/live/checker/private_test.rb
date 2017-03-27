@@ -1,7 +1,7 @@
-require File.expand_path('../../../../test_helper', __FILE__)
+require File.expand_path('../../../../../test_helper', __FILE__)
 
-class PrivateMessageRequiredTest < ActiveSupport::TestCase
-  subject { Intouch::Checker::PrivateMessageRequired.new(issue, project).call }
+class Intouch::Live::Checker::PrivateTest < ActiveSupport::TestCase
+  subject { Intouch::Live::Checker::Private.new(issue, project).required? }
 
   let(:project) { Object.new }
   let(:issue) { Object.new }

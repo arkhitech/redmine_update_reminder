@@ -1,7 +1,5 @@
-module Intouch
-  class PrivateMessageSender
-    extend ServiceInitializer
-
+module Intouch::Live::Message
+  class Private
     attr_reader :project, :issue
 
     def initialize(issue, project)
@@ -9,7 +7,7 @@ module Intouch
       @project = project
     end
 
-    def call
+    def send
       return unless need_private_message?
 
       send_telegram_private_messages
@@ -19,7 +17,7 @@ module Intouch
     private
 
     def need_private_message?
-      required_checker.call
+      required_checker.required?
     end
 
     def required_recipients
@@ -47,7 +45,7 @@ module Intouch
     end
 
     def required_checker
-      @required_checker ||= Checker::PrivateMessageRequired.new(issue, project)
+      @required_checker ||= Intouch::Live::Checker::Private.new(issue, project)
     end
   end
 end

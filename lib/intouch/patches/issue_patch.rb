@@ -64,34 +64,25 @@ module Intouch
 
           def notificable_for_state?(state)
             case state
-              when 'unassigned'
-                notification_states.include?('unassigned') || notification_states.include?('assigned_to_group')
-              when 'overdue'
-                notification_states.include?('overdue') || notification_states.include?('without_due_date')
-              when 'working'
-                notification_states.include?('working')
-              when 'feedback'
-                notification_states.include?('feedback')
-              else
-                false
+            when 'unassigned'
+              notification_states.include?('unassigned') || notification_states.include?('assigned_to_group')
+            when 'overdue'
+              notification_states.include?('overdue') || notification_states.include?('without_due_date')
+            when 'working'
+              notification_states.include?('working')
+            when 'feedback'
+              notification_states.include?('feedback')
+            else
+              false
             end
           end
 
           def recipient_ids(protocol, state = notification_state)
-            if project.send("active_#{protocol}_settings") && state && project.send("active_#{protocol}_settings")[state]
-              project.send("active_#{protocol}_settings")[state].map do |key, value|
-                case key
-                  when 'author'
-                    author.id
-                  when 'assigned_to'
-                    assigned_to_id if assigned_to.class == User
-                  when 'watchers'
-                    watchers.pluck(:user_id)
-                  when 'user_groups'
-                    Group.where(id: value).map(&:user_ids).flatten if value.present?
-                end
-              end.flatten.uniq + [assigner_id]
-            end
+            Intouch::Regular::RecipientsList.new(
+              issue: self,
+              state: state,
+              protocol: protocol
+            ).recipient_ids
           end
 
           def live_recipient_ids(protocol)
@@ -103,12 +94,12 @@ module Intouch
               recipients.each_pair do |key, value|
                 next unless value.try(:[], status_id.to_s).try(:include?, priority_id.to_s)
                 case key
-                  when 'author'
-                    user_ids << author.id
-                  when 'assigned_to'
-                    user_ids << assigned_to_id if assigned_to.class == User
-                  when 'watchers'
-                    user_ids += watchers.pluck(:user_id)
+                when 'author'
+                  user_ids << author.id
+                when 'assigned_to'
+                  user_ids << assigned_to_id if assigned_to.class == User
+                when 'watchers'
+                  user_ids += watchers.pluck(:user_id)
                 end
               end
               user_ids.flatten.uniq + [assigner_id] - [updated_by.try(:id)] # Не отправляем сообщение тому, то обновил задачу
@@ -118,7 +109,11 @@ module Intouch
           end
 
           def intouch_recipients(protocol, state = notification_state)
-            User.where(id: recipient_ids(protocol, state))
+            Intouch::Regular::RecipientsList.new(
+              issue: self,
+              state: state,
+              protocol: protocol
+            ).call
           end
 
           def intouch_live_recipients(protocol)
@@ -233,15 +228,13 @@ module Intouch
           end
 
           def telegram_message
-            Intouch::Message::Regular.call(self)
+            Intouch::Regular::Message::Base.new(self).base_message
           end
 
           private
 
-          require_relative '../new_issue_handler'
-
           def handle_new_issue
-            Intouch::NewIssueHandler.call(self)
+            Intouch::Live::Handler::NewIssue.new(self).call
           end
         end
       end
