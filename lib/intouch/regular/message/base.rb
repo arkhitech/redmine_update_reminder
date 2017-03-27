@@ -1,5 +1,3 @@
-require_relative '../../service_initializer'
-
 module Intouch::Regular::Message
   class Base
     extend Intouch::ServiceInitializer
@@ -11,10 +9,6 @@ module Intouch::Regular::Message
 
     def initialize(issue)
       @issue = issue
-    end
-
-    def call
-      base_message
     end
 
     def base_message

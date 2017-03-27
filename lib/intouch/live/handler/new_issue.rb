@@ -1,7 +1,9 @@
-module Intouch
-  class NewIssueHandler
-    extend ServiceInitializer
+require_relative '../checker/base'
+require_relative '../message/private'
+require_relative '../message/group'
 
+module Intouch::Live::Handler
+  class NewIssue
     def initialize(issue)
       @issue = issue
       @project = @issue.project
@@ -19,15 +21,15 @@ module Intouch
     attr_reader :issue, :project
 
     def notification_required?
-      Checker::NotificationRequired.new(issue, project).call
+      Intouch::Live::Checker::Base.new(issue, project).required?
     end
 
     def send_private_messages
-      PrivateMessageSender.call(issue, project)
+      Intouch::Live::Message::Private.new(issue, project).send
     end
 
     def send_group_messages
-      GroupMessageSender.call(issue, project)
+      Intouch::Live::Message::Group.new(issue, project).send
     end
   end
 end

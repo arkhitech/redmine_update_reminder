@@ -1,7 +1,5 @@
-module Intouch
-  class GroupMessageSender
-    extend ServiceInitializer
-
+module Intouch::Live::Message
+  class Group
     attr_reader :project, :issue
 
     def initialize(issue, project)
@@ -9,7 +7,7 @@ module Intouch
       @project = project
     end
 
-    def call
+    def send
       return unless telegram_enabled?
 
       IntouchSender.send_live_telegram_group_message(issue.id)

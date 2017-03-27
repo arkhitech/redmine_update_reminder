@@ -1,26 +1,19 @@
 require_relative '../../lib/intouch/regular/checker/base'
+require_relative '../../lib/intouch/regular/recipients_list'
 require_relative '../../lib/intouch/regular/message/private'
 
 class TelegramSenderWorker
   include Sidekiq::Worker
 
   def perform(issue_id, state)
-    @issue = Issue.find issue_id
     @state = state
-    Intouch.set_locale
+    @issue = Issue.find_by(id: issue_id)
 
+    return unless @issue.present?
     return unless notificable?
+    return unless users.present?
 
-    issue.intouch_recipients('telegram', state).each do |user|
-      telegram_account = user.telegram_account
-      next unless telegram_account.present? && telegram_account.active?
-
-      message = message(user)
-
-      TelegramMessageSender.perform_async(telegram_account.telegram_id, message)
-    end
-  rescue ActiveRecord::RecordNotFound => e
-    # ignore
+    users.each { |user| send_message(user) }
   end
 
   private
@@ -35,13 +28,21 @@ class TelegramSenderWorker
     ).required?
   end
 
-  def message(user)
+  def users
+    @users ||= Intouch::Regular::RecipientsList.new(
+      issue: issue,
+      state: state,
+      protocol: 'telegram'
+    ).call
+  end
+
+  def send_message(user)
     Intouch::Regular::Message::Private.new(
       issue: issue,
       user: user,
       state: state,
       project: project
-    ).message
+    ).send
   end
 
   def project

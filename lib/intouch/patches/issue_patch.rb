@@ -78,20 +78,11 @@ module Intouch
           end
 
           def recipient_ids(protocol, state = notification_state)
-            if project.send("active_#{protocol}_settings") && state && project.send("active_#{protocol}_settings")[state]
-              project.send("active_#{protocol}_settings")[state].map do |key, value|
-                case key
-                when 'author'
-                  author.id
-                when 'assigned_to'
-                  assigned_to_id if assigned_to.class == User
-                when 'watchers'
-                  watchers.pluck(:user_id)
-                when 'user_groups'
-                  Group.where(id: value).map(&:user_ids).flatten if value.present?
-                end
-              end.flatten.uniq + [assigner_id]
-            end
+            Intouch::Regular::RecipientsList.new(
+              issue: self,
+              state: state,
+              protocol: protocol
+            ).recipient_ids
           end
 
           def live_recipient_ids(protocol)
@@ -118,7 +109,11 @@ module Intouch
           end
 
           def intouch_recipients(protocol, state = notification_state)
-            User.where(id: recipient_ids(protocol, state))
+            Intouch::Regular::RecipientsList.new(
+              issue: self,
+              state: state,
+              protocol: protocol
+            ).call
           end
 
           def intouch_live_recipients(protocol)
@@ -233,15 +228,13 @@ module Intouch
           end
 
           def telegram_message
-            Intouch::Message::Regular.call(self)
+            Intouch::Regular::Message::Base.new(self).base_message
           end
 
           private
 
-          require_relative '../new_issue_handler'
-
           def handle_new_issue
-            Intouch::NewIssueHandler.call(self)
+            Intouch::Live::Handler::NewIssue.new(self).call
           end
         end
       end

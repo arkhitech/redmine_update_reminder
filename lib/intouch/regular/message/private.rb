@@ -9,11 +9,19 @@ module Intouch::Regular::Message
 
     attr_reader :issue, :user, :state, :project
 
-    def call
-      message
+    def send
+      return unless telegram_account.present? && telegram_account.active?
+
+      TelegramMessageSender.perform_async(telegram_account.telegram_id, message)
+    end
+
+    def telegram_account
+      @telegram_account ||= user.telegram_account
     end
 
     def message
+      Intouch.set_locale
+
       prefix.present? ? "#{prefix}\n#{base_message}" : base_message
     end
 
