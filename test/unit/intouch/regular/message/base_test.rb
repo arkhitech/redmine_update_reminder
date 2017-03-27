@@ -1,4 +1,4 @@
-require_relative '../../../../test_helper'
+require File.expand_path('../../../../../test_helper', __FILE__)
 
 class Intouch::Regular::Message::BaseTest < ActiveSupport::TestCase
   subject { Intouch::Regular::Message::Base.new(issue) }
