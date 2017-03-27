@@ -36,13 +36,13 @@ class Intouch::Live::Handler::NewIssueTest < ActiveSupport::TestCase
     end
 
     it 'private message' do
-      Intouch::Live::Message::Private.expects(:new).never
+      Intouch::Live::Message::Private.any_instance.expects(:send).never
 
       subject
     end
 
     it 'group message' do
-      Intouch::Live::Message::Group.expects(:new).never
+      Intouch::Live::Message::Group.any_instance.expects(:send).never
 
       subject
     end
