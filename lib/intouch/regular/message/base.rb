@@ -4,7 +4,7 @@ module Intouch::Regular::Message
 
     attr_reader :issue
 
-    delegate :title, :assigned_to, :priority, :status, :link,
+    delegate :title, :assigned_to, :priority, :status, :link, :bold,
              to: :formatter
 
     def initialize(issue)
@@ -32,23 +32,31 @@ module Intouch::Regular::Message
     end
 
     def unassigned_message
-      I18n.t('intouch.telegram_message.issue.notice.unassigned') if issue.unassigned? || issue.assigned_to_group?
+      return unless issue.unassigned? || issue.assigned_to_group?
+
+      I18n.t('intouch.telegram_message.issue.notice.unassigned')
     end
 
     def overdue_message
-      I18n.t('intouch.telegram_message.issue.notice.overdue') if issue.overdue?
+      return unless issue.overdue?
+
+      I18n.t('intouch.telegram_message.issue.notice.overdue')
     end
 
     def without_due_date_message
-      I18n.t('intouch.telegram_message.issue.notice.without_due_date') if without_due_date?
+      return unless without_due_date?
+
+      I18n.t('intouch.telegram_message.issue.notice.without_due_date')
+    end
+
+    def inactive_message
+      return unless inactive?
+
+      bold I18n.t('intouch.telegram_message.issue.inactive', hours: rounded_inactive_hours)
     end
 
     def without_due_date?
       !issue.due_date.present? && issue.created_on < 1.day.ago
-    end
-
-    def inactive_message
-      I18n.t('intouch.telegram_message.issue.inactive', hours: rounded_inactive_hours) if inactive?
     end
 
     def rounded_inactive_hours
