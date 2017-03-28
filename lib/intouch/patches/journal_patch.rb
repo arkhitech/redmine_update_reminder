@@ -5,7 +5,7 @@ module Intouch
         base.class_eval do
           unloadable
 
-          after_create :handle_updated_issue
+          after_commit :handle_updated_issue, on: :create
 
           private
 

@@ -10,7 +10,7 @@ module Intouch
           # noinspection RubyArgCount
           store :intouch_data, accessors: %w(last_notification)
 
-          after_create :handle_new_issue
+          after_commit :handle_new_issue, on: :create
 
           def self.alarms
             Issue.where(priority_id: IssuePriority.alarm_ids)
