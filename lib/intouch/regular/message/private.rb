@@ -5,6 +5,8 @@ module Intouch::Regular::Message
       @user = user
       @state = state
       @project = project
+
+      Intouch.set_locale
     end
 
     attr_reader :issue, :user, :state, :project
@@ -20,8 +22,6 @@ module Intouch::Regular::Message
     end
 
     def message
-      Intouch.set_locale
-
       prefix.present? ? "#{prefix}\n#{base_message}" : base_message
     end
 

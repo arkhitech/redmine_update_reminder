@@ -1,22 +1,50 @@
 class TelegramGroupSenderWorker
   include Sidekiq::Worker
-  TELEGRAM_GROUP_SENDER_LOG = Logger.new(Rails.root.join('log/intouch', 'telegram-group-sender.log'))
 
   def perform(issue_id, group_ids, state)
     return unless group_ids.present?
 
-    Intouch.set_locale
-    issue = Issue.find issue_id
+    @issue = Issue.find_by(id: issue_id)
+    @group_ids = group_ids
+    @state = state
 
-    return unless issue.notificable_for_state? state
+    return unless @issue.present?
+    return unless notificable?
+    return unless groups.present?
 
-    message = issue.telegram_message
+    groups.each { |group| send_message(group) }
+  end
 
-    TelegramGroupChat.where(id: group_ids).uniq.each do |group|
-      next unless group.tid.present?
-      TelegramMessageSender.perform_async(-group.tid, message)
-    end
-  rescue ActiveRecord::RecordNotFound => e
-    # ignore
+  private
+
+  attr_reader :issue, :state, :group_ids
+
+  def notificable?
+    Intouch::Regular::Checker::Base.new(
+      issue: issue,
+      state: state,
+      project: project
+    ).required?
+  end
+
+  def groups
+    @groups ||= TelegramGroupChat.where(id: group_ids).uniq
+  end
+
+  def send_message(group)
+    return unless group.tid.present?
+    TelegramMessageSender.perform_async(-group.tid, message)
+  end
+
+  def message
+    @message ||= issue.telegram_message
+  end
+
+  def project
+    @project ||= issue.project
+  end
+
+  def logger
+    @logger ||= Logger.new(Rails.root.join('log/intouch', 'telegram-group-sender.log'))
   end
 end

@@ -9,6 +9,8 @@ module Intouch::Regular::Message
 
     def initialize(issue)
       @issue = issue
+
+      Intouch.set_locale
     end
 
     def base_message

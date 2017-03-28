@@ -6,8 +6,8 @@ class TelegramSenderWorker
   include Sidekiq::Worker
 
   def perform(issue_id, state)
-    @state = state
     @issue = Issue.find_by(id: issue_id)
+    @state = state
 
     return unless @issue.present?
     return unless notificable?
