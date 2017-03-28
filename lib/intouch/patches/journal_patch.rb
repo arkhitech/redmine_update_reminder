@@ -10,7 +10,7 @@ module Intouch
           private
 
           def handle_updated_issue
-            Intouch::Live::Handler::UpdatedIssue.new(self).call
+            LiveHandlerWorker.perform_in(5.seconds, id)
           end
         end
       end
