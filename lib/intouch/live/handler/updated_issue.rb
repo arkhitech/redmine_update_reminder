@@ -27,6 +27,7 @@ module Intouch::Live::Handler
     attr_reader :issue, :project, :journal
 
     def notification_required?
+      sleep 1
       Intouch::Live::Checker::Base.new(
         issue: issue,
         project: project,
