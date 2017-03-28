@@ -3,7 +3,7 @@ module Intouch::Live::Checker
     attr_reader :project, :issue, :journal
 
     def initialize(issue:, project:, journal: nil)
-      @issue = issue
+      @issue = issue.reload
       @project = project
       @journal = journal
     end
@@ -23,7 +23,7 @@ module Intouch::Live::Checker
     def journal_issue_state_open?
       return false unless journal.present?
 
-      journal.new_status && !journal.new_status&.is_closed?
+      journal.reload.new_status && !journal.new_status&.is_closed?
     end
   end
 end
