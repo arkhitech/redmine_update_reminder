@@ -14,6 +14,13 @@ module Intouch::Regular::Message
     def send
       return unless telegram_account.present? && telegram_account.active?
 
+      logger.info '========================================='
+      logger.info "Notification for state: #{state}"
+      logger.info message
+      logger.debug issue.inspect
+      logger.debug user.inspect
+      logger.info '========================================='
+
       TelegramMessageSender.perform_async(telegram_account.telegram_id, message)
     end
 
@@ -54,6 +61,10 @@ module Intouch::Regular::Message
 
     def settings
       @settings ||= project.active_telegram_settings.try(:[], state)
+    end
+
+    def logger
+      @logger ||= Logger.new(Rails.root.join('log/intouch', 'regular-message-private.log'))
     end
   end
 end
