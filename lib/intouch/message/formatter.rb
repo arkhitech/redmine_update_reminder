@@ -41,6 +41,10 @@ module Intouch
       def attention(text)
         "*!!! #{text} !!!*"
       end
+
+      def bold(text)
+        "*#{text}*"
+      end
     end
   end
 end

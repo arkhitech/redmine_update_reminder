@@ -1,7 +1,12 @@
-require File.expand_path('../../../../test_helper', __FILE__)
+require File.expand_path('../../../../../test_helper', __FILE__)
 
-class NotificationRequiredCheckerTest < ActiveSupport::TestCase
-  subject { Intouch::Checker::NotificationRequired.new(issue, project).call }
+class Intouch::Live::Checker::BaseTest < ActiveSupport::TestCase
+  subject do
+    Intouch::Live::Checker::Base.new(
+      issue: issue,
+      project: project
+    ).required?
+  end
 
   let(:project) { Object.new }
   let(:issue) { Object.new }

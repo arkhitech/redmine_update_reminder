@@ -57,7 +57,7 @@ module Intouch
 
           if active &&
              interval.present? &&
-             Intouch::Message::Regular.new(issue).latest_action_on < interval.to_i.hours.ago &&
+             Intouch::Regular::Message::Base.new(issue).latest_action_on < interval.to_i.hours.ago &&
              (last_notification.nil? || last_notification < interval.to_i.hours.ago)
 
             if active_protocols.include? 'email'

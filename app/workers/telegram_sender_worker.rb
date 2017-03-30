@@ -1,45 +1,55 @@
+require_relative '../../lib/intouch/regular/checker/base'
+require_relative '../../lib/intouch/regular/recipients_list'
+require_relative '../../lib/intouch/regular/message/private'
+
 class TelegramSenderWorker
   include Sidekiq::Worker
-  TELEGRAM_SENDER_LOG = Logger.new(Rails.root.join('log/intouch', 'telegram-sender.log'))
 
   def perform(issue_id, state)
-    Intouch.set_locale
-    issue = Issue.find issue_id
+    @issue = Issue.find_by(id: issue_id)
+    @state = state
 
-    return unless issue.notificable_for_state? state
+    return unless @issue.present?
+    return unless notificable?
+    return unless users.present?
 
-    base_message = issue.telegram_message
+    users.each { |user| send_message(user) }
+  end
 
-    issue.intouch_recipients('telegram', state).each do |user|
-      telegram_account = user.telegram_account
-      next unless telegram_account.present? && telegram_account.active?
+  private
 
-      roles_in_issue = []
+  attr_reader :issue, :state
 
-      roles_in_issue << 'assigned_to' if issue.assigned_to_id == user.id
-      roles_in_issue << 'watchers' if issue.watchers.pluck(:user_id).include? user.id
-      roles_in_issue << 'author' if issue.author_id == user.id
+  def notificable?
+    Intouch::Regular::Checker::Base.new(
+      issue: issue,
+      state: state,
+      project: project
+    ).required?
+  end
 
-      project = issue.project
-      settings = project.active_telegram_settings.try(:[], state)
+  def users
+    @users ||= Intouch::Regular::RecipientsList.new(
+      issue: issue,
+      state: state,
+      protocol: 'telegram'
+    ).call
+  end
 
-      if settings.present?
-        recipients = settings.select do |key, _value|
-          %w(author assigned_to watchers).include?(key)
-        end.keys
+  def send_message(user)
+    Intouch::Regular::Message::Private.new(
+      issue: issue,
+      user: user,
+      state: state,
+      project: project
+    ).send
+  end
 
-        prefix = (roles_in_issue & recipients).map do |role|
-          I18n.t("intouch.telegram_message.recipient.#{role}")
-        end.join(', ')
-      else
-        prefix = nil
-      end
+  def project
+    @project ||= issue.project
+  end
 
-      message = prefix.present? ? "#{prefix}\n#{base_message}" : base_message
-
-      TelegramMessageSender.perform_async(telegram_account.telegram_id, message)
-    end
-  rescue ActiveRecord::RecordNotFound => e
-    # ignore
+  def logger
+    @logger ||= Logger.new(Rails.root.join('log/intouch', 'telegram-sender.log'))
   end
 end

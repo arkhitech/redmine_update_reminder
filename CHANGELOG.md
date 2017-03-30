@@ -1,3 +1,8 @@
+# 0.6.0
+
+* Regular and live message refactoring and tuning
+* Fix issues [#33](https://github.com/centosadmin/redmine_intouch/issues/33) and [#43](https://github.com/centosadmin/redmine_intouch/issues/43)
+
 # 0.5.3
 
 * Fix: Always send live message for required recipients for settings template
