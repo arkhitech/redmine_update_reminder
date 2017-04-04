@@ -34,7 +34,7 @@ module Intouch::Regular
           when 'user_groups'
             Group.where(id: value).map(&:user_ids).flatten if value.present?
         end
-      end.flatten.uniq + [issue.assigner_id]
+      end.flatten.uniq
     end
 
     def assigner_ids

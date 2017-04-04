@@ -1,3 +1,7 @@
+# 0.6.1
+
+* Fix regular recipients list, add logging to regular group sender worker
+
 # 0.6.0
 
 * Regular and live message refactoring and tuning
