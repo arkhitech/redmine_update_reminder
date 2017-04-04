@@ -12,6 +12,8 @@ class TelegramGroupSenderWorker
     return unless notificable?
     return unless groups.present?
 
+    log
+
     groups.each { |group| send_message(group) }
   end
 
@@ -42,6 +44,15 @@ class TelegramGroupSenderWorker
 
   def project
     @project ||= issue.project
+  end
+
+  def log
+    logger.info '========================================='
+    logger.info "Notification for state: #{state}"
+    logger.info message
+    logger.debug issue.inspect
+    logger.debug group_ids.inspect
+    logger.info '========================================='
   end
 
   def logger
