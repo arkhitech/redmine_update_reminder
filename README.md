@@ -4,8 +4,6 @@
 
 # redmine_intouch
 
-Plugin is designed by [Centos-admin.ru](http://centos-admin.ru/).
-
 Plugin is designed to send notifications to Redmine’s users by Telegram or E-mail.
 
 Please help us make this plugin better telling us of any [issues](https://github.com/centosadmin/redmine_intouch/issues) you'll face using it. We are ready to answer all your questions regarding this plugin.
@@ -219,4 +217,4 @@ In plugin settings go to the **Periodic tasks schedule** tab and click **Initial
 
 # Author of the Plugin
 
-The plugin is designed by [Centos-admin.ru](http://centos-admin.ru/).
+The plugin is designed by [Southbridge](https://southbridge.io)
