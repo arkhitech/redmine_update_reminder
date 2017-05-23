@@ -223,4 +223,4 @@ help - Справка по командам
 
 # Автор плагина
 
-Плагин разработан [Centos-admin.ru](https://centos-admin.ru/).
+Плагин разработан [Southbridge](https://southbridge.io)
