@@ -1,3 +1,7 @@
+# 0.6.2
+
+* Add support sidekiq 5 version
+
 # 0.6.1
 
 * Fix regular recipients list, add logging to regular group sender worker
