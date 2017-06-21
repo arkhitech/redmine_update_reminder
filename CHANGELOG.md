@@ -1,3 +1,8 @@
+# 0.6.3 [In progress]
+
+* Remove telegrammer dependency
+* Add telegram web hook
+
 # 0.6.2
 
 * Add support sidekiq 5 version
