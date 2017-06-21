@@ -15,7 +15,6 @@ Please help us make this plugin better telling us of any [issues](https://github
 * **Ruby 2.3+**
 * **Redmine 3.1+**
 * [redmine_telegram_common](https://github.com/centosadmin/redmine_telegram_common)
-* You should have Telegram user account
 * You should have Telegram bot account
 * Install the [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq) plugin. [Redis](https://redis.io) 2.8 or greater is required.
 * You need to configure Sidekiq queues `default` and `telegram`. [Config example](https://github.com/centosadmin/redmine_intouch/blob/master/extras/sidekiq.yml) - place it to `redmine/config` directory
@@ -58,7 +57,7 @@ The plugin contains the fuctionality that allows you to send scheduled notificat
 
 ## Telegram
 
-Specify the Telegram Bot token here.
+Specify the Telegram Bot token here, save settings and then initialize bot.
 
 ### Creating a Telegram bot
 
@@ -80,16 +79,7 @@ Specify the following things before launching the bot:
 * Working Time - when and what notifications will be sent
 * Specify what priorities should be considered as urgent ones
 * Specify what statuses should be considered _in work_ and _feedback_
-
-Run the bot by typing:
-
-```shell
-bundle exec rake intouch:telegram:bot PID_DIR='/pid/dir' RAILS_ENV=production
-```
-
-The `extras` folder has the examples of the plugin config files and the `init.d` startup script.
-
-This will add the Telegram users to Redmine and create the Telegram groups in which it was added in Redmine.
+* Save settings
 
 ### Adding a Telegram account to the user
 

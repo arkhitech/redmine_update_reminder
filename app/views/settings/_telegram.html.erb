@@ -2,11 +2,13 @@
   <label for="settings_telegram_bot_token">Bot Token</label>
   <%= text_field_tag 'settings[telegram_bot_token]', @settings['telegram_bot_token'], size: 50 %>
 
+  <% if @settings['telegram_bot_token'].present? %>
   <p>
   <%= link_to intouch_bot_init_path, method: 'post' do %><button type="button"><%= t 'intouch.settings.bot_init' %></button><% end %>
 
   <%= link_to intouch_bot_deinit_path, method: 'delete' do %><button type="button"><%= t 'intouch.settings.bot_deinit' %></button><% end %>
   </p>
+  <% end %>
 </p>
 
 <h3><%= t 'intouch.settings.telegram.groups' %></h3>

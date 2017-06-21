@@ -4,11 +4,9 @@
 
 # redmine_intouch
 
-Плагин разработан [Centos-admin.ru](https://centos-admin.ru/).
-
 Плагин предназначен для рассылки уведомлений пользователям Redmine через Telegram или E-mail.
 
-Пожалуйста помогите нам сделать этот плагин лучше, сообщая во вкладке [Issues](https://github.com/centosadmin/redmine_intouch/issues) обо всех проблемах, с которыми Вы столкнётесь при его использовании. Мы готовы ответить на Все ваши вопросы, касающиеся этого плагина.
+Пожалуйста, помогите нам сделать этот плагин лучше, сообщая во вкладке [Issues](https://github.com/centosadmin/redmine_intouch/issues) обо всех проблемах, с которыми Вы столкнётесь при его использовании. Мы готовы ответить на Все ваши вопросы, касающиеся этого плагина.
 
 # Установка
 
@@ -17,8 +15,7 @@
 * **Ruby 2.3+**
 * **Redmine 3.1+**
 * [redmine_telegram_common](https://github.com/centosadmin/redmine_telegram_common)
-* У Вас должен быть аккаунт пользователя Telegram
-* У Вас должен быть аккаунт для создания ботов в Telegram
+* У Вас должен быть бот в Telegram
 * Установите плагин [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq). [Redis](https://redis.io) 2.8 или выше требуется.
 * Настройте Sidekiq на обработку очереди `default` и `telegram`. [Пример конфига](https://github.com/centosadmin/redmine_intouch/blob/master/extras/sidekiq.yml) - разместите его в папке `redmine/config`
 * Плагин устанавливается стандартно:
@@ -61,7 +58,7 @@ bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 
 ## Telegram
 
-На этой вкладке необходимо указать токен бота Telegram.
+На этой вкладке необходимо указать токен бота Telegram, сохранить настройки и затем инициализировать бота.
 
 ### Создание бота Telegram
 
@@ -84,16 +81,7 @@ bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 * рабочее время - в это время отправляются уведомления по не срочным задачам
 * указать какие приоритеты считать срочными
 * указать какие статусы считать *в работе* и *обратной связью*
-
-После этого необходимо запустить бота командой:
-
-```shell
-bundle exec rake intouch:telegram:bot PID_DIR='/pid/dir' RAILS_ENV=production
-```
-
-* пример скрипта для `init.d` в папке `extras`
-
-Этот процесс добавляет пользователей Telegram в Redmine, а также создает в Redmine группы Telegram, в которые добавили бота.
+* сохранить настройки
 
 ### Добавление аккаунта Telegram к пользователю
 
