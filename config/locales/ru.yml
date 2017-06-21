@@ -1,6 +1,10 @@
 ru:
   intouch:
     bot:
+      authorize:
+        success: Бот инициализирован
+      deauthorize:
+        success: Бот деинициализирован
       private:
         help:
           start: "Начало работы с ботом"
@@ -115,6 +119,8 @@ ru:
       unassigned: "Неназначенные/Назначенные на группу"
       working: "В работе"
     settings:
+      bot_init: Инициализировать бота
+      bot_deinit: Деинициализировать бота
       required: "требуется для работы этого плагина"
       common:
         alarm:
