@@ -25,14 +25,13 @@ namespace :redmine_update_reminder do
       if update_duration > 0
         
         oldest_status_date = Time.now - (update_duration.to_f * 24).hours
-      	issues = Issue.where(assigned_to_id: user_ids, 
-          status_id: issue_status_id).where.not(id: mailed_issue_ids)
+      	issues = Issue.where(assigned_to_id: user_ids, status_id: issue_status_id).where.not(id: mailed_issue_ids.to_a)
 
         issues.find_each do |issue|       
           issue.history.history.each do |history_record|
             
-            if history_record.status_id == issue_status_id
-              if history_record[:date] < oldest_status_date
+            if history_record[:status_id] == issue_status_id
+              if history_record[:date] && oldest_status_date > history_record[:date]
                 RemindingMailer.reminder_status_email(issue.assigned_to, issue, update_duration).deliver
                 mailed_issue_ids << issue.id
                 break
