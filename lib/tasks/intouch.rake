@@ -41,7 +41,7 @@ namespace :intouch do
 
         intouch_log.info 'Telegram Bot: Connecting to telegram...'
         bot = Telegram::Bot::Client.new(Intouch.bot_token)
-        bot.api.set_webhook('') # reset webhook
+        bot.api.setWebhook('') # reset webhook
         bot.get_updates(fail_silently: false) do |message|
           Intouch.handle_message(message)
         end
