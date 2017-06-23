@@ -27,6 +27,10 @@ module Intouch
     Setting.plugin_redmine_intouch['active_protocols'] || []
   end
 
+  def self.handle_message(message)
+    Intouch::TelegramBot.new(message).call if message.is_a?(Telegram::Bot::Types::Message)
+  end
+
   def self.available_recipients
     if active_protocols.include? 'telegram'
       %w(author assigned_to watchers telegram_groups)

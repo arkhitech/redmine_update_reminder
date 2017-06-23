@@ -3,9 +3,6 @@ class IntouchController < ApplicationController
 
   before_filter :find_project, only: [:save_settings]
 
-  skip_before_filter :check_if_login_required, only: [:web_hook]
-  skip_before_action :verify_authenticity_token, only: [:web_hook]
-
   def save_settings
     if request.put?
       @project.intouch_settings = params['intouch_settings']
@@ -16,13 +13,6 @@ class IntouchController < ApplicationController
     end
 
     redirect_to controller: 'projects', action: 'settings', tab: params[:tab] || 'intouch_settings', id: @project
-  end
-
-  def web_hook
-    message = Telegram::Bot::Types::Update.new(params).message
-    Intouch::TelegramBot.new(message).call if message.is_a?(Telegram::Bot::Types::Message)
-
-    head :ok, content_type: 'text/html'
   end
 
   def bot_init
