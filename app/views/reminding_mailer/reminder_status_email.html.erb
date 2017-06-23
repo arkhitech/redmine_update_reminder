@@ -13,7 +13,7 @@
     <p>
       <%= link_to("#{h(@issue.tracker)} ##{@issue.id}", 
           {controller: 'issues', action: 'show', id: @issue, only_path: false}) %>
-      has been in <%=@issue.state.name%> for over <%=@update_duration%> days. Attention is required at the earliest.
+      has been in <%=@issue.status.name%> status for over <%=@update_duration%> days. Attention is required at the earliest.
     </p>
 
     <span class="header">
