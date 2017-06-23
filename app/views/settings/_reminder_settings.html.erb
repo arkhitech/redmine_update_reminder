@@ -1,36 +1,46 @@
 
 <p>
-  <label for="settings_cc">CarbonCopy To</label>
-  <%= select_tag('settings[cc]',
-                 options_for_select(User.where(status: 1).collect{|u| [u.name,u.mail]}, @settings['cc'])) %>
+  <label for="settings_cc">Remind Users:</label>
+  <%= select_tag('settings[remind_group]',
+                 options_for_select(Group.all.collect{|g| [g.name, g.id]}, @settings['remind_group'])) %>
 </p>
 <p>
-<%= @settings['cc'] %>
+  <label for="settings_cc">Cc'd Group:</label>
+  <%= select_tag('settings[cc]',
+                 options_for_select(Group.all.collect{|g| [g.name, g.id]}, @settings['cc'])) %>
 </p>
 
 <p>
   <label for="settings_header">Header</label>
-<%= text_area_tag 'settings[header]', @settings['header'] %>
+  <%= text_area_tag 'settings[header]', @settings['header'] %>
 </p>
-
-
 
 <p>
   <label for="settings_footer">Footer</label>
-<%= text_area_tag 'settings[footer]', @settings['footer'] %>
+  <%= text_area_tag 'settings[footer]', @settings['footer'] %>
 </p>
 
-<%t=Tracker.all%>
-
-<%t.each do |tracker|%>
 
 <div class=box tabular settings>
+  <%Tracker.all.each do |tracker|%>
   <p>
-<label><%=tracker.name%></label>
-</p>
-<p>
-<label for="settings_duration">Reminder Interval (in Days)</label>
-<%= text_field_tag "settings[#{tracker.id}_update_duration]", @settings["#{tracker.id}_update_duration"] %></p>
+    <label><%=tracker.name%></label>
+  </p>
+  <p>
+    <label for="settings_duration">Reminder Interval (in Days)</label>
+    <%= text_field_tag "settings[#{tracker.id}_update_duration]", @settings["#{tracker.id}_update_duration"] %>
+  </p>
+  <%end%>
 </div>
 
-<%end%>
+<div class=box tabular settings>
+  <%IssueStatus.where(is_closed: false).each do |issue_status|%>
+  <p>
+    <label><%=issue_status.name%></label>
+  </p>
+  <p>
+    <label for="settings_duration">Reminder Interval (in Days)</label>
+    <%= text_field_tag "settings[status-#{issue_status.id}_update_duration]", @settings["status-#{issue_status.id}_update_duration"] %>
+  </p>
+  <%end%>
+</div>

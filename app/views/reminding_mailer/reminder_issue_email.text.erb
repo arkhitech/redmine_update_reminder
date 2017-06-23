@@ -1,0 +1,10 @@
+<%=  Setting.plugin_redmine_update_reminder['header'] %>
+
+<%=@user.name%>,
+
+<%="#{h(@issue.tracker)} ##{@issue.id}"%>, 
+<%= url_for({controller: 'issues', action: 'show', id: @issue}) %> has not been updated for <%=@update_duration%> days. 
+
+Immediate attention is required.
+
+<%=  Setting.plugin_redmine_update_reminder['footer'] %>
