@@ -29,7 +29,7 @@ bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 
 The `extras` folder has the examples of the plugin config files and the `init.d` startup script
 
-### Upgrade from 0.3+ to 1.0.0
+### Upgrade from 0.3 to 1.0.0+
  
 Since version 1.0.0 this plugin uses [redmine_telegram_common](https://github.com/centosadmin/redmine_telegram_common)
 0.1.0 version, where removed Telegram CLI dependency. Please, take a look on new requirements.

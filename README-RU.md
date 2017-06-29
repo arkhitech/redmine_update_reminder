@@ -29,7 +29,7 @@ bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 
 Примеры конфигурационного файла и скрипта для `init.d` находятся в папке `extras`
 
-### Обновление с 0.3+ на 1.0.0
+### Обновление с 0.3 на 1.0.0+
  
 Начиная с версии 1.0.0 этот плагин использует [redmine_telegram_common](https://github.com/centosadmin/redmine_telegram_common)
 версии 0.1.0, в которой ушли от зависимости от Telegram CLI. Обратите внимание на новые зависимости. 
