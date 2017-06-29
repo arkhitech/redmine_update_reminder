@@ -1,6 +1,6 @@
 [![Code Climate](https://codeclimate.com/github/centosadmin/redmine_intouch/badges/gpa.svg)](https://codeclimate.com/github/centosadmin/redmine_intouch)
 
-[English version](https://github.com/centosadmin/redmine_intouch/blob/master/README.md)
+[English version](README.md)
 
 # redmine_intouch
 
@@ -14,7 +14,7 @@
 
 * **Ruby 2.3+**
 * **Redmine 3.1+**
-* [redmine_telegram_common](https://github.com/centosadmin/redmine_telegram_common)
+* Настроенный [redmine_telegram_common](https://github.com/centosadmin/redmine_telegram_common)
 * У Вас должен быть бот в Telegram
 * Установите плагин [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq). [Redis](https://redis.io) 2.8 или выше требуется.
 * Настройте Sidekiq на обработку очереди `default` и `telegram`. [Пример конфига](https://github.com/centosadmin/redmine_intouch/blob/master/extras/sidekiq.yml) - разместите его в папке `redmine/config`
@@ -29,9 +29,14 @@ bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 
 Примеры конфигурационного файла и скрипта для `init.d` находятся в папке `extras`
 
+### Обновление с 0.3+ на 1.0.0
+ 
+Начиная с версии 1.0.0 этот плагин использует [redmine_telegram_common](https://github.com/centosadmin/redmine_telegram_common)
+версии 0.1.0, в которой ушли от зависимости от Telegram CLI. Обратите внимание на новые зависимости. 
+
 ### Обновление с 0.2 на 0.3+
 
-Начиная с версии 0.3 это плагин использует [redmine_telegram_common](https://github
+Начиная с версии 0.3 этот плагин использует [redmine_telegram_common](https://github
 .com/centosadmin/redmine_telegram_common).
 
 Перед обновлением установите [этот](https://github.com/centosadmin/redmine_telegram_common) плагин.
@@ -58,7 +63,21 @@ bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 
 ## Telegram
 
-На этой вкладке необходимо указать токен бота Telegram, сохранить настройки и затем инициализировать бота.
+На этой вкладке необходимо указать токен бота Telegram и сохранить настройки.
+
+### Режимы бота
+
+Бот может работать в двух [режимах](https://core.telegram.org/bots/api#getting-updates) — getUpdates или WebHooks.
+ 
+#### getUpdates
+
+Чтобы у вас заработал бот через getUpdates, вам необходимо запустить процесс бота `bundle exec rake -D intouch:telegram:bot`. 
+Эта команда отключит WebHook у бота.
+
+#### WebHooks
+
+Чтобы у вас заработал бот через WebHooks, вам необходимо зайти в настройки плагина и нажать на кнопку "Инициализировать бота" 
+(токен бота уже должен быть записан, а также обратите внимание, что в этом случае необходим https)
 
 ### Создание бота Telegram
 
@@ -71,7 +90,7 @@ bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 В случае успеха BotFather возвращает токен бота и ссылку для быстрого добавления бота в контакты,
 иначе придется поломать голову над именем.
 
-Полученный токен нужно ввести на странце настройки плагина.
+Полученный токен нужно ввести и сохранить на странице настройки плагина.
 
 ### Запуск бота
 
