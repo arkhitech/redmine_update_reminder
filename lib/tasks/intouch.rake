@@ -21,7 +21,7 @@ namespace :intouch do
         pid_dir = ENV['PID_DIR']
         PidFile.new(piddir: pid_dir, pidfile: 'telegram-bot.pid')
       else
-        PidFile.new(pidfile: 'telegram-bot.pid')
+        PidFile.new(piddir: Rails.root.join('tmp', 'pids'), pidfile: 'telegram-bot.pid')
       end
 
       Signal.trap('TERM') do
