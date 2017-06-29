@@ -1,7 +1,9 @@
-# 0.6.3 [In progress]
+# 1.0.0 [In progress]
 
-* Remove telegrammer dependency
-* Add telegram web hook
+* Remove telegram-cli dependency 
+* Move from telegrammer to telegram-bot-ruby
+* Telegram bot can work via getUpdates or WebHooks
+* Telegram rake bot will bind default to tmp/pids
 
 # 0.6.2
 
