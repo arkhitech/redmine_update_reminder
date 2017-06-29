@@ -122,6 +122,8 @@ en:
       required: "required for this plugin"
       bot_init: Initialize bot
       bot_deinit: Deinitialize bot
+      get_updates_hint: bundle exec rake -D intouch:telegram:bot
+      web_hooks_warning: Need https to setup WebHooks
       common:
         alarm:
           description_1: Notification about the issues with the selected priorities will be sent twenty-four seven.
