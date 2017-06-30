@@ -1,4 +1,4 @@
-# 1.0.0 [In progress]
+# 1.0.0
 
 * Upgrade redmine_telegram_common to version 0.1.0 
 * Move from telegrammer to telegram-bot-ruby
