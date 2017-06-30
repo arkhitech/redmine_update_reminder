@@ -1,6 +1,5 @@
 module Intouch
   AVAILABLE_PROTOCOLS = %w(telegram email)
-  INTOUCH_COMMIT_HASH = `cd #{Rails.root}/plugins/redmine_intouch && git rev-parse --short HEAD`.chomp
 
   def self.set_locale
     I18n.locale = Setting['default_language']
@@ -17,10 +16,6 @@ module Intouch
   def self.sidekiq_cron_jobs
     names = %w(cron_overdue_regular_notification cron_working_regular_notification cron_unassigned_regular_notification cron_feedback_regular_notification)
     Sidekiq::Cron::Job.all.select { |job| names.include? job.name }
-  end
-
-  def self.commit_hash
-    INTOUCH_COMMIT_HASH
   end
 
   def self.active_protocols

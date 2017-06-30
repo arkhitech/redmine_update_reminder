@@ -1,3 +1,7 @@
+# 1.0.1 [In progress]
+
+* Remove git usage in plugin code
+
 # 1.0.0
 
 * Upgrade redmine_telegram_common to version 0.1.0 
