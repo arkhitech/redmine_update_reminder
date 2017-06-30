@@ -1,7 +1,7 @@
 class Intouch::TelegramBot < TelegramCommon::Bot
   def initialize(command)
     @logger = Logger.new(Rails.root.join('log/intouch', 'bot.log'))
-    @command = command.is_a?(Telegrammer::DataTypes::Message) ? command : Telegrammer::DataTypes::Message.new(command)
+    @command = command.is_a?(Telegram::Bot::Types::Message) ? command : Telegram::Bot::Types::Update.new(command).message
   end
 
   def call

@@ -1,6 +1,10 @@
 en:
   intouch:
     bot:
+      authorize:
+        success: Bot is initialized
+      deauthorize:
+        success: Bot is deinitialized
       private:
         help:
           start: "Start work with bot"
@@ -116,6 +120,10 @@ en:
       working: In work
     settings:
       required: "required for this plugin"
+      bot_init: Initialize bot
+      bot_deinit: Deinitialize bot
+      get_updates_hint: bundle exec rake -D intouch:telegram:bot
+      web_hooks_warning: Need https to setup WebHooks
       common:
         alarm:
           description_1: Notification about the issues with the selected priorities will be sent twenty-four seven.

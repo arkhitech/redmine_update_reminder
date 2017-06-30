@@ -12,14 +12,16 @@ class TelegramMessageSender
 
   def perform(telegram_account_id, message)
     token = Intouch.bot_token
-    bot = Telegrammer::Bot.new(token)
+    bot = Telegram::Bot::Client.new(token)
 
     begin
-
-      bot.send_message(chat_id: telegram_account_id, text: message, disable_web_page_preview: true, parse_mode: 'Markdown')
+      bot.api.send_message(chat_id: telegram_account_id,
+                           text: message,
+                           disable_web_page_preview: true,
+                           parse_mode: 'Markdown')
       TELEGRAM_MESSAGE_SENDER_LOG.info "telegram_account_id: #{telegram_account_id}\tmessage: #{message}"
 
-    rescue Telegrammer::Errors::BadRequestError => e
+    rescue => e
 
       TELEGRAM_MESSAGE_SENDER_ERRORS_LOG.info "MESSAGE: #{message}"
 
@@ -43,16 +45,6 @@ class TelegramMessageSender
         TELEGRAM_MESSAGE_SENDER_ERRORS_LOG.debug "#{telegram_account.inspect}"
 
       end
-
-    rescue Telegrammer::Errors::ServiceUnavailableError
-
-      TELEGRAM_MESSAGE_SENDER_ERRORS_LOG.error "ServiceUnavailableError. retry to send after 5 seconds\ntelegram_account_id: #{telegram_account_id}\tmessage: #{message}"
-      TelegramMessageSender.perform_in(5.seconds, telegram_account_id, message)
-
-    rescue	Telegrammer::Errors::TimeoutError
-
-      TELEGRAM_MESSAGE_SENDER_ERRORS_LOG.error "TimeoutError. retry to send after 5 seconds\ntelegram_account_id: #{telegram_account_id}\tmessage: #{message}"
-      TelegramMessageSender.perform_in(5.seconds, telegram_account_id, message)
 
     end
   end

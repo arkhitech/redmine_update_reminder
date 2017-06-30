@@ -1,3 +1,10 @@
+# 1.0.0
+
+* Upgrade redmine_telegram_common to version 0.1.0 
+* Move from telegrammer to telegram-bot-ruby
+* Telegram bot can work via getUpdates or WebHooks
+* Telegram rake bot will bind default to tmp/pids
+
 # 0.6.2
 
 * Add support sidekiq 5 version

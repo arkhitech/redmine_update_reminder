@@ -1,6 +1,10 @@
 ru:
   intouch:
     bot:
+      authorize:
+        success: Бот инициализирован
+      deauthorize:
+        success: Бот деинициализирован
       private:
         help:
           start: "Начало работы с ботом"
@@ -115,7 +119,11 @@ ru:
       unassigned: "Неназначенные/Назначенные на группу"
       working: "В работе"
     settings:
+      bot_init: Инициализировать бота
+      bot_deinit: Деинициализировать бота
       required: "требуется для работы этого плагина"
+      get_updates_hint: bundle exec rake -D intouch:telegram:bot
+      web_hooks_warning: Нужен https протокол, чтобы настроить WebHooks
       common:
         alarm:
           description_1: "Уведомления о задачах, с выбранными приоритетами, будут отправляться круглосуточно и без выходных."
