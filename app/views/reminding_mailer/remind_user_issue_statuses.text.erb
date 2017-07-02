@@ -5,7 +5,7 @@
 <% @issues_with_updated_since.each_with_index do |issue_with_updated_since, i| -%>
   <%issue, updated_since = issue_with_updated_since%>
     <%= i+1%>. <%= link_to_issue(issue, project: true, only_path: false) %>
-    has been in <%=issue.status.name%> status for <%=time_ago_in_words(updated_since)%>.     
+    has been in *<%=issue.status.name%>* status for *<%=time_ago_in_words(updated_since)%>*.
 <% end -%>
 </ul>
 

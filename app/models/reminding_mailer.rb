@@ -44,5 +44,21 @@ class RemindingMailer < ActionMailer::Base
     mail(to: @user.mail, subject: I18n.t('update_reminder.issue_status_update_required', 
         issue_count: @issues_with_updated_since.count), cc: cc_email_addresses)
   end
+
+  def remind_user_past_due_issues(user, issues)
+    @user = user
+    @issues = issues
+    
+    mail(to: @user.mail, subject: I18n.t('update_reminder.past_due_issue_update_required', 
+        issue_count: @issues.count), cc: cc_email_addresses)
+  end
+
+  def remind_user_issue_estimates(user, issues)
+    @user = user
+    @issues = issues
+    
+    mail(to: @user.mail, subject: I18n.t('update_reminder.issue_estimate_required', 
+        issue_count: @issues.count), cc: cc_email_addresses)
+  end
   
 end

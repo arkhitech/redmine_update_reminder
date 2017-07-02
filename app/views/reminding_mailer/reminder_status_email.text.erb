@@ -4,7 +4,7 @@
 
 <%="#{h(@issue.tracker)} ##{@issue.id}"%>, 
 <%= url_for({controller: 'issues', action: 'show', id: @issue}) %> has been in 
-<%=@issue.status.name%> status for <%=time_ago_in_words(@updated_since)%>. 
+*<%=@issue.status.name%>* status for *<%=time_ago_in_words(@updated_since)%>*. 
 
 Attention is required at the earliest.
 
