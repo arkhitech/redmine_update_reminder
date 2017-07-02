@@ -1,6 +1,6 @@
-<%=  Setting.plugin_redmine_update_reminder['header'] %>
-
 <%=@user.name%>,
+
+<%=  Setting.plugin_redmine_update_reminder['header'] %>
 
 <% @issues_with_updated_since.each_with_index do |issue_with_updated_since, i| -%>
   <%issue, updated_since = issue_with_updated_since%>
