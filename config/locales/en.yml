@@ -1,3 +1,5 @@
 # English strings go here for Rails i18n
 en:
-  # my_label: "My label"
+  update_reminder:
+    issue_tracker_update_required: Missing update on %{issue_count} issues!
+    issue_status_update_required: Missing status update on %{issue_count} issues!

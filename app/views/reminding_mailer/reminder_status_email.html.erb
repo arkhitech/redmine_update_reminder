@@ -1,24 +1,19 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
-  </head>
-  <body>
-    <span class="header">
-      <%= Redmine::WikiFormatting.to_html(Setting.text_formatting,
-          Setting.plugin_redmine_update_reminder['header']).html_safe %>
-    </span>
-                         
-    <%= @user.name %>,
-    <p>
-      <%= link_to("#{h(@issue.tracker)} ##{@issue.id}", 
-          {controller: 'issues', action: 'show', id: @issue, only_path: false}) %>
-      has been in <%=@issue.status.name%> status for over <%=@update_duration%> days. Attention is required at the earliest.
-    </p>
+<span class="header">
+  <%= Redmine::WikiFormatting.to_html(Setting.text_formatting,
+      Setting.plugin_redmine_update_reminder['header']).html_safe %>
+</span>
 
-    <span class="header">
-      <%= Redmine::WikiFormatting.to_html(Setting.text_formatting,
-          Setting.plugin_redmine_update_reminder['footer']).html_safe %>
-    </span>
-  </body>
-</html>
+<%= @user.name %>,
+<p>
+  <%= link_to("#{h(@issue.tracker)} ##{@issue.id}", 
+      {controller: 'issues', action: 'show', id: @issue, only_path: false}) %>
+  has been in <%=@issue.status.name%> status for <%=time_ago_in_words(@updated_since)%>. Attention is required at the earliest.
+</p>
+
+<span class="header">
+  <%= Redmine::WikiFormatting.to_html(Setting.text_formatting,
+      Setting.plugin_redmine_update_reminder['footer']).html_safe %>
+</span>
+<br/>
+
+<%=  Setting.plugin_redmine_update_reminder['footer'] %>

@@ -1,4 +1,4 @@
-Redmine_Update_Reminder:
+Redmine Update Reminder:
 ========================
 
 This plugin sends reminder email to assigned users if an issue is not updated within specified duration.
@@ -6,7 +6,7 @@ This plugin sends reminder email to assigned users if an issue is not updated wi
 Functionality:
 ==============
 
-All the mails are CC'ed to a single User (generally scrum master) along with the assigned user for notifying that a given task needs updation.  
+All the mails are cc'ed to a single Group (generally scrum master/HR) along with the assigned user for notifying that a given task needs updation.  
 The duration for each kind of tracker can be set in settings.
 Duration takes input in days, and can be decimal point numbers (for instance .5 for 12 hours).
 Emails Headers and Footers are configurable for personalization.
@@ -24,15 +24,16 @@ Open config directory and edit schedule.rb
 for example:
 
 	set :environment, "production"
-	every 15.minutes do
-	rake "redmine_update_reminder:send_reminders"
+	every 1.day do
+    rake "redmine_update_reminder:send_user_reminders"
 	end 
 
-This will check for all issues that have not been updated in the specified duration from current time and send them an email. 
-These issues will be checked every 15 minutes and will be sent emails till they are updated. 
+This will check for all issues that have not been updated in the specified duration by the user and send them email. 
 
 Check whenever gems documentation for detailed description of its working.
 
-The rake task can be run without scheduling using this command
-rake redmine_update_reminder:send_reminders
+There are two rake tasks. These can be run without scheduling using this command
 
+RAILS_ENV=production rake redmine_update_reminder:send_issue_reminders
+
+RAILS_ENV=production rake redmine_update_reminder:send_user_reminders

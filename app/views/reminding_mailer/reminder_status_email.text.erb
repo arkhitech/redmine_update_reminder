@@ -3,6 +3,9 @@
 <%=@user.name%>,
 
 <%="#{h(@issue.tracker)} ##{@issue.id}"%>, 
-<%= url_for({controller: 'issues', action: 'show', id: @issue}) %> has been in <%=@issue.status.name%> status for over <%=@update_duration%> days. Attention is required at the earliest.
+<%= url_for({controller: 'issues', action: 'show', id: @issue}) %> has been in 
+<%=@issue.status.name%> status for <%=time_ago_in_words(@updated_since)%>. 
+
+Attention is required at the earliest.
 
 <%=  Setting.plugin_redmine_update_reminder['footer'] %>

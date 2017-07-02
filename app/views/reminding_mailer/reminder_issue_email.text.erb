@@ -3,7 +3,8 @@
 <%=@user.name%>,
 
 <%="#{h(@issue.tracker)} ##{@issue.id}"%>, 
-<%= url_for({controller: 'issues', action: 'show', id: @issue}) %> has not been updated for <%=@update_duration%> days. 
+<%= url_for({controller: 'issues', action: 'show', id: @issue}) %> 
+has not been updated for <%=time_ago_in_words(@updated_since)%>. 
 
 Immediate attention is required.
 

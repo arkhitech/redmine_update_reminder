@@ -1,29 +1,48 @@
 class RemindingMailer < ActionMailer::Base
+  layout 'mailer'
   default from: Setting.mail_from
+  helper :issues
 
   def self.default_url_options
     Mailer.default_url_options
   end
   
-  def reminder_issue_email(user, issue, update_duration)
-    @user = user
-    @issue = issue
-    @update_duration = update_duration
-    
+  def cc_email_addresses
     cc = Setting.plugin_redmine_update_reminder['cc']    
     cc = Group.includes(:users).find(cc).users.map(&:mail) if cc.present?
-    
-    mail(to: @user.mail, subject: @issue.subject, cc: cc)
+  end
+  private :cc_email_addresses
+  
+  def reminder_issue_email(user, issue, updated_since)
+    @user = user
+    @issue = issue
+    @updated_since = updated_since
+        
+    mail(to: @user.mail, subject: @issue.subject, cc: cc_email_addresses)
   end
 
-  def reminder_status_email(user, issue, update_duration)
+  def reminder_status_email(user, issue, updated_since)
     @user = user
     @issue = issue
-    @update_duration = update_duration
-    
-    cc = Setting.plugin_redmine_update_reminder['cc']    
-    cc = Group.includes(:users).find(cc).users.map(&:mail) if cc.present?
-    
-    mail(to: @user.mail, subject: @issue.subject, cc: cc)
+    @updated_since = updated_since
+        
+    mail(to: @user.mail, subject: @issue.subject, cc: cc_email_addresses)
   end
+  
+  def remind_user_issue_trackers(user, issues_with_updated_since)
+    @user = user
+    @issues_with_updated_since = issues_with_updated_since
+    
+    mail(to: @user.mail, subject: I18n.t('update_reminder.issue_tracker_update_required', 
+        issue_count: @issues_with_updated_since.count), cc: cc_email_addresses)
+  end
+
+  def remind_user_issue_statuses(user, issues_with_updated_since)
+    @user = user
+    @issues_with_updated_since = issues_with_updated_since
+    
+    mail(to: @user.mail, subject: I18n.t('update_reminder.issue_status_update_required', 
+        issue_count: @issues_with_updated_since.count), cc: cc_email_addresses)
+  end
+  
 end
