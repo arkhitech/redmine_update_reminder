@@ -1,6 +1,6 @@
 namespace :redmine_update_reminder do
 
-  def send_user_issue_estimates_reminders(issue_status_ids, user)
+  def send_user_issue_estimates_reminders(issue_status_ids, user, mailed_issue_ids)
     issues_with_updated_since = []
     issue_status_ids.each do |issue_status_id|
       estimate_update = Setting.plugin_redmine_update_reminder["status-#{issue_status_id}_estimate_update"].to_f      
@@ -8,8 +8,9 @@ namespace :redmine_update_reminder do
       if estimate_update > 0
         oldest_estimated_since = estimate_update.days.ago
         
-        issues = Issue.where(assigned_to_id: user.id, 
-          status_id: issue_status_ids).where('estimated_hours IS NULL OR estimated_hours <= 0')        
+        issues = Issue.where(assigned_to_id: user.id, status_id: issue_status_ids).
+          where('estimated_hours IS NULL OR estimated_hours <= 0').
+          where.not(id: mailed_issue_ids.to_a)
         
         issues.each do |issue|
           if issue.updated_on < oldest_estimated_since
@@ -22,13 +23,14 @@ namespace :redmine_update_reminder do
       issues_with_updated_since).deliver if issues_with_updated_since.count > 0
   end
   
-  def send_user_past_due_issues_reminders(issue_status_ids, user)
+  def send_user_past_due_issues_reminders(issue_status_ids, user, mailed_issue_ids)
     issues = Issue.where(assigned_to_id: user.id, 
-      status_id: issue_status_ids).where('due_date < ?', Time.now)
+      status_id: issue_status_ids).where('due_date < ?', Time.now).
+      where.not(id: mailed_issue_ids.to_a)
     
     RemindingMailer.remind_user_past_due_issues(user, issues).deliver if issues.exists?
   end
-  def send_user_tracker_reminders(issue_status_ids, user)
+  def send_user_tracker_reminders(issue_status_ids, user, mailed_issue_ids)
     trackers = Tracker.all
     issues_with_updated_since = []
     trackers.each do |t|
@@ -36,8 +38,8 @@ namespace :redmine_update_reminder do
       if update_duration > 0
 
         updated_since = update_duration.days.ago
-        issues = Issue.where(tracker_id: t.id, assigned_to_id: user.map(&:id), 
-          status_id: issue_status_ids).where('updated_on < ?', updated_since)
+        issues = Issue.where(tracker_id: t.id, assigned_to_id: user.id, status_id: issue_status_ids).
+          where('updated_on < ?', updated_since).where.not(id: mailed_issue_ids.to_a)
 
         issues.find_each do |issue|
           issues_with_updated_since << [issue, issue.updated_on]
@@ -48,19 +50,21 @@ namespace :redmine_update_reminder do
       issues_with_updated_since).deliver if issues_with_updated_since.count > 0
   end
   
-  def send_user_status_reminders(issue_status_ids, user)
+  def send_user_status_reminders(issue_status_ids, user, mailed_issue_ids)
     issues_with_updated_since = []
     issue_status_ids.each do |issue_status_id|
       update_duration = Setting.plugin_redmine_update_reminder["status-#{issue_status_id}_update_duration"].to_f      
       if update_duration > 0
 
         oldest_status_date = update_duration.days.ago
-        issues = Issue.where(assigned_to_id: user.id, status_id: issue_status_id)
+        issues = Issue.where(assigned_to_id: user.id, status_id: issue_status_id).
+          where.not(id: mailed_issue_ids.to_a)
 
         issues.find_each do |issue|       
           issue.history.history.each do |history_record|
 
-            if history_record[:status_id] == issue_status_id && history_record[:date] && oldest_status_date > history_record[:date]
+            if history_record[:status_id] == issue_status_id && 
+                history_record[:date] && oldest_status_date > history_record[:date]
               issues_with_updated_since << [issue, history_record[:date]]
               break
             end            
@@ -78,11 +82,13 @@ namespace :redmine_update_reminder do
       if update_duration > 0
         
         oldest_status_date = update_duration.days.ago
-      	issues = Issue.where(assigned_to_id: user_ids, status_id: issue_status_id).where.not(id: mailed_issue_ids.to_a)
+      	issues = Issue.where(assigned_to_id: user_ids, status_id: issue_status_id).
+          where.not(id: mailed_issue_ids.to_a)
 
         issues.find_each do |issue|       
           issue.history.history.each do |history_record|            
-            if history_record[:status_id] == issue_status_id && history_record[:date] && oldest_status_date > history_record[:date]
+            if history_record[:status_id] == issue_status_id && 
+                history_record[:date] && oldest_status_date > history_record[:date]
               RemindingMailer.reminder_status_email(issue.assigned_to, issue, history_record[:date]).deliver
               mailed_issue_ids << issue.id
               break
@@ -120,10 +126,11 @@ namespace :redmine_update_reminder do
     users = Group.includes(:users).find(remind_group).users
     
     users.find_each do |user|
-      send_user_tracker_reminders(open_issue_status_ids, user)
-      send_user_status_reminders(open_issue_status_ids, user)      
-      send_user_past_due_issues_reminders(open_issue_status_ids, user)
-      send_user_issue_estimates_reminders(open_issue_status_ids, user)
+      mailed_issue_ids = Set.new
+      send_user_tracker_reminders(open_issue_status_ids, user, mailed_issue_ids)
+      send_user_status_reminders(open_issue_status_ids, user, mailed_issue_ids)
+      send_user_past_due_issues_reminders(open_issue_status_ids, user, mailed_issue_ids)
+      send_user_issue_estimates_reminders(open_issue_status_ids, user, mailed_issue_ids)
     end
   end
   
