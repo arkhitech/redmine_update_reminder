@@ -3,5 +3,5 @@ en:
   update_reminder:
     issue_tracker_update_required: Missing update on %{issue_count} issues!
     issue_status_update_required: Missing status update on %{issue_count} issues!
-    past_due_issue_update_required: Missing update on ${issue_count} past due issues!
-    issue_estimate_required: Missing estimates on ${issue_count} issues!
+    past_due_issue_update_required: Missing update on %{issue_count} past due issues!
+    issue_estimate_required: Missing estimates on %{issue_count} issues!

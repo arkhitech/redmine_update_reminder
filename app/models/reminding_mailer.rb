@@ -53,12 +53,12 @@ class RemindingMailer < ActionMailer::Base
         issue_count: @issues.count), cc: cc_email_addresses)
   end
 
-  def remind_user_issue_estimates(user, issues)
+  def remind_user_issue_estimates(user, issues_with_updated_since)
     @user = user
-    @issues = issues
+    @issues_with_updated_since = issues_with_updated_since
     
     mail(to: @user.mail, subject: I18n.t('update_reminder.issue_estimate_required', 
-        issue_count: @issues.count), cc: cc_email_addresses)
+        issue_count: @issues_with_updated_since.count), cc: cc_email_addresses)
   end
   
 end
