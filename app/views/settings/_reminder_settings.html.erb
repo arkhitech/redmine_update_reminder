@@ -23,28 +23,26 @@
 
 <div class=box tabular settings>
   <%Tracker.all.each do |tracker|%>
-  <p>
-    <label><%=tracker.name%></label>
-  </p>
-  <p>
-    <label for="settings_duration">Update Interval (in Days)</label>
-    <%= text_field_tag "settings[#{tracker.id}_update_duration]", @settings["#{tracker.id}_update_duration"] %>
-  </p>
+    <p>
+      <label><%=tracker.name%></label>
+    </p>
+    <p>
+      <label for="settings_duration">Update Interval (in Days)</label>
+      <%= text_field_tag "settings[#{tracker.id}_update_duration]", @settings["#{tracker.id}_update_duration"] %>
+    </p>
+    <%IssueStatus.where(is_closed: false).each do |issue_status|%>
+      <p>
+        <label><%=issue_status.name%></label>
+      </p>
+      <p>
+        <label for="settings_duration">Update Interval (in Days)</label>
+        <%= text_field_tag "settings[#{tracker.id}-status-#{issue_status.id}_update_duration]", @settings["status-#{issue_status.id}_update_duration"] %>
+      </p>
+      <p>
+        <label for="settings_duration">Estimate Turnaround (in Days)</label>
+        <%= text_field_tag "settings[#{tracker.id}-status-#{issue_status.id}_estimate_update]", @settings["status-#{issue_status.id}_estimate_update"] %>
+      </p>
+    <%end%>
   <%end%>
 </div>
 
-<div class=box tabular settings>
-  <%IssueStatus.where(is_closed: false).each do |issue_status|%>
-  <p>
-    <label><%=issue_status.name%></label>
-  </p>
-  <p>
-    <label for="settings_duration">Update Interval (in Days)</label>
-    <%= text_field_tag "settings[status-#{issue_status.id}_update_duration]", @settings["status-#{issue_status.id}_update_duration"] %>
-  </p>
-  <p>
-    <label for="settings_duration">Estimate Turnaround (in Days)</label>
-    <%= text_field_tag "settings[status-#{issue_status.id}_estimate_update]", @settings["status-#{issue_status.id}_estimate_update"] %>
-  </p>
-  <%end%>
-</div>
