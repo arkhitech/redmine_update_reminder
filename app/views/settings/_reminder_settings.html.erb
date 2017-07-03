@@ -21,28 +21,61 @@
 </p>
 
 
+<p>
+  <label>
+    Update Interval for Tracker (Days)
+  </label>
+</p>
 <div class=box tabular settings>
-  <%Tracker.all.each do |tracker|%>
-    <p>
-      <label><%=tracker.name%></label>
-    </p>
-    <p>
-      <label for="settings_duration">Update Interval (in Days)</label>
-      <%= text_field_tag "settings[#{tracker.id}_update_duration]", @settings["#{tracker.id}_update_duration"] %>
-    </p>
+<table>
+  <tr>
+    <th>Tracker</th>
+    <th>General</th>
     <%IssueStatus.where(is_closed: false).each do |issue_status|%>
-      <p>
-        <label><%=issue_status.name%></label>
-      </p>
-      <p>
-        <label for="settings_duration">Update Interval (in Days)</label>
-        <%= text_field_tag "settings[#{tracker.id}-status-#{issue_status.id}_update_duration]", @settings["status-#{issue_status.id}_update_duration"] %>
-      </p>
-      <p>
-        <label for="settings_duration">Estimate Turnaround (in Days)</label>
-        <%= text_field_tag "settings[#{tracker.id}-status-#{issue_status.id}_estimate_update]", @settings["status-#{issue_status.id}_estimate_update"] %>
-      </p>
+      <th><%=issue_status.name%></th>
     <%end%>
+  </tr>
+  <%Tracker.all.each do |tracker| -%>
+    <tr>
+      <th><%=tracker.name%></th>
+      <td>
+        <%= text_field_tag "settings[#{tracker.id}_update_duration]", 
+          @settings["#{tracker.id}_update_duration"], size: 3 %>
+      </td>
+      <%IssueStatus.where(is_closed: false).each do |issue_status| -%>
+        <td>
+          <%= text_field_tag "settings[#{tracker.id}-status-#{issue_status.id}-update]", 
+            @settings["#{tracker.id}-status-#{issue_status.id}-update"], size: 3 %>
+        </td>
+      <%end%>
+    </tr>
   <%end%>
+</table>    
 </div>
 
+<p>
+  <label>
+    Estimate Turnaround for Tracker (Days)
+  </label>
+</p>
+<div class=box tabular settings>
+<table>
+  <tr>
+    <th>Tracker</th>
+    <%IssueStatus.where(is_closed: false).each do |issue_status|%>
+      <th><%=issue_status.name%></th>
+    <%end%>
+  </tr>
+  <%Tracker.all.each do |tracker| -%>
+    <tr>
+      <th><%=tracker.name%></th>
+      <%IssueStatus.where(is_closed: false).each do |issue_status| -%>
+        <td>
+          <%= text_field_tag "settings[#{tracker.id}-status-#{issue_status.id}-estimate]", 
+            @settings["#{tracker.id}-status-#{issue_status.id}-estimate"], size: 3 %>
+        </td>
+      <%end%>
+    </tr>
+  <%end%>
+</table>    
+</div>
