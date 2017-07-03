@@ -6,7 +6,7 @@
 <% @issues.each do |issue| -%>
   <li>
     <%= link_to_issue(issue, project: true, only_path: false) %>
-    has past due for <strong><%=time_ago_in_words(issue.due_date)%></strong> 
+    has past been due for <strong><%=time_ago_in_words(issue.due_date)%></strong> 
     and last update was provided <strong><%=time_ago_in_words(issue.updated_on)%></strong> ago.     
   </li>
 <% end -%>
