@@ -1,6 +1,7 @@
 # 1.0.1 [In progress]
 
 * Remove git usage in plugin code
+* Fix LiveHandlerWorker not found issue
 
 # 1.0.0
 
