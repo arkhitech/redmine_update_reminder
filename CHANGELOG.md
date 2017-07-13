@@ -2,6 +2,7 @@
 
 * Remove git usage in plugin code
 * Fix LiveHandlerWorker not found issue
+* Fix mail from field
 
 # 1.0.0
 
