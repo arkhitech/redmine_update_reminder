@@ -1,6 +1,7 @@
 FileUtils.mkdir_p(Rails.root.join('log/intouch')) unless Dir.exist?(Rails.root.join('log/intouch'))
 
 require 'intouch'
+require 'telegram/bot'
 
 ActionDispatch::Callbacks.to_prepare do
   paths = '/lib/intouch/{patches/*_patch,hooks/*_hook}.rb'
