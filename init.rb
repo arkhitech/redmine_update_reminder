@@ -4,7 +4,7 @@ require 'intouch'
 require 'telegram/bot'
 
 # Rails 5.1/Rails 4
-reloader = ActionDispatch::Reloader.respond_to?(:to_prepare) ? ActiveSupport::Reloader : ActionDispatch::Reloader
+reloader = ActionDispatch::Reloader.respond_to?(:to_prepare) ? ActionDispatch::Reloader : ActiveSupport::Reloader
 reloader.to_prepare do
   paths = '/lib/intouch/{patches/*_patch,hooks/*_hook}.rb'
   Dir.glob(File.dirname(__FILE__) + paths).each do |file|
