@@ -3,7 +3,9 @@ FileUtils.mkdir_p(Rails.root.join('log/intouch')) unless Dir.exist?(Rails.root.j
 require 'intouch'
 require 'telegram/bot'
 
-ActionDispatch::Callbacks.to_prepare do
+# Rails 5.1/Rails 4
+reloader = defined?(ActiveSupport::Reloader) ? ActiveSupport::Reloader : ActionDispatch::Reloader
+reloader.to_prepare do
   paths = '/lib/intouch/{patches/*_patch,hooks/*_hook}.rb'
   Dir.glob(File.dirname(__FILE__) + paths).each do |file|
     require_dependency file
