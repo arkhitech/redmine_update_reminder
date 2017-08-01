@@ -1,3 +1,11 @@
+# 1.0.1
+
+* Add Rails 5.1 support
+* Fix uninitialized constant TelegramMessageSender::Telegram
+* Remove git usage in plugin code
+* Fix LiveHandlerWorker not found issue
+* Fix mail from field
+
 # 1.0.0
 
 * Upgrade redmine_telegram_common to version 0.1.0 

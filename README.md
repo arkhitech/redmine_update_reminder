@@ -1,8 +1,9 @@
-[![Code Climate](https://codeclimate.com/github/centosadmin/redmine_intouch/badges/gpa.svg)](https://codeclimate.com/github/centosadmin/redmine_intouch)
-
 [Русская версия](README-RU.md)
 
 # redmine_intouch
+
+[![Code Climate](https://codeclimate.com/github/centosadmin/redmine_intouch/badges/gpa.svg)](https://codeclimate.com/github/centosadmin/redmine_intouch)
+[![Build Status](https://travis-ci.org/centosadmin/redmine_intouch.svg?branch=master)](https://travis-ci.org/centosadmin/redmine_intouch)
 
 Plugin is designed to send notifications to Redmine’s users by Telegram or E-mail.
 
