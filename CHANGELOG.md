@@ -1,5 +1,6 @@
 # 1.0.1
 
+* Add Rails 5.1 support
 * Fix uninitialized constant TelegramMessageSender::Telegram
 * Remove git usage in plugin code
 * Fix LiveHandlerWorker not found issue
