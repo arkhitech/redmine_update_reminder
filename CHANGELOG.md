@@ -1,4 +1,4 @@
-# 1.0.1 [In progress]
+# 1.0.1
 
 * Fix uninitialized constant TelegramMessageSender::Telegram
 * Remove git usage in plugin code
