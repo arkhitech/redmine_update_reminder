@@ -2,12 +2,14 @@ class RemindingMailer < ActionMailer::Base
   layout 'mailer'
   default from: Setting.mail_from
   helper :issues
+  include Redmine::Utils::DateCalculation
 
   def self.default_url_options
     Mailer.default_url_options
   end
   
   def cc_email_addresses
+    return '' if non_working_week_days.include?(Date.today.cwday)
     cc = Setting.plugin_redmine_update_reminder['cc']    
     cc = Group.includes(:users).find(cc).users.map(&:mail) if cc.present?
   end
