@@ -1,4 +1,5 @@
 namespace :redmine_update_reminder do
+  require 'redmine/utils'
   include Redmine::Utils::DateCalculation
 
   def send_user_issue_estimates_reminders(issue_status_ids, user, mailed_issue_ids)
