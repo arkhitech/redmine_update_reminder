@@ -1,3 +1,5 @@
+[![Rate at redmine.org](http://img.shields.io/badge/rate%20at-redmine.org-blue.svg?style=flat)](http://www.redmine.org/plugins/redmine_intouch)
+
 [English version](README.md)
 
 # redmine_intouch
@@ -18,7 +20,7 @@
 * Настроенный [redmine_telegram_common](https://github.com/centosadmin/redmine_telegram_common)
 * У Вас должен быть бот в Telegram
 * Установите [Redis](https://redis.io) 2.8 или выше. Запустите Redis и добавьте его запуск в автозагрузку.
-* Установите плагин [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq). 
+* Установите плагин [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq).
 * Настройте Sidekiq на обработку очереди `default` и `telegram`. [Пример конфига](https://github.com/centosadmin/redmine_intouch/blob/master/extras/sidekiq.yml) - разместите его в папке `redmine/config`
 (Можно скопировать из plugins/redmine_intouch/extras/sidekiq.yml в config/sidekiq.yml).
 * Плагин устанавливается стандартно:
@@ -33,9 +35,9 @@ bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 Примеры конфигурационного файла и скрипта для `init.d` находятся в папке `extras`
 
 ### Обновление с 0.3 на 1.0.0+
- 
+
 Начиная с версии 1.0.0 этот плагин использует [redmine_telegram_common](https://github.com/centosadmin/redmine_telegram_common)
-версии 0.1.0, в которой ушли от зависимости от Telegram CLI. Обратите внимание на новые зависимости. 
+версии 0.1.0, в которой ушли от зависимости от Telegram CLI. Обратите внимание на новые зависимости.
 
 ### Обновление с 0.2 на 0.3+
 
@@ -71,15 +73,15 @@ bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 ### Режимы бота
 
 Бот может работать в двух [режимах](https://core.telegram.org/bots/api#getting-updates) — getUpdates или WebHooks.
- 
+
 #### getUpdates
 
-Чтобы у вас заработал бот через getUpdates, вам необходимо запустить процесс бота `bundle exec rake -D intouch:telegram:bot`. 
+Чтобы у вас заработал бот через getUpdates, вам необходимо запустить процесс бота `bundle exec rake -D intouch:telegram:bot`.
 Эта команда отключит WebHook у бота.
 
 #### WebHooks
 
-Чтобы у вас заработал бот через WebHooks, вам необходимо зайти в настройки плагина и нажать на кнопку "Инициализировать бота" 
+Чтобы у вас заработал бот через WebHooks, вам необходимо зайти в настройки плагина и нажать на кнопку "Инициализировать бота"
 (токен бота уже должен быть записан, а также обратите внимание, что в этом случае необходим https)
 
 ### Создание бота Telegram

@@ -1,3 +1,5 @@
+[![Rate at redmine.org](http://img.shields.io/badge/rate%20at-redmine.org-blue.svg?style=flat)](http://www.redmine.org/plugins/redmine_intouch)
+
 [Русская версия](README-RU.md)
 
 # redmine_intouch
@@ -32,7 +34,7 @@ bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 The `extras` folder has the examples of the plugin config files and the `init.d` startup script
 
 ### Upgrade from 0.3 to 1.0.0+
- 
+
 Since version 1.0.0 this plugin uses [redmine_telegram_common](https://github.com/centosadmin/redmine_telegram_common)
 0.1.0 version, where removed Telegram CLI dependency. Please, take a look on new requirements.
 
@@ -78,18 +80,18 @@ You'll have to invent a new name if the registration fails.
 
 You should enter the token you've just created on the Plugin Settings page.
 
-### Bot modes 
+### Bot modes
 
 Bot can work in two [modes](https://core.telegram.org/bots/api#getting-updates) — getUpdates or WebHooks.
- 
+
 #### getUpdates
 
-To work via getUpdates, you should run bot process `bundle exec rake intouch:telegram:bot`. 
+To work via getUpdates, you should run bot process `bundle exec rake intouch:telegram:bot`.
 This will drop bot WebHook setting.
 
 #### WebHooks
 
-To work via WebHooks, you should go to plugin settings and press button "Initialize bot" 
+To work via WebHooks, you should go to plugin settings and press button "Initialize bot"
 (bot token should be saved earlier, and notice redmine should work on https)
 
 ### Bot launch
