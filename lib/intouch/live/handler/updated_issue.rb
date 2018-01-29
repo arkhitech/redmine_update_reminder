@@ -1,6 +1,6 @@
-require_relative '../checker/base'
-require_relative '../message/private'
-require_relative '../message/group'
+require_dependency 'intouch/live/checker/base'
+require_dependency 'intouch/live/message/private'
+require_dependency 'intouch/live/message/group'
 
 module Intouch::Live::Handler
   class UpdatedIssue

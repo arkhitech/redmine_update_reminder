@@ -1,4 +1,4 @@
-require_relative '../../lib/intouch/live/handler/updated_issue'
+require_dependency 'intouch/live/handler/updated_issue'
 
 class LiveHandlerWorker
   include Sidekiq::Worker

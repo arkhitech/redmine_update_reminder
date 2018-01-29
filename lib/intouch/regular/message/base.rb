@@ -1,4 +1,4 @@
-require_relative '../../message/formatter'
+require_dependency 'intouch/message/formatter'
 
 module Intouch::Regular::Message
   class Base
