@@ -1,6 +1,6 @@
-require_dependency 'intouch/regular/checker/base'
-require_dependency 'intouch/regular/recipients_list'
-require_dependency 'intouch/regular/message/private'
+require_relative '../../lib/intouch/regular/checker/base'
+require_relative '../../lib/intouch/regular/recipients_list'
+require_relative '../../lib/intouch/regular/message/private'
 
 class TelegramSenderWorker
   include Sidekiq::Worker
