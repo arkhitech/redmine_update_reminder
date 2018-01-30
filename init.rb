@@ -12,6 +12,8 @@ reloader.to_prepare do
   end
 end
 
+Rails.application.config.eager_load_paths += Dir.glob("#{Rails.application.config.root}/plugins/redmine_intouch/{lib,app/workers}")
+
 Redmine::Plugin.register :redmine_intouch do
   name 'Redmine Intouch plugin'
   url 'https://github.com/centosadmin/redmine_intouch'

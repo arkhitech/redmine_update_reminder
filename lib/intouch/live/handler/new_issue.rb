@@ -1,7 +1,3 @@
-require_relative '../checker/base'
-require_relative '../message/private'
-require_relative '../message/group'
-
 module Intouch::Live::Handler
   class NewIssue
     def initialize(issue)

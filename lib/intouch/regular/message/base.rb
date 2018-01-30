@@ -1,5 +1,3 @@
-require_relative '../../message/formatter'
-
 module Intouch::Regular::Message
   class Base
     extend Intouch::ServiceInitializer
