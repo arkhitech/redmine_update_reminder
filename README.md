@@ -33,6 +33,10 @@ bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 
 The `extras` folder has the examples of the plugin config files and the `init.d` startup script
 
+You need to initialize bot on plugin settings page (tab Telegram).
+
+*Note: each of our plugins requires separate bot. It won't work if you use the same bot for several plugins.*
+
 ### Upgrade from 0.3 to 1.0.0+
 
 Since version 1.0.0 this plugin uses [redmine_telegram_common](https://github.com/centosadmin/redmine_telegram_common)

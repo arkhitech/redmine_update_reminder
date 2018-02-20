@@ -1,3 +1,10 @@
+# 1.0.2
+
+* Fix circular dependency issues
+* Add bot collision check
+* Don't send notifications to non-active users
+* Fix status update message
+
 # 1.0.1
 
 * Add Rails 5.1 support

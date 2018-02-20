@@ -30,7 +30,7 @@ class TelegramGroupSenderWorker
   end
 
   def groups
-    @groups ||= TelegramGroupChat.where(id: group_ids).uniq
+    @groups ||= ::TelegramGroupChat.where(id: group_ids).uniq
   end
 
   def send_message(group)

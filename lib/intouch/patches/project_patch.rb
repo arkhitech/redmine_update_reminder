@@ -35,7 +35,7 @@ module Intouch
           end
 
           def settings_template
-            @settings_template ||= SettingsTemplate.find_by(id: settings_template_id)
+            @settings_template ||= ::SettingsTemplate.find_by(id: settings_template_id)
           end
 
           def title

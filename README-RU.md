@@ -34,6 +34,10 @@ bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 
 Примеры конфигурационного файла и скрипта для `init.d` находятся в папке `extras`
 
+Нужно инициализировать бота на странице настроек плагина (вкладка Telegram).
+
+*Примечание: каждый из наших плагинов требует наличие отдельного бота.*
+
 ### Обновление с 0.3 на 1.0.0+
 
 Начиная с версии 1.0.0 этот плагин использует [redmine_telegram_common](https://github.com/centosadmin/redmine_telegram_common)

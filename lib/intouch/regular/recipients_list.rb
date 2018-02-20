@@ -11,7 +11,7 @@ module Intouch::Regular
     def call
       return [] unless recipient_ids.present?
 
-      User.where(id: recipient_ids)
+      User.where(id: recipient_ids).status(User::STATUS_ACTIVE)
     end
 
     def recipient_ids
