@@ -3,7 +3,6 @@ gem 'sidekiq-failures', git: 'https://github.com/mhfs/sidekiq-failures.git', bra
 gem 'sidekiq-cron'
 gem 'sidekiq-rate-limiter', git: 'https://github.com/centosadmin/sidekiq-rate-limiter', branch: 'master',
     require: 'sidekiq-rate-limiter/server'
-gem 'telegram-bot-ruby', '<= 0.7.2'
 
 group :test do
   gem 'minitest-reporters'
