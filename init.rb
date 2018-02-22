@@ -9,6 +9,9 @@ reloader.to_prepare do
   paths = '/lib/intouch/{patches/*_patch,hooks/*_hook}.rb'
   Dir.glob(File.dirname(__FILE__) + paths).each do |file|
     require_dependency file
+
+    require_dependency 'telegram_common'
+    TelegramCommon.update_manager.add_handler(->(message) { Intouch.handle_message(message) } )
   end
 end
 
