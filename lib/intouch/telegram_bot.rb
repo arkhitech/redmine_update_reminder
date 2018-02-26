@@ -45,7 +45,7 @@ class Intouch::TelegramBot < TelegramCommon::Bot
   end
 
   def private_commands
-    %w(start connect update help)
+    %w(update help)
   end
 
   def group_commands
@@ -53,11 +53,11 @@ class Intouch::TelegramBot < TelegramCommon::Bot
   end
 
   def private_help_message
-    help_command_list(private_commands, namespace: 'intouch', type: 'private')
+    ['Redmine Intouch:', help_command_list(private_commands, namespace: 'intouch', type: 'private')].join("\n")
   end
 
   def group_help_message
-    help_command_list(group_commands, namespace: 'intouch', type: 'group')
+    ['Redmine Intouch:', help_command_list(group_commands, namespace: 'intouch', type: 'group')].join("\n")
   end
 
   def bot_token

@@ -10,6 +10,9 @@ reloader.to_prepare do
   Dir.glob(File.dirname(__FILE__) + paths).each do |file|
     require_dependency file
   end
+
+  require_dependency 'telegram_common'
+  TelegramCommon.update_manager.add_handler(->(message) { Intouch.handle_message(message) } )
 end
 
 Rails.application.config.eager_load_paths += Dir.glob("#{Rails.application.config.root}/plugins/redmine_intouch/{lib,app/workers,app/models,app/controllers}")
