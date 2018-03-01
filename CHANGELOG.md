@@ -1,3 +1,8 @@
+# 1.1.0
+
+* Update telegram-bot-ruby
+* Use bot from redmine_telegram_common
+
 # 1.0.2
 
 * Fix circular dependency issues
@@ -15,7 +20,7 @@
 
 # 1.0.0
 
-* Upgrade redmine_telegram_common to version 0.1.0 
+* Upgrade redmine_telegram_common to version 0.1.0
 * Move from telegrammer to telegram-bot-ruby
 * Telegram bot can work via getUpdates or WebHooks
 * Telegram rake bot will bind default to tmp/pids
