@@ -1,3 +1,5 @@
+[![Rate at redmine.org](http://img.shields.io/badge/rate%20at-redmine.org-blue.svg?style=flat)](http://www.redmine.org/plugins/redmine_intouch)
+
 [Русская версия](README-RU.md)
 
 # redmine_intouch
@@ -17,14 +19,15 @@ Please help us make this plugin better telling us of any [issues](https://github
 * **Redmine 3.1+**
 * Configured [redmine_telegram_common](https://github.com/centosadmin/redmine_telegram_common)
 * You should have Telegram bot account
+* Install [Redis](https://redis.io) 2.8 or higher. Run Redis and add it to autorun.
 * Install the [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq) plugin. [Redis](https://redis.io) 2.8 or greater is required.
-* You need to configure Sidekiq queues `default` and `telegram`. [Config example](https://github.com/centosadmin/redmine_intouch/blob/master/extras/sidekiq.yml) - place it to `redmine/config` directory
+* You need to configure Sidekiq queues `default` and `telegram`. [Config example](https://github.com/centosadmin/redmine_intouch/blob/master/extras/sidekiq.yml) - place it to `redmine/config` directory (Or copy from plugins/redmine_intouch/extras/sidekiq.yml to config/sidekiq.yml).
 * Standard install plugin:
 
 ```
 cd {REDMINE_ROOT}
 git clone https://github.com/centosadmin/redmine_intouch.git plugins/redmine_intouch
-bundle install
+bundle install RAILS_ENV=production
 bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 ```
 
