@@ -33,9 +33,18 @@ bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 
 The `extras` folder has the examples of the plugin config files and the `init.d` startup script
 
-You need to initialize bot on plugin settings page (tab Telegram).
+### Upgrade from 1.0.2 to 1.1.0+
 
-*Note: each of our plugins requires separate bot. It won't work if you use the same bot for several plugins.*
+From 1.1.0 redmine_intouch (as well as other Southbridge telegram plugins) is using bot from redmine_telegram_common.
+In order to perform migration to single bot you should run `bundle exec rake telegram_common:migrate_to_single_bot`.
+Bot token will be taken from one of installed Southbridge plugins in the following priority:
+
+* redmine_chat_telegram
+* redmine_intouch
+* redmine_2fa
+
+Also you should re-initialize bot on redmine_telegram_common settings page.
+*Note that you need to manually replace old bot with the new one in group chats.*
 
 ### Upgrade from 0.3 to 1.0.0+
 
@@ -68,41 +77,10 @@ The section "Urgent Tasks" contains the ticket priorities, that will have notifi
 
 The plugin contains the fuctionality that allows you to send scheduled notifications tagged as "In work" or "Feedback". Specify these statuses in appropriate sections so the plugin could parse them correctly.
 
-## Telegram
-
-Specify the Telegram Bot token here, save settings and then initialize bot.
-
-### Creating a Telegram bot
-
-It is necessary to register a bot and get its token. There is a special bot in Telegram for this purpose. It is called @BotFather.
-
-Start it by typing `/start` to get a list of all available commands.
-Issue the  `/newbot` command and it will ask you to come up with the name for our new bot.
-The name must end with "bot" word.
-On success @BotFather will give you a token for your new bot and a link so you could quickly add the bot to contact list.
-You'll have to invent a new name if the registration fails.
-
-You should enter the token you've just created on the Plugin Settings page.
-
-### Bot modes
-
-Bot can work in two [modes](https://core.telegram.org/bots/api#getting-updates) — getUpdates or WebHooks.
-
-#### getUpdates
-
-To work via getUpdates, you should run bot process `bundle exec rake intouch:telegram:bot`.
-This will drop bot WebHook setting.
-
-#### WebHooks
-
-To work via WebHooks, you should go to plugin settings and press button "Initialize bot"
-(bot token should be saved earlier, and notice redmine should work on https)
-
 ### Bot launch
 
 Specify the following things before launching the bot:
 
-* The Telegram bot token (create a new one as described above if you haven't done it already)
 * Working Time - when and what notifications will be sent
 * Specify what priorities should be considered as urgent ones
 * Specify what statuses should be considered _in work_ and _feedback_

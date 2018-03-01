@@ -6,7 +6,7 @@ module Intouch
   end
 
   def self.bot_token
-    Setting.plugin_redmine_intouch['telegram_bot_token']
+    Setting.plugin_redmine_telegram_common['bot_token']
   end
 
   def self.web_hook_url

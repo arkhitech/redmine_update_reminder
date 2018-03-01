@@ -10,6 +10,9 @@ reloader.to_prepare do
   Dir.glob(File.dirname(__FILE__) + paths).each do |file|
     require_dependency file
   end
+
+  require_dependency 'telegram_common'
+  TelegramCommon.update_manager.add_handler(->(message) { Intouch.handle_message(message) } )
 end
 
 Rails.application.config.eager_load_paths += Dir.glob("#{Rails.application.config.root}/plugins/redmine_intouch/{lib,app/workers,app/models,app/controllers}")
@@ -18,7 +21,7 @@ Redmine::Plugin.register :redmine_intouch do
   name 'Redmine Intouch plugin'
   url 'https://github.com/centosadmin/redmine_intouch'
   description 'This is a plugin for Redmine which sends a reminder email and Telegram messages to the assignee workign on a task, whose status is not updated with-in allowed duration'
-  version '1.0.2'
+  version '1.1.0'
   author 'Southbridge'
   author_url 'https://github.com/centosadmin'
 
