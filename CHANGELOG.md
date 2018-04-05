@@ -1,3 +1,9 @@
+# 1.1.1
+
+* Fix status update message
+* Send issue project updates to groups
+* Add redmine-helpdesk support
+
 # 1.1.0
 
 * Update telegram-bot-ruby
