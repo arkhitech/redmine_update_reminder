@@ -7,7 +7,7 @@ end
 
 resources :telegram_groups, only: [:destroy]
 
-resources :sidekiq_cron_jobs do
+resources :intouch_cron_jobs do
   collection do
     get :init
   end
