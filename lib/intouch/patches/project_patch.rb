@@ -20,7 +20,7 @@ module Intouch
           end
 
           def active_assigner_roles
-            settings_template ? settings_template.assigner_roles : assigner_roles
+            (settings_template ? settings_template.assigner_roles : assigner_roles) || []
           end
 
           def active_reminder_settings
