@@ -56,7 +56,7 @@ en:
       settings:
         assigner_groups:
           description_html: |
-            Notifications addressed to <strong>Assigner</strong>, will be sent only if the <strong>Assigner</strong> is a part of one of the groups mentioned below.<br>
+            Notifications addressed to <strong>Assigner</strong>, will be sent only if the <strong>Assigner</strong> is a part of one of the groups or roles mentioned below.<br>
             Notifications about inactivity in issue will be sent only if the issue is <strong>assigned to the Assigner</strong>.
         common:
           copy: Copy
