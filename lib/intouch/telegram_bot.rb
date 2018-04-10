@@ -13,6 +13,29 @@ class Intouch::TelegramBot < TelegramCommon::Bot
     private_command? ? private_update_process : group_update_process
   end
 
+  def notify
+    user = account.user
+
+    (send_message(I18n.t('intouch.bot.subscription_failure')) && return) if user.blank?
+
+    if command_arguments.blank?
+      send_message(I18n.t('intouch.bot.subscription'), params: { reply_markup: subscriptions_keyboard(Project.where(Project.visible_condition(user)).pluck(:name)) })
+      return
+    end
+
+    (clear_subscriptions && return) if command_arguments == 'clear'
+
+    project = Project.find_by(name: command_arguments)
+
+    (send_message(I18n.t('intouch.bot.subscription_failure')) && return) if project.blank?
+
+    if IntouchSubscription.find_or_create_by(project_id: project.id, user_id: user.id)
+      send_message(I18n.t('intouch.bot.subscription_success'))
+    else
+      send_message(I18n.t('intouch.bot.subscription_failure'))
+    end
+  end
+
   private
 
   def private_update_process
@@ -40,16 +63,29 @@ class Intouch::TelegramBot < TelegramCommon::Bot
     TelegramGroupChat.where(tid: chat_id.abs).first_or_initialize(title: chat.title)
   end
 
+  def clear_subscriptions
+    IntouchSubscription.where(user_id: account.user.id).destroy_all
+    send_message(I18n.t('intouch.bot.subscription_success'))
+  end
+
+  def subscriptions_keyboard(project_names)
+    Telegram::Bot::Types::ReplyKeyboardMarkup.new(
+      keyboard: [*project_names, 'clear'].map { |name| "/notify #{name}" }.each_slice(2).to_a,
+      one_time_keyboard: true,
+      resize_keyboard: true
+    )
+  end
+
   def chat
     command.chat
   end
 
   def private_commands
-    %w(update help)
+    %w[notify update help]
   end
 
   def group_commands
-    %w(update help)
+    %w[update help]
   end
 
   def private_help_message
@@ -60,7 +96,15 @@ class Intouch::TelegramBot < TelegramCommon::Bot
     ['Redmine Intouch:', help_command_list(group_commands, namespace: 'intouch', type: 'group')].join("\n")
   end
 
+  def command_arguments
+    command.text.match(/^\/\w+ (.+)$/).try(:[], 1)
+  end
+
   def bot_token
     Intouch.bot_token
+  end
+
+  def bot
+    @bot ||= ::Telegram::Bot::Client.new(bot_token)
   end
 end
