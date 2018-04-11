@@ -28,7 +28,7 @@ module Intouch::Live::Message
     def send_telegram_private_messages
       return unless telegram_enabled?
 
-      ::IntouchSender.send_live_telegram_message(issue.id, @journal.id, required_recipients)
+      ::IntouchSender.send_live_telegram_message(issue.id, @journal&.id, required_recipients)
     end
 
     def send_email_messages
