@@ -29,7 +29,7 @@ class TelegramLiveSenderWorker
 
       logger.debug "roles_in_issue: #{roles_in_issue.inspect}"
 
-      next unless need_notification?(roles_in_issue) || IntouchSubscription.find_by(user_id: user.id, project_id: project.id)&.active?
+      next unless need_notification?(roles_in_issue) || IntouchSubscription.find_by(user_id: user.id, project_id: issue.project.id)&.active?
 
       project  = issue.project
       settings = project.active_telegram_settings
