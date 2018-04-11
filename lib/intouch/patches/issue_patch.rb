@@ -85,38 +85,12 @@ module Intouch
             ).recipient_ids
           end
 
-          def live_recipient_ids(protocol)
-            settings = project.send("active_#{protocol}_settings")
-            return [] if settings.blank?
-            recipients = settings.select { |k, _v| %w(author assigned_to watchers).include? k }
-
-            subscribed_user_ids = IntouchSubscription.where(project_id: project_id).select(&:active?).map(&:user_id)
-
-            user_ids = []
-            recipients.each_pair do |key, value|
-              next unless value.try(:[], status_id.to_s).try(:include?, priority_id.to_s)
-              case key
-              when 'author'
-                user_ids << author.id
-              when 'assigned_to'
-                user_ids << assigned_to_id if assigned_to.class == User
-              when 'watchers'
-                user_ids += watchers.pluck(:user_id)
-              end
-            end
-            (user_ids.flatten + [assigner_id] + subscribed_user_ids - [updated_by.try(:id)]).uniq
-          end
-
           def intouch_recipients(protocol, state = notification_state)
             Intouch::Regular::RecipientsList.new(
               issue: self,
               state: state,
               protocol: protocol
             ).call
-          end
-
-          def intouch_live_recipients(protocol)
-            User.where(id: live_recipient_ids(protocol))
           end
 
           def performer
@@ -149,10 +123,6 @@ module Intouch
             Intouch::Live::Handler::NewIssue.new(self).call
           end
         end
-      end
-
-      def last_journal
-        @last_journal ||= journals.order(:id).last
       end
     end
   end
