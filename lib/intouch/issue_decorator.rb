@@ -2,8 +2,8 @@ class Intouch::IssueDecorator
   include SimpleDelegator
 
   def initialize(issue, journal_id)
-    @journal = journals.find_by(id: journal_id)
     super(issue)
+    @journal = journals.find_by(id: journal_id)
   end
 
   def telegram_live_message
