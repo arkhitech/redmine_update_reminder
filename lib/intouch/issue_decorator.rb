@@ -1,5 +1,4 @@
-class Intouch::IssueDecorator
-  include SimpleDelegator
+class Intouch::IssueDecorator < SimpleDelegator
 
   def initialize(issue, journal_id)
     super(issue)
