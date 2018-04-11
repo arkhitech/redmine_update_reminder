@@ -1,13 +1,13 @@
 class TelegramLiveSenderWorker
   include Sidekiq::Worker
 
-  def perform(issue_id, required_recipients = [])
+  def perform(issue_id, journal_id, required_recipients = [])
     @required_recipients = required_recipients
     logger.debug "START for issue_id #{issue_id}"
 
     Intouch.set_locale
 
-    issue = Issue.find issue_id
+    issue = Intouch::IssueDecorator.new(Issue.find(issue_id), journal_id)
     logger.debug issue.inspect
 
     base_message = issue.telegram_live_message

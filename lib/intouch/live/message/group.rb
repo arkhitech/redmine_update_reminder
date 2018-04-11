@@ -2,9 +2,10 @@ module Intouch::Live::Message
   class Group
     attr_reader :project, :issue
 
-    def initialize(issue, project)
+    def initialize(issue, project, journal: nil)
       @issue = issue
       @project = project
+      @journal = journal
     end
 
     def send
