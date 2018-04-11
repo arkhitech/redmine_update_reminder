@@ -5,7 +5,7 @@ class TelegramGroupLiveSenderWorker
     logger.debug "START for issue_id #{issue_id}"
     Intouch.set_locale
 
-    issue = Intouch::IssueDecorator(Issue.find(issue_id), journal_id)
+    issue = Intouch::IssueDecorator.new(Issue.find(issue_id), journal_id)
     logger.debug issue.inspect
 
     telegram_groups_settings = issue.project.active_telegram_settings.try(:[], 'groups')
