@@ -24,12 +24,12 @@ class TelegramLiveSenderWorker
       roles_in_issue = []
 
       roles_in_issue << 'assigned_to' if issue.assigned_to_id == user.id
-      roles_in_issue << 'watchers' if issue.watchers.pluck(:user_id).include? user.id
+      roles_in_issue << 'watchers' if issue.watchers.pluck(:user_id).include?(user.id) || IntouchSubscription.find_by(user_id: user.id, project_id: issue.project_id)&.active?
       roles_in_issue << 'author' if issue.author_id == user.id
 
       logger.debug "roles_in_issue: #{roles_in_issue.inspect}"
 
-      next unless need_notification?(roles_in_issue) || IntouchSubscription.find_by(user_id: user.id, project_id: issue.project_id)&.active?
+      next unless need_notification?(roles_in_issue)
 
       project  = issue.project
       settings = project.active_telegram_settings
