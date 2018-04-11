@@ -16,20 +16,15 @@ class Intouch::TelegramBot < TelegramCommon::Bot
   def notify
     user = account.user
 
-    (send_message(I18n.t('intouch.bot.subscription_failure')) && return) if user.blank?
-
-    if command_arguments.blank?
-      send_message(I18n.t('intouch.bot.subscription'), params: { reply_markup: subscriptions_keyboard(Project.where(Project.visible_condition(user)).pluck(:name)) })
-      return
-    end
+    (send_message(I18n.t('intouch.bot.subscription_failure')) && return) if [user, command_arguments].any?(&:blank?)
 
     (clear_subscriptions && return) if command_arguments == 'clear'
 
-    project = Project.find_by(name: command_arguments)
+    project = Project.like(command_arguments).first
 
     (send_message(I18n.t('intouch.bot.subscription_failure')) && return) if project.blank?
 
-    if IntouchSubscription.find_or_create_by(project_id: project.id, user_id: user.id)
+    if IntouchSubscription.find_or_create_by(project_id: project.id, user_id: user.id).active?
       send_message(I18n.t('intouch.bot.subscription_success'))
     else
       send_message(I18n.t('intouch.bot.subscription_failure'))
@@ -68,14 +63,6 @@ class Intouch::TelegramBot < TelegramCommon::Bot
     send_message(I18n.t('intouch.bot.subscription_success'))
   end
 
-  def subscriptions_keyboard(project_names)
-    Telegram::Bot::Types::ReplyKeyboardMarkup.new(
-      keyboard: [*project_names, 'clear'].map { |name| "/notify #{name}" }.each_slice(2).to_a,
-      one_time_keyboard: true,
-      resize_keyboard: true
-    )
-  end
-
   def chat
     command.chat
   end
@@ -102,9 +89,5 @@ class Intouch::TelegramBot < TelegramCommon::Bot
 
   def bot_token
     Intouch.bot_token
-  end
-
-  def bot
-    @bot ||= ::Telegram::Bot::Client.new(bot_token)
   end
 end

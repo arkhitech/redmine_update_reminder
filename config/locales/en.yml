@@ -9,7 +9,7 @@ en:
         help:
           start: "Start work with bot"
           update: update Telegram account info (after change name or username)
-          notify: subscribe to all notifications from project
+          notify: type /notify project name to subscribe to all notifications from project, or clear all subscriptions with /notify clear
           help: list of available commands with its descriptions
         update:
           message: "Hello! I've updated your name and username in Redmine."
@@ -21,7 +21,6 @@ en:
           message: "Hello, people! I've added this group chat for Redmine notifications."
         update:
           message: "Hello! I've updated this group chat title in Redmine."
-      subscription: Please, select project to subscribe or clear all subscriptions
       subscription_success: Subscriptions updated
       subscription_failure: Failed to update subscriptions
     cron:
