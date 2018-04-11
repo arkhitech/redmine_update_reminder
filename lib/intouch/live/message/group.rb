@@ -2,15 +2,16 @@ module Intouch::Live::Message
   class Group
     attr_reader :project, :issue
 
-    def initialize(issue, project)
+    def initialize(issue, project, journal: nil)
       @issue = issue
       @project = project
+      @journal = journal
     end
 
     def send
       return unless telegram_enabled?
 
-      IntouchSender.send_live_telegram_group_message(issue.id)
+      IntouchSender.send_live_telegram_group_message(issue.id, @journal&.id)
     end
 
     private
