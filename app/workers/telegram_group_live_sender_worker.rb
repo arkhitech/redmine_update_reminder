@@ -1,11 +1,11 @@
 class TelegramGroupLiveSenderWorker
   include Sidekiq::Worker
 
-  def perform(issue_id)
+  def perform(issue_id, journal_id)
     logger.debug "START for issue_id #{issue_id}"
     Intouch.set_locale
 
-    issue = Issue.find issue_id
+    issue = Intouch::IssueDecorator.new(Issue.find(issue_id), journal_id)
     logger.debug issue.inspect
 
     telegram_groups_settings = issue.project.active_telegram_settings.try(:[], 'groups')

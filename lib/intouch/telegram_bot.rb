@@ -13,6 +13,24 @@ class Intouch::TelegramBot < TelegramCommon::Bot
     private_command? ? private_update_process : group_update_process
   end
 
+  def notify
+    user = account.user
+
+    (send_message(I18n.t('intouch.bot.subscription_failure')) && return) if [user, command_arguments].any?(&:blank?)
+
+    (clear_subscriptions && return) if command_arguments == 'clear'
+
+    project = Project.like(command_arguments).first
+
+    (send_message(I18n.t('intouch.bot.subscription_failure')) && return) if project.blank?
+
+    if IntouchSubscription.find_or_create_by(project_id: project.id, user_id: user.id).active?
+      send_message(I18n.t('intouch.bot.subscription_success'))
+    else
+      send_message(I18n.t('intouch.bot.subscription_failure'))
+    end
+  end
+
   private
 
   def private_update_process
@@ -40,16 +58,21 @@ class Intouch::TelegramBot < TelegramCommon::Bot
     TelegramGroupChat.where(tid: chat_id.abs).first_or_initialize(title: chat.title)
   end
 
+  def clear_subscriptions
+    IntouchSubscription.where(user_id: account.user.id).destroy_all
+    send_message(I18n.t('intouch.bot.subscription_success'))
+  end
+
   def chat
     command.chat
   end
 
   def private_commands
-    %w(update help)
+    %w[notify update help]
   end
 
   def group_commands
-    %w(update help)
+    %w[update help]
   end
 
   def private_help_message
@@ -58,6 +81,10 @@ class Intouch::TelegramBot < TelegramCommon::Bot
 
   def group_help_message
     ['Redmine Intouch:', help_command_list(group_commands, namespace: 'intouch', type: 'group')].join("\n")
+  end
+
+  def command_arguments
+    command.text.match(/^\/\w+ (.+)$/).try(:[], 1)
   end
 
   def bot_token

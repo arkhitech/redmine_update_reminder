@@ -1,4 +1,4 @@
-class SidekiqCronJobsController < ApplicationController
+class IntouchCronJobsController < ApplicationController
   unloadable
 
   layout 'admin'

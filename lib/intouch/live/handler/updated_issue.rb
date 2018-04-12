@@ -31,13 +31,13 @@ module Intouch::Live::Handler
     end
 
     def send_private_messages
-      Intouch::Live::Message::Private.new(issue, project).send
+      Intouch::Live::Message::Private.new(issue, project, journal: @journal).send
     end
 
     def send_group_messages
       return unless need_group_message?
 
-      Intouch::Live::Message::Group.new(issue, project).send
+      Intouch::Live::Message::Group.new(issue, project, journal: @journal).send
     end
 
     def need_group_message?

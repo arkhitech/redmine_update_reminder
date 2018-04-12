@@ -1,13 +1,13 @@
 class TelegramLiveSenderWorker
   include Sidekiq::Worker
 
-  def perform(issue_id, required_recipients = [])
+  def perform(issue_id, journal_id, required_recipients = [])
     @required_recipients = required_recipients
     logger.debug "START for issue_id #{issue_id}"
 
     Intouch.set_locale
 
-    issue = Issue.find issue_id
+    issue = Intouch::IssueDecorator.new(Issue.find(issue_id), journal_id)
     logger.debug issue.inspect
 
     base_message = issue.telegram_live_message
@@ -24,7 +24,7 @@ class TelegramLiveSenderWorker
       roles_in_issue = []
 
       roles_in_issue << 'assigned_to' if issue.assigned_to_id == user.id
-      roles_in_issue << 'watchers' if issue.watchers.pluck(:user_id).include? user.id
+      roles_in_issue << 'watchers' if issue.watchers.pluck(:user_id).include?(user.id) || IntouchSubscription.find_by(user_id: user.id, project_id: issue.project_id)&.active?
       roles_in_issue << 'author' if issue.author_id == user.id
 
       logger.debug "roles_in_issue: #{roles_in_issue.inspect}"

@@ -1,3 +1,11 @@
+# 1.2.0
+
+* Fix rack-protection issue
+* Add time zone notice to cron jobs edit page
+* Add assigner_roles setting
+* Add /notify command
+* Add redmine_telegram_common dependency
+
 # 1.1.1
 
 * Fix status update message

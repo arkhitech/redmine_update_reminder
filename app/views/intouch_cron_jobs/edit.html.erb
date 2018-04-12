@@ -16,7 +16,9 @@
   <% end %>
   <div class="box tabular">
     <p><label for="sidekiq_cron_job_name">Cron<span class="required"> *</span></label>
-      <%= text_field_tag 'sidekiq_cron_job[cron]', @sidekiq_cron_job.cron %></p>
+      <%= text_field_tag 'sidekiq_cron_job[cron]', @sidekiq_cron_job.cron %>
+      <%= l('field_time_zone') %>: <%= Rails.application.config.time_zone %>
+    </p>
   </div>
 
   <%= submit_tag l(:button_save) %>

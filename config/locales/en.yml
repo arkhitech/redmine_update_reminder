@@ -8,8 +8,8 @@ en:
       private:
         help:
           start: "Start work with bot"
-          connect: connect Telegram and Redmine accounts
           update: update Telegram account info (after change name or username)
+          notify: type /notify project name to subscribe to all notifications from project, or clear all subscriptions with /notify clear
           help: list of available commands with its descriptions
         update:
           message: "Hello! I've updated your name and username in Redmine."
@@ -21,6 +21,8 @@ en:
           message: "Hello, people! I've added this group chat for Redmine notifications."
         update:
           message: "Hello! I've updated this group chat title in Redmine."
+      subscription_success: Subscriptions updated
+      subscription_failure: Failed to update subscriptions
     cron:
       cron_email_reminder_sender: Email notification to the assigner about the issues that have not been updated for a long time
       cron_feedback_regular_notification: Notification about the issues with the “Feedback” status
@@ -56,7 +58,7 @@ en:
       settings:
         assigner_groups:
           description_html: |
-            Notifications addressed to <strong>Assigner</strong>, will be sent only if the <strong>Assigner</strong> is a part of one of the groups mentioned below.<br>
+            Notifications addressed to <strong>Assigner</strong>, will be sent only if the <strong>Assigner</strong> is a part of one of the groups or roles mentioned below.<br>
             Notifications about inactivity in issue will be sent only if the issue is <strong>assigned to the Assigner</strong>.
         common:
           copy: Copy
