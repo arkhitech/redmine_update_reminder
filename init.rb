@@ -1,3 +1,5 @@
+require_dependency Rails.root.join('plugins','redmine_telegram_common', 'init')
+
 FileUtils.mkdir_p(Rails.root.join('log/intouch')) unless Dir.exist?(Rails.root.join('log/intouch'))
 
 require 'intouch'
@@ -26,6 +28,8 @@ Redmine::Plugin.register :redmine_intouch do
   author_url 'https://github.com/centosadmin'
 
   requires_redmine version_or_higher: '3.0'
+
+  requires_redmine_plugin :redmine_telegram_common, '0.7.0'
 
   settings(
     default: {
