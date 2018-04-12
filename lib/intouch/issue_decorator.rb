@@ -96,7 +96,7 @@ module Intouch
     end
 
     def updated_by
-      @journal.user if journals.present?
+      @journal&.user
     end
 
     def updated_priority_text
