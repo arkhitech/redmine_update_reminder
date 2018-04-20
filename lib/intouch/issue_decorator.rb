@@ -7,7 +7,7 @@ module Intouch
     end
 
     def telegram_live_message
-      message = "`#{project.title}: #{subject}`"
+      message = "#{telegram_prefix}\n`#{project.title}: #{subject}`"
 
       message += "\n#{I18n.t('intouch.telegram_message.issue.updated_by')}: #{updated_by}" if updated_by.present?
 
@@ -32,32 +32,6 @@ module Intouch
       end
 
       message
-    end
-
-    def live_recipient_ids(protocol)
-      settings = project.send("active_#{protocol}_settings")
-      return [] if settings.blank?
-      recipients = settings.select { |k, _v| %w(author assigned_to watchers).include? k }
-
-      subscribed_user_ids = IntouchSubscription.where(project_id: project_id).select(&:active?).map(&:user_id)
-
-      user_ids = []
-      recipients.each_pair do |key, value|
-        next unless value.try(:[], status_id.to_s).try(:include?, priority_id.to_s)
-        case key
-        when 'author'
-          user_ids << author.id
-        when 'assigned_to'
-          user_ids << assigned_to_id if assigned_to.class == User
-        when 'watchers'
-          user_ids += watchers.pluck(:user_id)
-        end
-      end
-      (user_ids.flatten + [assigner_id] + subscribed_user_ids - [updated_by.try(:id)]).uniq
-    end
-
-    def intouch_live_recipients(protocol)
-      User.where(id: live_recipient_ids(protocol))
     end
 
     private
@@ -119,6 +93,33 @@ module Intouch
       status_journal = @journal.details.find_by(prop_key: 'status_id')
       old_status = IssueStatus.find status_journal.old_value
       "#{old_status.name} -> #{status.name}"
+    end
+
+    def required_recipients
+      @required_recipients ||= Intouch::Live::Checker::Private.new(self, project).required_recipients
+    end
+
+    def telegram_prefix
+      settings = project.active_telegram_settings
+
+      if settings.present?
+        recipients = settings.select do |key, value|
+          %w(author assigned_to watchers).include?(key) &&
+            value.try(:[], status_id.to_s).try(:include?, priority_id.to_s)
+        end.keys
+
+        roles_for_prefix(recipients, roles_in_issue).map do |role|
+          I18n.t("intouch.telegram_message.recipient.#{role}")
+        end.join(', ')
+      else
+        ''
+      end
+    end
+
+    def roles_for_prefix(recipients, roles_in_issue)
+      return roles_in_issue & recipients unless required_recipients.present?
+
+      roles_in_issue & recipients & required_recipients
     end
   end
 end

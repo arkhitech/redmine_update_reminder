@@ -6,7 +6,7 @@ module Intouch
           unloadable
 
           # noinspection RubyArgCount
-          store :intouch_settings, accessors: %w[settings_template_id assigner_groups assigner_roles reminder_settings telegram_settings email_settings]
+          store :intouch_settings, accessors: %w[settings_template_id assigner_groups assigner_roles reminder_settings] | Intouch.protocols.keys.map { |p| "#{p}_settings" }
 
           before_create :copy_settings_from_parent
 
@@ -27,12 +27,10 @@ module Intouch
             settings_template ? settings_template.reminder_settings : reminder_settings
           end
 
-          def active_telegram_settings
-            settings_template ? settings_template.telegram_settings : telegram_settings
-          end
-
-          def active_email_settings
-            settings_template ? settings_template.email_settings : email_settings
+          Intouch.protocols.each do |protocol, _|
+            define_method("active_#{protocol}_settings") do
+              settings_template ? settings_template.public_send("#{protocol}_settings") : send("#{protocol}_settings")
+            end
           end
 
           def active_intouch_settings

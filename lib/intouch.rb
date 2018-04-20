@@ -1,5 +1,15 @@
+require 'sidekiq/testing'
+
 module Intouch
-  AVAILABLE_PROTOCOLS = %w(telegram email)
+  Sidekiq::Testing.inline!
+  @@mutex = Mutex.new
+  @@protocols = {}
+
+  mattr_reader :protocols
+
+  def self.register_protocol(name, protocol)
+    @@mutex.synchronize { @@protocols[name.to_s] = protocol }
+  end
 
   def self.set_locale
     I18n.locale = Setting['default_language']
@@ -19,7 +29,7 @@ module Intouch
   end
 
   def self.active_protocols
-    Setting.plugin_redmine_intouch['active_protocols'] || []
+    protocols.slice(*Setting.plugin_redmine_intouch['active_protocols'])
   end
 
   def self.handle_message(message)
@@ -59,19 +69,12 @@ module Intouch
           last_notification = issue.last_notification.try(:[], state)
 
           if active &&
-             interval.present? &&
-             Intouch::Regular::Message::Base.new(issue).latest_action_on < interval.to_i.hours.ago &&
-             (last_notification.nil? || last_notification < interval.to_i.hours.ago)
+            interval.present? &&
+              Intouch::Regular::Message::Base.new(issue).latest_action_on < interval.to_i.hours.ago &&
+              (last_notification.nil? || last_notification < interval.to_i.hours.ago)
 
-            if active_protocols.include? 'email'
-              IntouchSender.send_email_message(issue.id, state) unless %w(overdue without_due_date).include? state
-            end
-
-            if active_protocols.include? 'telegram'
-              IntouchSender.send_telegram_message(issue.id, state)
-
-              group_ids = telegram_settings.try(:[], state).try(:[], 'groups')
-              IntouchSender.send_telegram_group_message(issue.id, group_ids, state) if group_ids.present?
+            active_protocols.each do |_, protocol|
+              protocol.send_regular_notification(issue, state)
             end
 
             last_notification = issue.last_notification

@@ -10,7 +10,7 @@
   <tr>
     <% %w(author assigned_to watchers).each do |receiver| %>
       <td>
-        <% Intouch.active_protocols.each do |protocol| %>
+        <% Intouch.active_protocols.each do |protocol, _| %>
           <%= check_box_tag "intouch_settings[#{protocol}_settings][#{status}][#{receiver}]", '1',
                             settings_source.send("#{protocol}_settings").try(:[], status).try(:[], receiver),
                             class: "#{protocol}_#{receiver}",

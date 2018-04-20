@@ -13,11 +13,16 @@ reloader.to_prepare do
     require_dependency file
   end
 
-  require_dependency 'telegram_common'
-  TelegramCommon.update_manager.add_handler(->(message) { Intouch.handle_message(message) } )
+  # require_dependency 'telegram_common'
+  # TelegramCommon.update_manager.add_handler(->(message) { Intouch.handle_message(message) } )
 end
 
 Rails.application.config.eager_load_paths += Dir.glob("#{Rails.application.config.root}/plugins/redmine_intouch/{lib,app/workers,app/models,app/controllers}")
+
+Intouch.register_protocol('telegram', Intouch::Protocols::Telegram.new)
+Intouch.register_protocol('slack', Intouch::Protocols::Slack.new)
+Intouch.register_protocol('email', Intouch::Protocols::Slack.new)
+
 
 Redmine::Plugin.register :redmine_intouch do
   name 'Redmine Intouch plugin'
@@ -29,7 +34,7 @@ Redmine::Plugin.register :redmine_intouch do
 
   requires_redmine version_or_higher: '3.0'
 
-  requires_redmine_plugin :redmine_telegram_common, '0.7.0'
+  # requires_redmine_plugin :redmine_telegram_common, '0.7.0'
 
   settings(
     default: {

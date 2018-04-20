@@ -23,7 +23,7 @@
     <tr>
       <% %w(author assigned_to watchers).each do |receiver| %>
         <td>
-          <% Intouch.active_protocols.each do |protocol| %>
+          <% Intouch.active_protocols.each do |protocol, _| %>
             <%= check_box_tag "intouch_settings[#{protocol}_settings][overdue][#{receiver}]",
                 '1',
                 settings_source.send("#{protocol}_settings").try(:[], 'overdue').try(:[], receiver),
