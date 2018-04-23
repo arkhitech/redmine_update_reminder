@@ -7,14 +7,8 @@ module Intouch
     end
 
     def live_recipients
-      @live_recipients ||= User.where(id: live_recipient_ids(@protocol_name)).select do |user|
-        roles_in_issue = []
-        roles_in_issue << 'assigned_to' if issue.assigned_to_id == user.id
-        roles_in_issue << 'watchers' if issue.watchers.pluck(:user_id).include?(user.id) || IntouchSubscription.find_by(user_id: user.id, project_id: issue.project_id)&.active?
-        roles_in_issue << 'author' if issue.author_id == user.id
-
-        need_notification?(roles_in_issue)
-      end
+      return [] unless need_notification?
+      @live_recipients ||= User.where(id: live_recipient_ids(@protocol_name))
     end
 
     private
@@ -38,18 +32,12 @@ module Intouch
           user_ids += issue.watchers.pluck(:user_id)
         end
       end
-      #  - [issue.updated_by.try(:id)]
-      (user_ids.flatten + [issue.assigner_id] + subscribed_user_ids).uniq
+      customer = issue.customer if protocol == 'email' && issue.project.module_enabled?(:contacts)
+      (user_ids.flatten + [issue.assigner_id] + [customer].compact + subscribed_user_ids - [User.anonymous] - [issue.updated_by&.id]).uniq
     end
 
-    def need_notification?(roles_in_issue)
-      return roles_in_issue if required_recipients.blank?
-
-      (roles_in_issue & required_recipients).present?
-    end
-
-    def required_recipients
-      @required_recipients ||= Intouch::Live::Checker::Private.new(issue, issue.project).required_recipients
+    def need_notification?
+      Intouch::Live::Checker::Private.new(issue, issue.project).required?
     end
   end
 end

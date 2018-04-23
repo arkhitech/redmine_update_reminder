@@ -2,6 +2,7 @@ module Intouch::Protocols
   class Telegram < Base
     def handle_update(update)
       issue = update.issue
+      journal = update.journal
 
       TelegramLiveSenderWorker.perform_in(5.seconds, issue.id, journal&.id, update.live_recipients.map(&:id))
       TelegramGroupLiveSenderWorker.perform_in(5.seconds, issue.id, journal&.id) if need_group_message?(journal)

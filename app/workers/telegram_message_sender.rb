@@ -26,13 +26,11 @@ class TelegramMessageSender
       TELEGRAM_MESSAGE_SENDER_ERRORS_LOG.info "MESSAGE: #{message}"
 
       telegram_account = (telegram_account_id > 0) ?
-        TelegramCommon::Account.find_by(telegram_id: telegram_account_id) :
+        TelegramAccount.find_by(telegram_id: telegram_account_id) :
         TelegramGroupChat.find_by(tid: telegram_account_id.abs)
 
       if e.message.include? 'Bot was kicked'
-
-        telegram_account.deactivate! if telegram_account.is_a? TelegramCommon::Account
-        TELEGRAM_MESSAGE_SENDER_ERRORS_LOG.info "Bot was kicked from chat. Deactivate #{telegram_account.inspect}"
+        TELEGRAM_MESSAGE_SENDER_ERRORS_LOG.info "Bot was kicked from chat."
 
       elsif e.message.include?('429') || e.message.include?('retry later')
 

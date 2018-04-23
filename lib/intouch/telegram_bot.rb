@@ -1,4 +1,4 @@
-class Intouch::TelegramBot < TelegramCommon::Bot
+class Intouch::TelegramBot < TelegramBots::Telegram::Bot
   def initialize(command)
     @logger = Logger.new(Rails.root.join('log/intouch', 'bot.log'))
     @command = command.is_a?(Telegram::Bot::Types::Message) ? command : Telegram::Bot::Types::Update.new(command).message

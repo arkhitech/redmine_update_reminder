@@ -1,13 +1,14 @@
 module Intouch
   class IssueDecorator < SimpleDelegator
 
-    def initialize(issue, journal_id)
+    def initialize(issue, journal_id, protocol:)
       super(issue)
       @journal = journals.find_by(id: journal_id)
+      @protocol = protocol
     end
 
-    def telegram_live_message
-      message = "#{telegram_prefix}\n`#{project.title}: #{subject}`"
+    def as_markdown
+      message = "#{prefix}\n`#{project.title}: #{subject}`"
 
       message += "\n#{I18n.t('intouch.telegram_message.issue.updated_by')}: #{updated_by}" if updated_by.present?
 
@@ -27,9 +28,9 @@ module Intouch
 
       message += "\n#{Intouch.issue_url(id)}"
 
-      if defined?(telegram_group) && telegram_group&.shared_url.present?
-        message += ", [#{I18n.t('intouch.telegram_message.issue.telegram_link')}](#{telegram_group.shared_url})"
-      end
+      # if defined?(telegram_group) && telegram_group&.shared_url.present?
+      #   message += ", [#{I18n.t('intouch.telegram_message.issue.telegram_link')}](#{telegram_group.shared_url})"
+      # end
 
       message
     end
@@ -99,8 +100,14 @@ module Intouch
       @required_recipients ||= Intouch::Live::Checker::Private.new(self, project).required_recipients
     end
 
-    def telegram_prefix
-      settings = project.active_telegram_settings
+    def prefix
+      roles_in_issue = []
+
+      roles_in_issue << 'assigned_to' if assigned_to_id == @journal&.user&.id
+      roles_in_issue << 'watchers' if watchers.pluck(:user_id).include? @journal&.user&.id
+      roles_in_issue << 'author' if author_id == @journal&.user&.id
+
+      settings = project.public_send("active_#{@protocol}_settings")
 
       if settings.present?
         recipients = settings.select do |key, value|

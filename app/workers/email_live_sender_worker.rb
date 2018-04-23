@@ -2,11 +2,11 @@ class EmailLiveSenderWorker
   include Sidekiq::Worker
   EMAIL_LIVE_SENDER_LOG = Logger.new(Rails.root.join('log/intouch', 'email-live-sender.log'))
 
-  def perform(issue_id, journal_id, _required_recipients = [])
+  def perform(issue_id, journal_id, recipient_ids)
     Intouch.set_locale
-    issue = Intouch::IssueDecorator.new(Issue.find(issue_id), journal_id)
+    issue = Intouch::IssueDecorator.new(Issue.find(issue_id), journal_id, protocol: 'email')
 
-    issue.intouch_live_recipients('email').each do |user|
+    User.where(id: recipient_ids).each do |user|
       IntouchMailer.reminder_email(user, issue).deliver if user.present?
     end
   rescue ActiveRecord::RecordNotFound => e

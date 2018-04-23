@@ -6,19 +6,19 @@ class TelegramLiveSenderWorker
 
     Intouch.set_locale
 
-    issue = Intouch::IssueDecorator.new(Issue.find(issue_id), journal_id)
+    issue = Intouch::IssueDecorator.new(Issue.find(issue_id), journal_id, protocol: 'telegram')
     logger.debug issue.inspect
 
-    message = issue.telegram_live_message
+    message = issue.as_markdown
 
     logger.debug "message: #{message}"
 
     User.where(id: recipient_ids).each do |user|
       logger.debug "user: #{user.inspect}"
 
-      telegram_account = user.telegram_account
+      telegram_account = TelegramAccount.find_by(user_id: user.id)
       logger.debug "telegram_account: #{telegram_account.inspect}"
-      next unless telegram_account.present? && telegram_account.active?
+      next unless telegram_account.present?
 
       logger.debug message
 
