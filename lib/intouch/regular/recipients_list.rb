@@ -12,7 +12,7 @@ module Intouch::Regular
       return [] unless recipient_ids.present?
 
       users = User.where(id: recipient_ids).status(User::STATUS_ACTIVE)
-      customer = @issue.customer if @protocol == 'email' && @issue.project.module_enabled?(:contacts)
+      customer = @protocol == 'email' && @issue.project.module_enabled?(:contacts) ? @issue.customer : nil
       users + [customer].compact - [User.anonymous]
     end
 

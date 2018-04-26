@@ -53,7 +53,9 @@ module Intouch
           user_ids += watchers.pluck(:user_id)
         end
       end
-      (user_ids.flatten + [assigner_id] + subscribed_user_ids - [updated_by.try(:id)]).uniq
+      customer_id = protocol == 'email' && project.module_enabled?(:contacts) ? customer.id : nil
+
+      (user_ids.flatten + [assigner_id] + subscribed_user_ids - [updated_by.try(:id)] + [customer_id].compact - [User.anonymous.id]).uniq
     end
 
     def intouch_live_recipients(protocol)
