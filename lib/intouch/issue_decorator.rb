@@ -57,7 +57,9 @@ module Intouch
     end
 
     def intouch_live_recipients(protocol)
-      User.where(id: live_recipient_ids(protocol))
+      users = User.where(id: live_recipient_ids(protocol))
+      contacts = protocol == 'email' && project.module_enabled?(:contacts) ? ([self.customer] + self.contacts.to_a).uniq : []
+      users + contacts.compact - [User.anonymous]
     end
 
     private
