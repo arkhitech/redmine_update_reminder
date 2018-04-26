@@ -10,7 +10,7 @@ module Intouch
           private
 
           def handle_updated_issue
-            LiveHandlerWorker.perform_in(5.seconds, id)
+            LiveHandlerWorker.perform_async(id)
           end
         end
       end

@@ -10,7 +10,6 @@ module Intouch::Live::Message
 
     def send
       return unless need_private_message?
-
       send_telegram_private_messages
       send_email_messages
     end
