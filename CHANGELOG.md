@@ -1,3 +1,7 @@
+# 1.2.1
+
+* Fix helpdesk support
+
 # 1.2.0
 
 * Fix rack-protection issue
