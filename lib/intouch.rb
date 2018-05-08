@@ -1,7 +1,4 @@
-require 'sidekiq/testing'
-
 module Intouch
-  Sidekiq::Testing.inline!
   @@mutex = Mutex.new
   @@protocols = {}
 
