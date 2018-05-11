@@ -4,7 +4,7 @@ module Intouch
 
     def initialize(issue, journal, protocol_name)
       @journal, @protocol_name = journal, protocol_name
-      @issue = IssueDecorator.new(issue, journal.id, protocol: protocol_name)
+      @issue = IssueDecorator.new(issue, journal&.id, protocol: protocol_name)
     end
 
     def live_recipients
