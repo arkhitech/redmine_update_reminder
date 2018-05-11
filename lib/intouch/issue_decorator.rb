@@ -35,6 +35,10 @@ module Intouch
       message
     end
 
+    def updated_by
+      @journal&.user
+    end
+
     private
 
     def updated_details
@@ -68,10 +72,6 @@ module Intouch
           end
         end.join(', ')
       end
-    end
-
-    def updated_by
-      @journal&.user
     end
 
     def updated_priority_text
