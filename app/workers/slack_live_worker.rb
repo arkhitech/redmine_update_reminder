@@ -9,7 +9,7 @@ class SlackLiveWorker
 
     slack_accounts = SlackAccount.where(user_id: recipient_ids)
 
-    client = RedmineBots::Slack.web_client
+    client = RedmineBots::Slack.robot_client
 
     channels = client.im_list
 

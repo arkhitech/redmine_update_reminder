@@ -11,7 +11,7 @@ class SlackRegularWorker
       project: project
     ).required?
 
-    client = RedmineBots::Slack.web_client
+    client = RedmineBots::Slack.robot_client
 
     channels = client.im_list
 
