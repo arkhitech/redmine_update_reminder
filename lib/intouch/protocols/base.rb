@@ -11,8 +11,7 @@ module Intouch::Protocols
     protected
 
     def need_group_message?(journal)
-      return false if journal.blank?
-      (journal.details.pluck(:prop_key) & %w[priority_id status_id project_id]).present?
+      journal.blank? || (journal.details.pluck(:prop_key) & %w[priority_id status_id project_id]).present?
     end
   end
 end
