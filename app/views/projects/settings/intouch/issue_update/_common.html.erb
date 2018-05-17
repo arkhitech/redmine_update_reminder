@@ -47,7 +47,7 @@
       </th>
       <% IssuePriority.order(:position).each do |priority| %>
         <td>
-          <% Intouch.active_protocols.each do |protocol| %>
+          <% Intouch.active_protocols.each do |protocol, _| %>
             <%= check_box_tag "intouch_settings[#{protocol}_settings][#{kind}][#{status.id}][]",
                 priority.id,
                 settings_source.send("#{protocol}_settings").try(:[], kind).

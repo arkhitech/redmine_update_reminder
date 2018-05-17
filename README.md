@@ -17,8 +17,7 @@ Please help us make this plugin better telling us of any [issues](https://github
 
 * **Ruby 2.3+**
 * **Redmine 3.1+**
-* Configured [redmine_telegram_common](https://github.com/centosadmin/redmine_telegram_common)
-* You should have Telegram bot account
+* Configured [redmine_bots](https://github.com/centosadmin/redmine_bots)
 * Install [Redis](https://redis.io) 2.8 or higher. Run Redis and add it to autorun.
 * Install the [redmine_sidekiq](https://github.com/ogom/redmine_sidekiq) plugin. [Redis](https://redis.io) 2.8 or greater is required.
 * You need to configure Sidekiq queues `default` and `telegram`. [Config example](https://github.com/centosadmin/redmine_intouch/blob/master/extras/sidekiq.yml) - place it to `redmine/config` directory (Or copy from plugins/redmine_intouch/extras/sidekiq.yml to config/sidekiq.yml).
@@ -32,6 +31,11 @@ bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 ```
 
 The `extras` folder has the examples of the plugin config files and the `init.d` startup script
+
+### Upgrade from 1.2 to 1.3+
+
+From 1.3.0 redmine_intouch depends on [redmine_bots](https://github.com/centosadmin/redmine_bots) instead of redmine_telegram_common.
+Make sure to remove redmine_telegram_common from plugins and follow installation instruction for [redmine_bots](https://github.com/centosadmin/redmine_bots).
 
 ### Upgrade from 1.0.2 to 1.1.0+
 
@@ -66,7 +70,7 @@ Since 0.4 version, model `TelegramUser` will be removed, also table `telegram_us
 
 ## General settings
 
-You should specify all the necessary notification protocols in the "Protocols" section. These are 'telegram' and 'email' available at the moment.
+You should specify all the necessary notification protocols in the "Protocols" section. These are 'telegram', 'slack' and 'email' available at the moment.
 
 The section "Working days" should contain:
 

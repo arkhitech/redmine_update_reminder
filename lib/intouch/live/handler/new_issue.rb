@@ -8,8 +8,10 @@ module Intouch::Live::Handler
     def call
       return unless notification_required?
 
-      send_private_messages
-      send_group_messages
+      Intouch.active_protocols.each do |name, protocol|
+        update = Intouch::IssueUpdate.new(issue, nil, name)
+        protocol.handle_update(update)
+      end
     end
 
     private
@@ -21,14 +23,6 @@ module Intouch::Live::Handler
         issue: issue,
         project: project
       ).required?
-    end
-
-    def send_private_messages
-      Intouch::Live::Message::Private.new(issue, project).send
-    end
-
-    def send_group_messages
-      Intouch::Live::Message::Group.new(issue, project).send
     end
   end
 end

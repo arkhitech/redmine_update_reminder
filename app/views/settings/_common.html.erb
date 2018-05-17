@@ -4,7 +4,7 @@
   <p class="description"><%= t 'intouch.settings.common.protocols.description' %></p>
 
   <ul class="inline-checkboxes">
-    <% Intouch::AVAILABLE_PROTOCOLS.each do |protocol| %>
+    <% Intouch.protocols.each do |protocol, _| %>
       <li>
         <%= check_box_tag "settings[active_protocols][]", protocol,
                           @settings["active_protocols"].try(:include?, protocol),

@@ -1,13 +1,14 @@
 module Intouch
   class IssueDecorator < SimpleDelegator
 
-    def initialize(issue, journal_id)
+    def initialize(issue, journal_id, protocol:)
       super(issue)
       @journal = journals.find_by(id: journal_id)
+      @protocol = protocol
     end
 
-    def telegram_live_message
-      message = "`#{project.title}: #{subject}`"
+    def as_markdown
+      message = "#{prefix}\n`#{project.title}: #{subject}`"
 
       message += "\n#{I18n.t('intouch.telegram_message.issue.updated_by')}: #{updated_by}" if updated_by.present?
 
@@ -27,39 +28,15 @@ module Intouch
 
       message += "\n#{Intouch.issue_url(id)}"
 
-      if defined?(telegram_group) && telegram_group&.shared_url.present?
-        message += ", [#{I18n.t('intouch.telegram_message.issue.telegram_link')}](#{telegram_group.shared_url})"
-      end
+      # if defined?(telegram_group) && telegram_group&.shared_url.present?
+      #   message += ", [#{I18n.t('intouch.telegram_message.issue.telegram_link')}](#{telegram_group.shared_url})"
+      # end
 
       message
     end
 
-    def live_recipient_ids(protocol)
-      settings = project.send("active_#{protocol}_settings")
-      return [] if settings.blank?
-      recipients = settings.select { |k, _v| %w(author assigned_to watchers).include? k }
-
-      subscribed_user_ids = IntouchSubscription.where(project_id: project_id).select(&:active?).map(&:user_id)
-
-      user_ids = []
-      recipients.each_pair do |key, value|
-        next unless value.try(:[], status_id.to_s).try(:include?, priority_id.to_s)
-        case key
-        when 'author'
-          user_ids << author.id
-        when 'assigned_to'
-          user_ids << assigned_to_id if assigned_to.class == User
-        when 'watchers'
-          user_ids += watchers.pluck(:user_id)
-        end
-      end
-      (user_ids.flatten + [assigner_id] + subscribed_user_ids - [updated_by.try(:id)]).uniq
-    end
-
-    def intouch_live_recipients(protocol)
-      users = User.where(id: live_recipient_ids(protocol))
-      contacts = protocol == 'email' && project.module_enabled?(:contacts) ? ([self.customer] + self.contacts.to_a).uniq : []
-      users + contacts.compact - [User.anonymous]
+    def updated_by
+      @journal&.user
     end
 
     private
@@ -97,10 +74,6 @@ module Intouch
       end
     end
 
-    def updated_by
-      @journal&.user
-    end
-
     def updated_priority_text
       priority_journal = @journal.details.find_by(prop_key: 'priority_id')
       old_priority = IssuePriority.find(priority_journal.old_value)
@@ -121,6 +94,39 @@ module Intouch
       status_journal = @journal.details.find_by(prop_key: 'status_id')
       old_status = IssueStatus.find status_journal.old_value
       "#{old_status.name} -> #{status.name}"
+    end
+
+    def required_recipients
+      @required_recipients ||= Intouch::Live::Checker::Private.new(self, project).required_recipients
+    end
+
+    def prefix
+      roles_in_issue = []
+
+      roles_in_issue << 'assigned_to' if assigned_to_id == @journal&.user&.id
+      roles_in_issue << 'watchers' if watchers.pluck(:user_id).include? @journal&.user&.id
+      roles_in_issue << 'author' if author_id == @journal&.user&.id
+
+      settings = project.public_send("active_#{@protocol}_settings")
+
+      if settings.present?
+        recipients = settings.select do |key, value|
+          %w(author assigned_to watchers).include?(key) &&
+            value.try(:[], status_id.to_s).try(:include?, priority_id.to_s)
+        end.keys
+
+        roles_for_prefix(recipients, roles_in_issue).map do |role|
+          I18n.t("intouch.telegram_message.recipient.#{role}")
+        end.join(', ')
+      else
+        ''
+      end
+    end
+
+    def roles_for_prefix(recipients, roles_in_issue)
+      return roles_in_issue & recipients unless required_recipients.present?
+
+      roles_in_issue & recipients & required_recipients
     end
   end
 end
