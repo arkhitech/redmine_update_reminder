@@ -25,7 +25,7 @@ module Intouch::Regular::Message
     end
 
     def telegram_account
-      @telegram_account ||= user.telegram_account
+      @telegram_account ||= TelegramAccount.where(user_id: user.id)
     end
 
     def message
