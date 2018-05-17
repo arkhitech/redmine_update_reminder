@@ -2,6 +2,8 @@ class SlackLiveWorker
   include Sidekiq::Worker
 
   def perform(issue_id, journal_id, recipient_ids)
+    return if recipient_ids.blank?
+
     issue = Issue.find_by(id: issue_id) || return
     journal = Journal.find_by(id: journal_id)
 
