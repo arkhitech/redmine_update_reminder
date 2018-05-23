@@ -9,11 +9,9 @@ class TelegramLiveSenderWorker
     issue = Intouch::IssueDecorator.new(Issue.find(issue_id), journal_id, protocol: 'telegram')
     logger.debug issue.inspect
 
-    message = issue.as_markdown
-
-    logger.debug "message: #{message}"
-
     User.where(id: recipient_ids).each do |user|
+      message = issue.as_markdown(user_id: user.id)
+      
       logger.debug "user: #{user.inspect}"
 
       telegram_account = TelegramAccount.find_by(user_id: user.id)
