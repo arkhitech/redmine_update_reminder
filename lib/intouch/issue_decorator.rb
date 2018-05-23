@@ -7,8 +7,8 @@ module Intouch
       @protocol = protocol
     end
 
-    def as_markdown
-      message = "#{prefix}\n`#{project.title}: #{subject}`"
+    def as_markdown(user_id: nil)
+      message = "#{prefix(user_id) if user_id}\n`#{project.title}: #{subject}`"
 
       message += "\n#{I18n.t('intouch.telegram_message.issue.updated_by')}: #{updated_by}" if updated_by.present?
 
@@ -100,12 +100,12 @@ module Intouch
       @required_recipients ||= Intouch::Live::Checker::Private.new(self, project).required_recipients
     end
 
-    def prefix
+    def prefix(user_id)
       roles_in_issue = []
 
-      roles_in_issue << 'assigned_to' if assigned_to_id == @journal&.user&.id
-      roles_in_issue << 'watchers' if watchers.pluck(:user_id).include? @journal&.user&.id
-      roles_in_issue << 'author' if author_id == @journal&.user&.id
+      roles_in_issue << 'assigned_to' if assigned_to_id == user_id
+      roles_in_issue << 'watchers' if watchers.pluck(:user_id).include? user_id
+      roles_in_issue << 'author' if author_id == user_id
 
       settings = project.public_send("active_#{@protocol}_settings")
 
