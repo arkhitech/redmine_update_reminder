@@ -11,19 +11,21 @@ class SlackRegularWorker
       project: project
     ).required?
 
+    slack_accounts = SlackAccount.where(
+        user_id: Intouch::Regular::RecipientsList.new(
+            issue: issue,
+            state: state,
+            protocol: 'slack'
+        ).call.map(&:id)
+    ).to_a
+
+    return if slack_accounts.empty?
+
     client = RedmineBots::Slack.bot_client
 
     channels = client.im_list
 
     return unless channels['ok']
-
-    slack_accounts = SlackAccount.where(
-      user_id: Intouch::Regular::RecipientsList.new(
-        issue: issue,
-        state: state,
-        protocol: 'slack'
-      ).call.map(&:id)
-    )
 
     channels = client.im_list
 
