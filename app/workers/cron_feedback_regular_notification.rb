@@ -3,6 +3,6 @@ class CronFeedbackRegularNotification
 
   def perform
     # Feedback
-    Intouch.send_notifications Issue.open.joins(:project).feedbacks, 'feedback'
+    Intouch.send_notifications Issue.open.joins(:project).feedbacks.distinct, 'feedback'
   end
 end
