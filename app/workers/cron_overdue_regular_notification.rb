@@ -15,9 +15,9 @@ class CronOverdueRegularNotification
       Intouch.send_bulk_email_notifications Issue.open.where(id: issue_ids), 'overdue'
     end
 
-    Intouch.send_notifications Issue.open.joins(:project).where('due_date < ?', Date.today), 'overdue'
+    Intouch.send_notifications Issue.open.joins(:project).where('due_date < ?', Date.today).distinct, 'overdue'
 
     Intouch.send_notifications Issue.open.where(due_date: nil)
-                                   .where('created_on < ?', 1.day.ago), 'overdue'
+                                   .where('created_on < ?', 1.day.ago).distinct, 'overdue'
   end
 end
