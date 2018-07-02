@@ -9,7 +9,7 @@ module Intouch
 
     def live_recipients
       return [] unless need_notification?
-      @live_recipients ||= User.where(id: live_recipient_ids(@protocol_name))
+      @live_recipients ||= User.where(id: live_recipient_ids(@protocol_name)).to_a + [customer(@protocol_name)].compact
     end
 
     private
@@ -17,7 +17,7 @@ module Intouch
     def live_recipient_ids(protocol)
       settings = issue.project.send("active_#{protocol}_settings")
       return [] if settings.blank?
-      recipients = settings.select { |k, _v| %w(author assigned_to watchers).include? k }
+      recipients = settings.select { |k, _| %w(author assigned_to watchers).include? k }
 
       subscribed_user_ids = IntouchSubscription.where(project_id: issue.project_id).select(&:active?).map(&:user_id)
 
@@ -33,8 +33,17 @@ module Intouch
           user_ids += issue.watchers.pluck(:user_id)
         end
       end
-      customer = issue.customer if protocol == 'email' && issue.project.module_enabled?(:contacts)
-      (user_ids.flatten + [issue.assigner_id] + [customer].compact + subscribed_user_ids - [User.anonymous] - [issue.updated_by&.id]).uniq
+      (user_ids.flatten + [issue.assigner_id] + subscribed_user_ids - [User.anonymous.id] - [issue.updated_by&.id]).uniq
+    end
+
+    def customer(protocol)
+      return unless protocol == 'email' && issue.project.module_enabled?(:contacts)
+
+      settings = issue.project.send("active_#{protocol}_settings")
+      recipients = settings.select { |k, _| %w(author).include? k }
+
+      return unless recipients['author'].try(:[], issue.status_id.to_s).try(:include?, issue.priority_id.to_s)
+      issue.customer
     end
 
     def need_notification?
