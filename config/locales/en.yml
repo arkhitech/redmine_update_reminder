@@ -105,6 +105,7 @@ en:
     protocols:
       email: E-mail
       telegram: Telegram
+      slack: Slack
       title: Protocols
     recipient:
       assigned_to: Assigner

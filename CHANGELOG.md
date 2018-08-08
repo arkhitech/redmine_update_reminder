@@ -1,3 +1,9 @@
+# 1.3.0
+
+* Use redmine_bots instead of redmine_telegram_common
+* Add Slack support (and transparent support for custom protocols)
+* Fix redmine_helpdesk integration
+
 # 1.2.1
 
 * Fix helpdesk support

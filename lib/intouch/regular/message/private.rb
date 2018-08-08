@@ -12,7 +12,7 @@ module Intouch::Regular::Message
     attr_reader :issue, :user, :state, :project
 
     def send
-      return unless telegram_account.present? && telegram_account.active?
+      return unless telegram_account.present?
 
       logger.info '========================================='
       logger.info "Notification for state: #{state}"
@@ -25,7 +25,7 @@ module Intouch::Regular::Message
     end
 
     def telegram_account
-      @telegram_account ||= user.telegram_account
+      @telegram_account ||= TelegramAccount.find_by(user_id: user.id)
     end
 
     def message

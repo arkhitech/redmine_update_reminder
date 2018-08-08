@@ -14,8 +14,10 @@ module Intouch::Live::Handler
 
       logger.info 'notification required'
 
-      send_private_messages
-      send_group_messages
+      Intouch.active_protocols.each do |name, protocol|
+        update = Intouch::IssueUpdate.new(issue, journal, name)
+        protocol.handle_update(update)
+      end
     end
 
     private
@@ -28,20 +30,6 @@ module Intouch::Live::Handler
         project: project,
         journal: journal
       ).required?
-    end
-
-    def send_private_messages
-      Intouch::Live::Message::Private.new(issue, project, journal: @journal).send
-    end
-
-    def send_group_messages
-      return unless need_group_message?
-
-      Intouch::Live::Message::Group.new(issue, project, journal: @journal).send
-    end
-
-    def need_group_message?
-      (journal.details.pluck(:prop_key) & %w[priority_id status_id project_id]).present?
     end
 
     def logger

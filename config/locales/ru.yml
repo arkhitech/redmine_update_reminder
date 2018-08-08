@@ -105,6 +105,7 @@ ru:
     protocols:
       email: E-mail
       telegram: Telegram
+      slack: Slack
       title: "Протоколы"
     recipient:
       assigned_to: "Исполнитель"

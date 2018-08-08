@@ -12,8 +12,8 @@ module Intouch::Regular
       return [] unless recipient_ids.present?
 
       users = User.where(id: recipient_ids).status(User::STATUS_ACTIVE)
-      contacts = @protocol == 'email' && @issue.project.module_enabled?(:contacts) ? ([@issue.customer] + @issue.contacts.to_a).uniq : []
-      users + contacts.compact - [User.anonymous]
+      customer = @issue.customer if @protocol == 'email' && @issue.project.module_enabled?(:contacts)
+      users + [customer].compact - [User.anonymous]
     end
 
     def recipient_ids
