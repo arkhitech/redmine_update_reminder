@@ -5,7 +5,7 @@ gem 'sidekiq-rate-limiter', git: 'https://github.com/centosadmin/sidekiq-rate-li
     require: 'sidekiq-rate-limiter/server'
 
 group :test do
-  gem 'minitest-reporters'
+  gem 'minitest-reporters', '<= 1.3.0'
   gem 'mocha'
   gem 'shoulda'
 end
