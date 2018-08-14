@@ -29,7 +29,7 @@ module Intouch
 
           Intouch.protocols.each do |protocol, _|
             define_method("active_#{protocol}_settings") do
-              settings_template ? settings_template.public_send("#{protocol}_settings") : send("#{protocol}_settings")
+              (settings_template ? settings_template.public_send("#{protocol}_settings") : send("#{protocol}_settings")) || {}
             end
           end
 
