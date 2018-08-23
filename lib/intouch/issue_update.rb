@@ -40,6 +40,8 @@ module Intouch
       return unless protocol == 'email' && issue.project.module_enabled?(:contacts)
 
       settings = issue.project.send("active_#{protocol}_settings")
+      return if settings.blank?
+
       recipients = settings.select { |k, _| %w(author).include? k }
 
       return unless recipients['author'].try(:[], issue.status_id.to_s).try(:include?, issue.priority_id.to_s)
