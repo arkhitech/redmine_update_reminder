@@ -17,7 +17,11 @@ reloader.to_prepare do
   RedmineBots::Telegram.update_manager.add_handler(->(message) { Intouch.handle_message(message) } )
 end
 
-Rails.application.config.eager_load_paths += Dir.glob("#{Rails.application.config.root}/plugins/redmine_intouch/{lib,app/workers,app/models,app/controllers}")
+paths = Dir.glob("#{Rails.application.config.root}/plugins/redmine_intouch/{lib,app/workers,app/models,app/controllers}")
+
+Rails.application.config.eager_load_paths += paths
+Rails.application.config.autoload_paths += paths
+ActiveSupport::Dependencies.autoload_paths += paths
 
 Intouch.register_protocol('telegram', Intouch::Protocols::Telegram.new)
 Intouch.register_protocol('slack', Intouch::Protocols::Slack.new)

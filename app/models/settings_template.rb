@@ -1,8 +1,6 @@
 class SettingsTemplate < ActiveRecord::Base
   unloadable
 
-  attr_accessible :name, :intouch_settings
-
   store :intouch_settings, accessors: %w[assigner_groups assigner_roles reminder_settings] | Intouch.protocols.keys.map { |p| "#{p}_settings" }
 
   def copy_from(settings_template)

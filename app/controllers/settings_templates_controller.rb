@@ -3,7 +3,7 @@ class SettingsTemplatesController < ApplicationController
 
   layout 'admin'
 
-  before_filter :require_admin
+  before_action :require_admin
 
   accept_api_auth :index
 
@@ -31,8 +31,8 @@ class SettingsTemplatesController < ApplicationController
   end
 
   def create
-    @settings_template = SettingsTemplate.new(params[:settings_template])
-    @settings_template.intouch_settings = params[:intouch_settings]
+    @settings_template = SettingsTemplate.new(settings_template_params)
+    @settings_template.intouch_settings = params[:intouch_settings].to_unsafe_h
     if @settings_template.save
       flash[:notice] = l(:notice_successful_create)
       redirect_to controller: 'settings_templates', action: 'edit', id: @settings_template
@@ -47,8 +47,8 @@ class SettingsTemplatesController < ApplicationController
 
   def update
     @settings_template = SettingsTemplate.find(params[:id])
-    @settings_template.intouch_settings = params[:intouch_settings]
-    if @settings_template.update_attributes(params[:settings_template])
+    @settings_template.intouch_settings = params[:intouch_settings].to_unsafe_h
+    if @settings_template.update_attributes(settings_template_params)
       flash[:notice] = l(:notice_successful_update)
       redirect_to controller: 'settings_templates', action: 'edit', id: @settings_template
     else
@@ -62,5 +62,11 @@ class SettingsTemplatesController < ApplicationController
   rescue
     flash[:error] = l(:error_unable_delete_settings_template)
     redirect_to action: 'plugin', id: 'redmine_intouch', controller: 'settings', tab: 'settings_templates'
+  end
+
+  private
+
+  def settings_template_params
+    params.require(:settings_template).permit(:name)
   end
 end
