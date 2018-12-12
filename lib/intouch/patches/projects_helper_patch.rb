@@ -4,18 +4,16 @@ module Intouch
   module Patches
     module ProjectsHelperPatch
       def self.included(base)
-        base.send(:include, MethodsPatch)
+        base.prepend MethodsPatch
 
         base.module_eval do
           unloadable
-
-          alias_method_chain :project_settings_tabs, :intouch
         end
       end
 
       module MethodsPatch
-        def project_settings_tabs_with_intouch
-          tabs = project_settings_tabs_without_intouch
+        def project_settings_tabs
+          tabs = super
 
           return tabs unless User.current.allowed_to?(:manage_intouch_settings, @project)
 
