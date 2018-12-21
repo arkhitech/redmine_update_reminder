@@ -13,7 +13,7 @@ module Intouch
   end
 
   def self.bot_token
-    Setting.plugin_redmine_bots['telegram_bot_token']
+    Setting.find_by_name(:plugin_redmine_bots).value['telegram_bot_token']
   end
 
   def self.web_hook_url
