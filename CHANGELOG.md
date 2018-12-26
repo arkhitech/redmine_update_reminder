@@ -1,3 +1,8 @@
+# 1.4.0
+
+* Adapt for Redmine 4
+* Fix settings caching issues in sidekiq
+
 # 1.3.0
 
 * Use redmine_bots instead of redmine_telegram_common

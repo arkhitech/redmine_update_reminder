@@ -32,6 +32,14 @@ bundle exec rake redmine:plugins:migrate RAILS_ENV=production
 
 The `extras` folder has the examples of the plugin config files and the `init.d` startup script
 
+## Upgrade from 1.3 to 1.4+
+
+v1.4.0 introduces Redmine 4 support. If you're running Redmine 4, you need to run this task:
+
+`RAILS_ENV=production bundle exec rake intouch:fix_settings`
+
+to fix compatibility with Rails 5.
+
 ### Upgrade from 1.2 to 1.3+
 
 From 1.3.0 redmine_intouch depends on [redmine_bots](https://github.com/centosadmin/redmine_bots) instead of redmine_telegram_common.

@@ -1,11 +1,11 @@
 class IntouchController < ApplicationController
   unloadable
 
-  before_filter :find_project, only: [:save_settings]
+  before_action :find_project, only: [:save_settings]
 
   def save_settings
     if request.put?
-      @project.intouch_settings = params['intouch_settings']
+      @project.intouch_settings = params['intouch_settings'].to_unsafe_h
 
       @project.save
 

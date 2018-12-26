@@ -17,7 +17,11 @@ reloader.to_prepare do
   RedmineBots::Telegram.update_manager.add_handler(->(message) { Intouch.handle_message(message) } )
 end
 
-Rails.application.config.eager_load_paths += Dir.glob("#{Rails.application.config.root}/plugins/redmine_intouch/{lib,app/workers,app/models,app/controllers}")
+paths = Dir.glob("#{Rails.application.config.root}/plugins/redmine_intouch/{lib,app/workers,app/models,app/controllers}")
+
+Rails.application.config.eager_load_paths += paths
+Rails.application.config.autoload_paths += paths
+ActiveSupport::Dependencies.autoload_paths += paths
 
 Intouch.register_protocol('telegram', Intouch::Protocols::Telegram.new)
 Intouch.register_protocol('slack', Intouch::Protocols::Slack.new)
@@ -28,13 +32,13 @@ Redmine::Plugin.register :redmine_intouch do
   name 'Redmine Intouch plugin'
   url 'https://github.com/centosadmin/redmine_intouch'
   description 'This is a plugin for Redmine which sends a reminder email and Telegram messages to the assignee workign on a task, whose status is not updated with-in allowed duration'
-  version '1.3.0'
+  version '1.4.0'
   author 'Southbridge'
   author_url 'https://github.com/centosadmin'
 
   requires_redmine version_or_higher: '3.0'
 
-  requires_redmine_plugin :redmine_bots, '0.1.0'
+  requires_redmine_plugin :redmine_bots, '0.2.0'
 
   settings(
     default: {
