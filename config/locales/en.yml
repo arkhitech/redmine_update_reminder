@@ -1,7 +1,7 @@
 # English strings go here for Rails i18n
 en:
   update_reminder:
-    issue_tracker_update_required: Missing update on %{issue_count} issues!
-    issue_status_update_required: Missing status update on %{issue_count} issues!
-    past_due_issue_update_required: Missing update on %{issue_count} past due issues!
-    issue_estimate_required: Missing estimates on %{issue_count} issues!
+    issue_tracker_update_required: %{user_name} - Tracker - Missing update on %{issue_count} issues!
+    issue_status_update_required: %{user_name} - Missing status update on %{issue_count} issues!
+    past_due_issue_update_required: %{user_name} - Past Due - Missing update on %{issue_count} issues!
+    issue_estimate_required: %{user_name} - Missing estimates on %{issue_count} issues!
