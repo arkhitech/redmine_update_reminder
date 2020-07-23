@@ -1,3 +1,8 @@
+Rails.configuration.to_prepare do
+  require_dependency 'user'  
+  User.send(:include, RedmineUpdateReminder::Patches::UserPatch)  
+end  
+
 Redmine::Plugin.register :redmine_update_reminder do
   name 'Redmine Update Reminder'
   author 'Arkhitech'

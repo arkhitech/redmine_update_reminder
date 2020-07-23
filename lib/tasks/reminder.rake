@@ -25,7 +25,7 @@ namespace :redmine_update_reminder do
       end
     end
     RemindingMailer.remind_user_issue_estimates(user, 
-      issues_with_updated_since).deliver if issues_with_updated_since.count > 0
+      issues_with_updated_since).deliver_now if issues_with_updated_since.count > 0
   end
   
   def send_user_past_due_issues_reminders(issue_status_ids, user, mailed_issue_ids)
@@ -33,7 +33,7 @@ namespace :redmine_update_reminder do
       status_id: issue_status_ids).where('due_date < ?', Date.today).
       where.not(id: mailed_issue_ids.to_a)
     
-    RemindingMailer.remind_user_past_due_issues(user, issues).deliver if issues.exists?
+    RemindingMailer.remind_user_past_due_issues(user, issues).deliver_now if issues.exists?
   end
   def send_user_tracker_reminders(issue_status_ids, user, mailed_issue_ids)
     trackers = Tracker.all
@@ -52,7 +52,7 @@ namespace :redmine_update_reminder do
       end      
     end    
     RemindingMailer.remind_user_issue_trackers(user, 
-      issues_with_updated_since).deliver if issues_with_updated_since.count > 0
+      issues_with_updated_since).deliver_now if issues_with_updated_since.count > 0
   end
   
   def send_user_status_reminders(issue_status_ids, user, mailed_issue_ids)
@@ -83,7 +83,7 @@ namespace :redmine_update_reminder do
       end    
     end
     RemindingMailer.remind_user_issue_statuses(user, 
-      issues_with_updated_since).deliver if issues_with_updated_since.count > 0    
+      issues_with_updated_since).deliver_now if issues_with_updated_since.count > 0    
   end  
   
   def send_issue_status_reminders(issue_status_ids, user_ids, mailed_issue_ids)
@@ -103,7 +103,7 @@ namespace :redmine_update_reminder do
                     detail[:new_value] == issue_status_id && 
                     oldest_status_date > journal.created_on
                   RemindingMailer.reminder_status_email(issue.assigned_to, issue, 
-                    journal.created_on).deliver
+                    journal.created_on).deliver_now
                   mailed_issue_ids << issue.id
                   break
                 end
@@ -128,7 +128,7 @@ namespace :redmine_update_reminder do
           where.not(id: mailed_issue_ids.to_a)
 
         issues.find_each do |issue|       
-          RemindingMailer.reminder_issue_email(issue.assigned_to, issue, issue.updated_on).deliver
+          RemindingMailer.reminder_issue_email(issue.assigned_to, issue, issue.updated_on).deliver_now
           mailed_issue_ids << issue.id
         end
       end      
