@@ -139,10 +139,13 @@ namespace :redmine_update_reminder do
   def send_last_login_reminders(users)
       max_inactivity = Setting.plugin_redmine_update_reminder["remind_days_since_last_login"].to_f
       if max_inactivity > 0
-        users.find_each do |user|
+        users.delete_if do |user|
           last_login = user.last_login_on
           if !last_login.nil? and (last_login < DateTime.now - max_inactivity.days)
             RemindingMailer.reminder_inactivity_login(user, last_login).deliver_now
+            true
+          else
+            false
           end
         end
       end
@@ -151,7 +154,7 @@ namespace :redmine_update_reminder do
   def send_last_note_reminders(users)
       max_inactivity = Setting.plugin_redmine_update_reminder["remind_days_since_last_note"].to_f
       if max_inactivity > 0
-        users.find_each do |user|
+        users.find_all do |user|
           last_note = Journal.where(user_id: user.id).maximum(:created_on)
           if !last_note.nil? and (last_note < DateTime.now - max_inactivity.days)
             RemindingMailer.reminder_inactivity_notes(user, last_note).deliver_now
@@ -170,8 +173,9 @@ namespace :redmine_update_reminder do
   end
  
   task send_inactivity_reminders: :environment do
-    send_last_login_reminders(users_to_remind)
-    send_last_note_reminders(users_to_remind)
+    users = users_to_remind.to_a
+    send_last_login_reminders(users)
+    send_last_note_reminders(users)
   end
 
   task send_user_reminders: :environment do
