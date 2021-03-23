@@ -135,13 +135,51 @@ namespace :redmine_update_reminder do
     end
     
   end
-  
+
+  def send_last_login_reminders(users)
+      max_inactivity = Setting.plugin_redmine_update_reminder["remind_days_since_last_login"].to_f
+      if max_inactivity > 0
+        users.find_each do |user|
+          last_login = user.last_login_on
+          if !last_login.nil? and (last_login < DateTime.now - max_inactivity.days)
+            RemindingMailer.reminder_inactivity_login(user, last_login).deliver_now
+          end
+        end
+      end
+  end
+
+  def send_last_note_reminders(users)
+      max_inactivity = Setting.plugin_redmine_update_reminder["remind_days_since_last_note"].to_f
+      if max_inactivity > 0
+        users.find_each do |user|
+          last_note = Journal.where(user_id: user.id).maximum(:created_on)
+          if !last_note.nil? and (last_note < DateTime.now - max_inactivity.days)
+            RemindingMailer.reminder_inactivity_notes(user, last_note).deliver_now
+          end
+        end
+      end
+  end
+
+  def users_to_remind
+    remind_group = Setting.plugin_redmine_update_reminder['remind_group']        
+    if remind_group == "all"
+      User.all
+    else
+      Group.includes(:users).find(remind_group).users
+    end
+  end
+ 
+  task send_inactivity_reminders: :environment do
+    send_last_login_reminders(users_to_remind)
+    send_last_note_reminders(users_to_remind)
+  end
+
   task send_user_reminders: :environment do
     open_issue_status_ids = IssueStatus.where(is_closed: false).pluck('id')
     remind_group = Setting.plugin_redmine_update_reminder['remind_group']        
     users = Group.includes(:users).find(remind_group).users
     
-    users.find_each do |user|
+    users_to_remind.find_each do |user|
       mailed_issue_ids = Set.new
       send_user_tracker_reminders(open_issue_status_ids, user, mailed_issue_ids)
       send_user_status_reminders(open_issue_status_ids, user, mailed_issue_ids)

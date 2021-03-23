@@ -11,7 +11,7 @@ class RemindingMailer < ActionMailer::Base
   def cc_group_email_addresses
     @cc_group_email_addresses ||= begin
       cc_group = Setting.plugin_redmine_update_reminder['cc']
-      if cc_group.present?
+      if cc_group.present? and cc_group != "none"
         Group.includes(:users).find(cc_group).users.map(&:mail) 
       else
         []
@@ -39,6 +39,20 @@ class RemindingMailer < ActionMailer::Base
   end
   private :cc_email_addresses
   
+  def reminder_inactivity_login(user, last_login)
+    @user = user
+    @last_login = last_login
+    
+    mail(to: @user.mail, subject: "Is everything ok?", cc: cc_email_addresses(user))
+  end
+
+  def reminder_inactivity_notes (user, last_notes)
+    @user = user
+    @last_notes = last_notes
+    
+    mail(to: @user.mail, subject: "Is everything ok?", cc: cc_email_addresses(user))
+  end
+
   def reminder_issue_email(user, issue, updated_since)
     @user = user
     @issue = issue

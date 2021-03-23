@@ -1,86 +1,158 @@
+<fieldset class="box">
+  <legend>
+    <b>
+      <%= l('update_reminder.settings.destination_header') %>
+    </b>
+  </legend>
 
-<p>
-  <label for="settings_cc">Remind Users:</label>
+  <div class="tabular settings">
+    <%= h l('update_reminder.settings.destination_info') %>
+    <br><br>
+
+    <p>
+    <label for="settings_cc">Remind Users:</label>
+    <% options = Group.all.collect{|g| [g.name, g.id]}
+    options.prepend ["All", "all"] %>
   <%= select_tag('settings[remind_group]',
-                 options_for_select(Group.all.collect{|g| [g.name, g.id]}, @settings['remind_group'])) %>
-</p>
-<p>
-  <label for="settings_cc">Cc'd Group:</label>
+                 options_for_select(options, @settings['remind_group'])) %>
+    </p>
+
+    <p>
+    <label for="settings_cc">Cc'd Group:</label>
+    <% options = Group.all.collect{|g| [g.name, g.id]}
+    options.prepend ["None", "none"] %>
   <%= select_tag('settings[cc]',
-                 options_for_select(Group.all.collect{|g| [g.name, g.id]}, @settings['cc'])) %>
-</p>
-<p>
-  <label for="settings_cc_roles">Cc'd Project Roles:</label>
-  <%= select_tag('settings[cc_roles]',
-                 options_for_select(Role.all.collect{|r| [r.name, r.id]}, @settings['cc_roles']), multiple: true) %>
-</p>
+                 options_for_select(options, @settings['cc'])) %>
+    </p>
 
-<p>
-  <label for="settings_header">Header</label>
-  <%= text_area_tag 'settings[header]', @settings['header'] %>
-</p>
+    <p>
+    <label for="settings_cc_roles">Cc'd Project Roles:</label>
+    <%= select_tag('settings[cc_roles]',
+                   options_for_select(Role.all.collect{|r| [r.name, r.id]}, @settings['cc_roles']), multiple: true) %>
+    </p>
+  </div>
+</fieldset>
 
-<p>
-  <label for="settings_footer">Footer</label>
-  <%= text_area_tag 'settings[footer]', @settings['footer'] %>
-</p>
+<fieldset class="box">
+  <legend>
+    <b>
+      <%= l('update_reminder.settings.email_config_header') %>
+    </b>
+  </legend>
+
+  <div class="tabular settings">
+    <%= h l('update_reminder.settings.email_config_info') %>
+    <br><br>
 
 
-<p>
-  <label>
-    Update Interval for Tracker (Days)
-  </label>
-</p>
-<div class=box tabular settings>
-<table>
-  <tr>
-    <th>Tracker</th>
-    <th>General</th>
-    <%IssueStatus.where(is_closed: false).each do |issue_status|%>
-      <th><%=issue_status.name%></th>
-    <%end%>
-  </tr>
-  <%Tracker.all.each do |tracker| -%>
-    <tr>
-      <th><%=tracker.name%></th>
-      <td>
-        <%= text_field_tag "settings[#{tracker.id}_update_duration]", 
-          @settings["#{tracker.id}_update_duration"], size: 3 %>
-      </td>
-      <%IssueStatus.where(is_closed: false).each do |issue_status| -%>
-        <td>
-          <%= text_field_tag "settings[#{tracker.id}-status-#{issue_status.id}-update]", 
-            @settings["#{tracker.id}-status-#{issue_status.id}-update"], size: 3 %>
-        </td>
-      <%end%>
-    </tr>
-  <%end%>
-</table>    
-</div>
+    <p>
+    <label for="settings_header">Header</label>
+    <%= text_area_tag 'settings[header]', @settings['header'] %>
+    </p>
 
-<p>
-  <label>
-    Estimate Turnaround for Tracker (Days)
-  </label>
-</p>
-<div class=box tabular settings>
-<table>
-  <tr>
-    <th>Tracker</th>
-    <%IssueStatus.where(is_closed: false).each do |issue_status|%>
-      <th><%=issue_status.name%></th>
-    <%end%>
-  </tr>
-  <%Tracker.all.each do |tracker| -%>
-    <tr>
-      <th><%=tracker.name%></th>
-      <%IssueStatus.where(is_closed: false).each do |issue_status| -%>
-        <td>
-          <%= text_field_tag "settings[#{tracker.id}-status-#{issue_status.id}-estimate]", 
-            @settings["#{tracker.id}-status-#{issue_status.id}-estimate"], size: 3 %>
-        </td>
-      <%end%>
-    </tr>
-  <%end%>
-</table>    
-</div>
+    <p>
+    <label for="settings_footer">Footer</label>
+    <%= text_area_tag 'settings[footer]', @settings['footer'] %>
+    </p>
+  </div>
+</fieldset>
+
+
+<fieldset class="box">
+  <legend>
+    <b>
+      <%= l('update_reminder.settings.inactivity_warning_header') %>
+    </b>
+  </legend>
+
+  <div class="tabular settings">
+    <%= h l('update_reminder.settings.inactivity_warning_info') %>
+    <br><br>
+
+    <p>
+    <label for="settings_inactivity_login">Days since last login:</label>
+    <%= text_field_tag "settings[remind_days_since_last_login]", 
+      @settings["remind_days_since_last_login"], size: 3 %>
+    </p>
+    <p>
+    <label for="settings_inactivity_journal">Days since last note:</label>
+    <%= text_field_tag "settings[remind_days_since_last_note]", 
+      @settings["remind_days_since_last_note"], size: 3 %>
+    </p>
+  </div>
+</fieldset>
+
+
+<fieldset class="box">
+  <legend>
+    <b>
+      <%= l('update_reminder.settings.issue_updates_header') %>
+    </b>
+  </legend>
+
+  <div class="tabular settings">
+    <%= h l('update_reminder.settings.issue_updates_info') %>
+    <br><br>
+
+    <p>
+    <label>
+      Update Interval for Tracker (Days)
+    </label>
+    </p>
+    <div class="box tabular settings">
+      <table>
+        <tr>
+          <th>Tracker</th>
+          <th>General</th>
+          <%IssueStatus.where(is_closed: false).each do |issue_status|%>
+            <th><%=issue_status.name%></th>
+          <%end%>
+        </tr>
+        <%Tracker.all.each do |tracker| -%>
+          <tr>
+            <th><%=tracker.name%></th>
+            <td>
+              <%= text_field_tag "settings[#{tracker.id}_update_duration]", 
+                @settings["#{tracker.id}_update_duration"], size: 3 %>
+            </td>
+            <%IssueStatus.where(is_closed: false).each do |issue_status| -%>
+              <td>
+                <%= text_field_tag "settings[#{tracker.id}-status-#{issue_status.id}-update]", 
+                  @settings["#{tracker.id}-status-#{issue_status.id}-update"], size: 3 %>
+              </td>
+            <%end%>
+          </tr>
+        <%end%>
+      </table>    
+    </div>
+
+    <p>
+    <label>
+      Estimate Turnaround for Tracker (Days)
+    </label>
+    </p>
+    <div class="box tabular settings">
+      <table>
+        <tr>
+          <th>Tracker</th>
+          <%IssueStatus.where(is_closed: false).each do |issue_status|%>
+            <th><%=issue_status.name%></th>
+          <%end%>
+        </tr>
+        <%Tracker.all.each do |tracker| -%>
+          <tr>
+            <th><%=tracker.name%></th>
+            <%IssueStatus.where(is_closed: false).each do |issue_status| -%>
+              <td>
+                <%= text_field_tag "settings[#{tracker.id}-status-#{issue_status.id}-estimate]", 
+                  @settings["#{tracker.id}-status-#{issue_status.id}-estimate"], size: 3 %>
+              </td>
+            <%end%>
+          </tr>
+        <%end%>
+      </table>    
+    </div>
+  </div>
+</fieldset>
+
+
