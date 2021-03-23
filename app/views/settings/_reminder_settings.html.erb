@@ -10,7 +10,7 @@
     <br><br>
 
     <p>
-    <label for="settings_cc">Remind Users:</label>
+    <label for="settings_users">Remind users in group:</label>
     <% options = Group.all.collect{|g| [g.name, g.id]}
     options.prepend ["All", "all"] %>
   <%= select_tag('settings[remind_group]',
@@ -18,15 +18,21 @@
     </p>
 
     <p>
-    <label for="settings_cc">Cc'd Group:</label>
+    <label for="settings_cc">Cc users in group:</label>
     <% options = Group.all.collect{|g| [g.name, g.id]}
     options.prepend ["None", "none"] %>
   <%= select_tag('settings[cc]',
                  options_for_select(options, @settings['cc'])) %>
     </p>
-
+    
     <p>
-    <label for="settings_cc_roles">Cc'd Project Roles:</label>
+    <label for="settings_user_roles">If user has any of this roles...</label>
+    <%= select_tag('settings[user_roles]',
+                   options_for_select(Role.all.collect{|r| [r.name, r.id]}, @settings['user_roles']), multiple: true) %>
+    </p>
+ 
+    <p>
+    <label for="settings_cc_roles">Cc these roles in the project:</label>
     <%= select_tag('settings[cc_roles]',
                    options_for_select(Role.all.collect{|r| [r.name, r.id]}, @settings['cc_roles']), multiple: true) %>
     </p>

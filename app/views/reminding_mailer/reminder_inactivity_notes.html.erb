@@ -3,15 +3,10 @@
       Setting.plugin_redmine_update_reminder['header']).html_safe %>
 </span>
 
-<%= @user.name %>,
 <p>
-  You have not commented any issue since <%= @last_note %>
+<%= @user.firstname %>, you have not commented any issue since <%= time_ago_in_words(@last_note) %>
 </p>
 
-<span class="header">
-  <%= Redmine::WikiFormatting.to_html(Setting.text_formatting,
-      Setting.plugin_redmine_update_reminder['footer']).html_safe %>
-</span>
 <br/>
 
 <%=  Setting.plugin_redmine_update_reminder['footer'] %>

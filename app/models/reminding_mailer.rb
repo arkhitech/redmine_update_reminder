@@ -22,9 +22,11 @@ class RemindingMailer < ActionMailer::Base
   private :cc_group_email_addresses
 
   def cc_role_email_addresses(user)
+    user_role_ids = Setting.plugin_redmine_update_reminder['user_roles']
     cc_role_ids = Setting.plugin_redmine_update_reminder['cc_roles']
-    if cc_role_ids.present?
-      User.active.preload(:email_address).joins(members: :member_roles).where("#{Member.table_name}.project_id" => user.projects.pluck(:id)).
+    if cc_role_ids.present? and user_role_ids.present?
+      projects = Project.active.joins(members: :member_roles).where("members.user_id" => user.id).where("member_roles.role_id" => user_role_ids)
+      User.active.preload(:email_address).joins(members: :member_roles).where("#{Member.table_name}.project_id" => projects.pluck(:id)).
         where("#{MemberRole.table_name}.role_id IN (?)", cc_role_ids).map(&:email_address).map(&:address)
     else
       []
@@ -46,9 +48,9 @@ class RemindingMailer < ActionMailer::Base
     mail(to: @user.mail, subject: "Is everything ok?", cc: cc_email_addresses(user))
   end
 
-  def reminder_inactivity_notes (user, last_notes)
+  def reminder_inactivity_notes (user, last_note)
     @user = user
-    @last_notes = last_notes
+    @last_note = last_note
     
     mail(to: @user.mail, subject: "Is everything ok?", cc: cc_email_addresses(user))
   end
