@@ -5,7 +5,7 @@ class RemindingMailer < ActionMailer::Base
   include Redmine::Utils::DateCalculation
 
   def self.default_url_options
-    Mailer.default_url_options
+    ::Mailer.default_url_options
   end
   
   def cc_group_email_addresses
@@ -35,7 +35,7 @@ class RemindingMailer < ActionMailer::Base
     return [] if non_working_week_days.include?(Date.today.cwday)
     cc_email_addresses = cc_group_email_addresses
     cc_email_addresses += cc_role_email_addresses(user)    
-    cc_email_address.uniq
+    cc_email_addresses.uniq
   end
   private :cc_email_addresses
   
