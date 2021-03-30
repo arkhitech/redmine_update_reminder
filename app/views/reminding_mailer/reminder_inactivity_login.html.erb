@@ -1,16 +1,11 @@
-<span class="header">
-  <%= Redmine::WikiFormatting.to_html(Setting.text_formatting,
-      Setting.plugin_redmine_update_reminder['header']).html_safe %>
-</span>
+<h1>
+  <%= Setting.plugin_redmine_update_reminder['header'].html_safe %>
+</h1>
 
 <p>
 <%= @message %>
 </p>
 
-<span class="header">
-  <%= Redmine::WikiFormatting.to_html(Setting.text_formatting,
-      Setting.plugin_redmine_update_reminder['footer']).html_safe %>
+<span class="footer">
+  <%=  Setting.plugin_redmine_update_reminder['footer'] %>
 </span>
-<br/>
-
-<%=  Setting.plugin_redmine_update_reminder['footer'] %>
