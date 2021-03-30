@@ -36,6 +36,16 @@
     <%= select_tag('settings[cc_roles]',
                    options_for_select(Role.all.collect{|r| [r.name, r.id]}, @settings['cc_roles']), multiple: true) %>
     </p>
+
+    <p>
+    <label for="settings_opt_out">Don't send emails to users who have this field to no:</label>
+    <% options = UserCustomField.where(field_format: "bool").collect{|r| [r.name, r.id]}
+    options.prepend ["None", "none"] %>
+    <%= select_tag('settings[opt_out]',
+                   options_for_select(options, @settings['opt_out']), multiple: false) %>
+    </p>
+
+
   </div>
 </fieldset>
 
