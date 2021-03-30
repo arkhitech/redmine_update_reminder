@@ -42,17 +42,17 @@ class RemindingMailer < ActionMailer::Base
   private :cc_email_addresses
   
   def reminder_inactivity_login(user, last_login)
-    @user = user
-    @last_login = last_login
+    subject = I18n.t('update_reminder.subject', user_name: user.name)
+    @message = I18n.t('update_reminder.not_logged_since', user_name: user.firstname, last_login: distance_of_time_in_words(last_login, Time.now))
     
-    mail(to: @user.mail, subject: "Is everything ok?", cc: cc_email_addresses(user))
+    mail(to: user.mail, subject: subject, cc: cc_email_addresses(user))
   end
 
   def reminder_inactivity_notes (user, last_note)
-    @user = user
-    @last_note = last_note
+    subject = I18n.t('update_reminder.subject', user_name: user.name)
+    @message = I18n.t('update_reminder.not_commented_since', user_name: user.firstname, last_note: distance_of_time_in_words(last_note, Time.now))
     
-    mail(to: @user.mail, subject: "Is everything ok?", cc: cc_email_addresses(user))
+    mail(to: user.mail, subject: subject, cc: cc_email_addresses(user))
   end
 
   def reminder_issue_email(user, issue, updated_since)

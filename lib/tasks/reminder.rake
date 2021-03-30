@@ -173,6 +173,11 @@ namespace :redmine_update_reminder do
   end
  
   task send_inactivity_reminders: :environment do
+#    include Redmine::I18n
+#    set_language_if_valid Setting.default_language
+#    Class.new.extend(Redmine::I18n).set_language_if_valid Setting.default_language
+    include ActionView::Helpers::DateHelper
+    ::I18n.locale = Setting.default_language
     users = users_to_remind.to_a
     send_last_login_reminders(users)
     send_last_note_reminders(users)
