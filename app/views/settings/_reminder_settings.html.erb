@@ -93,14 +93,19 @@
 
     <div id="inactivity"> 
     <p>
-    <label for="settings_inactivity_login">Days since last login:</label>
-    <%= text_field_tag "settings[remind_days_since_last_login]", 
-      @settings["remind_days_since_last_login"], size: 3 %>
+    <label for="days_since_last_login">Days since last login:</label>
+    <%= text_field_tag "settings[days_since_last_login]", 
+      @settings["days_since_last_login"], size: 3 %>
     </p>
     <p>
-    <label for="settings_inactivity_journal">Days since last note:</label>
-    <%= text_field_tag "settings[remind_days_since_last_note]", 
-      @settings["remind_days_since_last_note"], size: 3 %>
+    <label for="days_since_last_update">Days since creating or updating any issue:</label>
+    <%= text_field_tag "settings[days_since_last_update]", 
+      @settings["days_since_last_update"], size: 3 %>
+    </p>
+    <p>
+    <label for="days_since_last_note">Days since writing a note:</label>
+    <%= text_field_tag "settings[days_since_last_note]", 
+      @settings["days_since_last_note"], size: 3 %>
     </p>
     </div>
   </div>

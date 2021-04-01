@@ -22,3 +22,8 @@
 # end
 
 # Learn more: http://github.com/javan/whenever
+#
+set :environment, "production"
+every 1.minute do
+  rake "redmine_update_reminder:send_all_reminders"
+end 

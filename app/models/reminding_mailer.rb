@@ -72,6 +72,12 @@ class RemindingMailer < ActionMailer::Base
     send_email(user, subject, message)
   end
 
+  def reminder_inactivity_updates(user, last_update)
+    subject = I18n.t('update_reminder.subject', user_name: user.name)
+    message = I18n.t('update_reminder.not_updated_since', user_name: user.firstname, last_login: distance_of_time_in_words(last_update, Time.now))
+    send_email(user, subject, message)
+  end
+
   def reminder_inactivity_notes (user, last_note)
     subject = I18n.t('update_reminder.subject', user_name: user.name)
     message = I18n.t('update_reminder.not_commented_since', user_name: user.firstname, last_note: distance_of_time_in_words(last_note, Time.now))
