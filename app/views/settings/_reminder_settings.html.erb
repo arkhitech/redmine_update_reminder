@@ -80,11 +80,18 @@
       <%= l('update_reminder.settings.inactivity_warning_header') %>
     </b>
   </legend>
-
-  <div class="tabular settings">
+  
+ <div class="tabular settings">
     <%= h l('update_reminder.settings.inactivity_warning_info') %>
     <br><br>
 
+    <p>
+    <label for="inactivity_enabled">Enable inactivity warnings:</label>
+    <%= check_box_tag "settings[inactivity_enabled]", 1,
+      @settings["inactivity_enabled"].to_i == 1 %>
+    </p>
+
+    <div id="inactivity"> 
     <p>
     <label for="settings_inactivity_login">Days since last login:</label>
     <%= text_field_tag "settings[remind_days_since_last_login]", 
@@ -95,6 +102,7 @@
     <%= text_field_tag "settings[remind_days_since_last_note]", 
       @settings["remind_days_since_last_note"], size: 3 %>
     </p>
+    </div>
   </div>
 </fieldset>
 
@@ -105,6 +113,18 @@
       <%= l('update_reminder.settings.issue_updates_header') %>
     </b>
   </legend>
+    <p>
+    <label for="issue_updates_enabled">Enable issue updates:</label>
+    <%= check_box_tag "settings[issue_updates_enabled]", 1,
+      @settings["issue_updates_enabled"].to_i == 1 %>
+    </p>
+    <p>
+    <label for="user_updates_enabled">Enable user updates:</label>
+    <%= check_box_tag "settings[user_updates_enabled]", 1,
+      @settings["user_updates_enabled"].to_i == 1 %>
+    </p>
+
+
 
   <div class="tabular settings">
     <%= h l('update_reminder.settings.issue_updates_info') %>
