@@ -8,23 +8,7 @@
   <div class="tabular settings">
     <%= h l('update_reminder.settings.destination_info') %>
     <br><br>
-
-    <p>
-    <label for="settings_users">Remind users in group:</label>
-    <% options = Group.all.collect{|g| [g.name, g.id]}
-    options.prepend ["All", "all"] %>
-  <%= select_tag('settings[remind_group]',
-                 options_for_select(options, @settings['remind_group'])) %>
-    </p>
-
-    <p>
-    <label for="settings_cc">Cc users in group:</label>
-    <% options = Group.all.collect{|g| [g.name, g.id]}
-    options.prepend ["None", "none"] %>
-  <%= select_tag('settings[cc]',
-                 options_for_select(options, @settings['cc'])) %>
-    </p>
-    
+   
     <p>
     <label for="settings_user_roles">If user has any of this roles...</label>
     <%= select_tag('settings[user_roles]',
@@ -32,13 +16,13 @@
     </p>
  
     <p>
-    <label for="settings_cc_roles">Cc these roles in the project:</label>
+    <label for="settings_cc_roles">...cc these roles in the project:</label>
     <%= select_tag('settings[cc_roles]',
                    options_for_select(Role.all.collect{|r| [r.name, r.id]}, @settings['cc_roles']), multiple: true) %>
     </p>
 
     <p>
-    <label for="settings_opt_out">Don't send emails to users who have this field to no:</label>
+    <label for="settings_opt_out">Don't send emails to users who have this field to NO:</label>
     <% options = UserCustomField.where(field_format: "bool").collect{|r| [r.name, r.id]}
     options.prepend ["None", "none"] %>
     <%= select_tag('settings[opt_out]',
@@ -86,13 +70,6 @@
     <br><br>
 
     <p>
-    <label for="inactivity_enabled">Enable inactivity warnings:</label>
-    <%= check_box_tag "settings[inactivity_enabled]", 1,
-      @settings["inactivity_enabled"].to_i == 1 %>
-    </p>
-
-    <div id="inactivity"> 
-    <p>
     <label for="days_since_last_login">Days since last login:</label>
     <%= text_field_tag "settings[days_since_last_login]", 
       @settings["days_since_last_login"], size: 3 %>
@@ -107,7 +84,6 @@
     <%= text_field_tag "settings[days_since_last_note]", 
       @settings["days_since_last_note"], size: 3 %>
     </p>
-    </div>
   </div>
 </fieldset>
 
@@ -118,18 +94,6 @@
       <%= l('update_reminder.settings.issue_updates_header') %>
     </b>
   </legend>
-    <p>
-    <label for="issue_updates_enabled">Enable issue updates:</label>
-    <%= check_box_tag "settings[issue_updates_enabled]", 1,
-      @settings["issue_updates_enabled"].to_i == 1 %>
-    </p>
-    <p>
-    <label for="user_updates_enabled">Enable user updates:</label>
-    <%= check_box_tag "settings[user_updates_enabled]", 1,
-      @settings["user_updates_enabled"].to_i == 1 %>
-    </p>
-
-
 
   <div class="tabular settings">
     <%= h l('update_reminder.settings.issue_updates_info') %>
@@ -160,33 +124,6 @@
               <td>
                 <%= text_field_tag "settings[#{tracker.id}-status-#{issue_status.id}-update]", 
                   @settings["#{tracker.id}-status-#{issue_status.id}-update"], size: 3 %>
-              </td>
-            <%end%>
-          </tr>
-        <%end%>
-      </table>    
-    </div>
-
-    <p>
-    <label>
-      Estimate Turnaround for Tracker (Days)
-    </label>
-    </p>
-    <div class="box tabular settings">
-      <table>
-        <tr>
-          <th>Tracker</th>
-          <%IssueStatus.where(is_closed: false).each do |issue_status|%>
-            <th><%=issue_status.name%></th>
-          <%end%>
-        </tr>
-        <%Tracker.all.each do |tracker| -%>
-          <tr>
-            <th><%=tracker.name%></th>
-            <%IssueStatus.where(is_closed: false).each do |issue_status| -%>
-              <td>
-                <%= text_field_tag "settings[#{tracker.id}-status-#{issue_status.id}-estimate]", 
-                  @settings["#{tracker.id}-status-#{issue_status.id}-estimate"], size: 3 %>
               </td>
             <%end%>
           </tr>
