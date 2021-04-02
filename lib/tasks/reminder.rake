@@ -2,12 +2,24 @@ namespace :redmine_update_reminder do
   require 'redmine/utils'
   include Redmine::Utils::DateCalculation
 
-  def send_user_past_due_issues_reminders(issue_status_ids, user, mailed_issue_ids)
-    issues = Issue.where(assigned_to_id: user.id, 
-      status_id: issue_status_ids).where('due_date < ?', Date.today).
-      where.not(id: mailed_issue_ids.to_a)
-    
-    RemindingMailer.remind_user_past_due_issues(user, issues).deliver_now if issues.exists?
+  def send_past_due_issues_reminders(issue_status_ids, mailed_issue_ids)
+    users = Issue.where(status_id: issue_status_ids).where('due_date < ?', Date.today).
+      where.not(assigned_to_id: nil).
+      where.not(id: mailed_issue_ids.to_a).distinct.pluck(:assigned_to_id)
+    users.find_all do |user_id|
+      issues = Issue.where(status_id: issue_status_ids).where('due_date < ?', Date.today).
+       where.(assigned_to_id: user_id)
+      RemindingMailer.remind_user_past_due_issues(User.find(user_id), issues).deliver_now if issues.exists?
+    end
+
+    users = Issue.where(status_id: issue_status_ids).where('due_date < ?', Date.today).
+      where(assigned_to_id: nil).
+      where.not(id: mailed_issue_ids.to_a).distinct.pluck(:author_id)
+    users.find_all do |user_id|
+      issues = Issue.where(status_id: issue_status_ids).where('due_date < ?', Date.today).
+        where(author_id: user_id)
+      RemindingMailer.remind_user_past_due_issues(User.find(user_id), issues).deliver_now if issues.exists?
+    end
   end
   
   def send_issue_status_reminders(issue_status_ids, mailed_issue_ids)
@@ -116,6 +128,7 @@ namespace :redmine_update_reminder do
   def send_issue_not_updated_reminders
       open_issue_status_ids = IssueStatus.where(is_closed: false).pluck('id')
       mailed_issue_ids = Set.new
+      send_past_due_issues_reminders(open_issue_status_ids, mailed_issue_ids)
       send_issue_tracker_reminders(open_issue_status_ids, mailed_issue_ids)
       send_issue_status_reminders(open_issue_status_ids, mailed_issue_ids)
   end
