@@ -69,18 +69,28 @@ namespace :redmine_update_reminder do
 
  def send_last_login_reminders(exclude_user_ids)
     max_inactivity = Setting.plugin_redmine_update_reminder["days_since_last_login"].to_i
+    interval = Setting.plugin_redmine_update_reminder["notification_interval"].to_i
+    interval = 1 if interval == 0
+    max_notifications = Setting.plugin_redmine_update_reminder["number_of_notifications"].to_i
     if max_inactivity > 0
       last_login_on = User.arel_table[:last_login_on]
       users = User.where(last_login_on.lt(max_inactivity.days.ago)).where.not(id: exclude_user_ids.to_a)
+
       users.find_all do |user|
-        RemindingMailer.reminder_inactivity_login(user, user.last_login_on).deliver_now
-        exclude_user_ids << user.id
+        difference = Date.today - max_inactivity - user.last_login_on.to_date
+        if difference % interval == 0 and (max_notifications == 0 or difference / interval < max_notifications)
+          RemindingMailer.reminder_inactivity_login(user, user.last_login_on).deliver_now
+          exclude_user_ids << user.id
+        end
       end
     end
   end
 
   def send_last_update_reminders(exclude_user_ids)
     max_inactivity = Setting.plugin_redmine_update_reminder["days_since_last_update"].to_i
+    interval = Setting.plugin_redmine_update_reminder["notification_interval"].to_i
+    interval = 1 if interval == 0
+    max_notifications = Setting.plugin_redmine_update_reminder["number_of_notifications"].to_i
     if max_inactivity > 0 
       created_on = Journal.arel_table[:created_on]
       issue_created_on = Issue.arel_table[:created_on]
@@ -91,14 +101,20 @@ namespace :redmine_update_reminder do
       users.each do |user| 
         last_update = Journal.where(user_id: user.id).maximum(:created_on)
         last_update = user.created_on unless last_update
-        RemindingMailer.reminder_inactivity_updates(user, last_update).deliver_now
+        difference = Date.today - max_inactivity - last_update.to_date
+        if difference % interval == 0 and (max_notifications == 0 or difference / interval < max_notifications)
+          RemindingMailer.reminder_inactivity_updates(user, last_update).deliver_now
+          exclude_user_ids << user.id
+        end
       end
-      exclude_user_ids.concat users.pluck(:id)
     end
   end
 
   def send_last_note_reminders(exclude_user_ids)
     max_inactivity = Setting.plugin_redmine_update_reminder["days_since_last_note"].to_i
+    interval = Setting.plugin_redmine_update_reminder["notification_interval"].to_i
+    interval = 1 if interval == 0
+    max_notifications = Setting.plugin_redmine_update_reminder["number_of_notifications"].to_i
     if max_inactivity > 0
       created_on = Journal.arel_table[:created_on]
       note_authors = Journal.where.not(notes: nil).where(created_on.gt(max_inactivity.days.ago)).distinct.pluck(:user_id)
@@ -107,9 +123,12 @@ namespace :redmine_update_reminder do
       users.each do |user| 
         last_note = Journal.where(user_id: user.id).where.not(notes: nil).maximum(:created_on)
         last_note = user.created_on unless last_note
-        RemindingMailer.reminder_inactivity_notes(user, last_note).deliver_now
+        difference = Date.today - max_inactivity - last_note.to_date
+        if difference % interval == 0 and (max_notifications == 0 or difference / interval < max_notifications)
+          RemindingMailer.reminder_inactivity_notes(user, last_note).deliver_now
+          exclude_user_ids << user.id
+        end
       end
-      exclude_user_ids.concat users.pluck(:id)
     end
   end
 
@@ -128,7 +147,8 @@ namespace :redmine_update_reminder do
   def send_issue_not_updated_reminders
       open_issue_status_ids = IssueStatus.where(is_closed: false).pluck('id')
       mailed_issue_ids = Set.new
-      send_past_due_issues_reminders(open_issue_status_ids, mailed_issue_ids)
+      # Disabled
+      # send_past_due_issues_reminders(open_issue_status_ids, mailed_issue_ids)
       send_issue_tracker_reminders(open_issue_status_ids, mailed_issue_ids)
       send_issue_status_reminders(open_issue_status_ids, mailed_issue_ids)
   end

@@ -36,10 +36,12 @@ class RemindingMailer < ActionMailer::Base
 
   def send_email(user, subject, message)
     @message = message
-    if opt_out_email_addresses.include? user.mail
-      mail(subject: subject, cc: cc_email_addresses(user))
-    else
-      mail(to: user.mail, subject: subject, cc: cc_email_addresses(user))
+    unless user.locked?
+      if opt_out_email_addresses.include? user.mail
+        mail(subject: subject, cc: cc_email_addresses(user))
+      else
+        mail(to: user.mail, subject: subject, cc: cc_email_addresses(user))
+      end
     end
   end
   private :send_email

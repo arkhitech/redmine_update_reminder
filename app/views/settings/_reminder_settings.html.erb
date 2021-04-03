@@ -44,6 +44,17 @@
     <%= h l('update_reminder.settings.email_config_info') %>
     <br><br>
 
+    <p>
+    <label for="notification interval">Notification interval (days):</label>
+    <%= text_field_tag "settings[notification_interval]", 
+      @settings["notification_interval"], size: 3 %>
+    </p>
+ 
+    <p>
+    <label for="number of notifications">Maximum number of notifications:</label>
+    <%= text_field_tag "settings[number_of_notifications]", 
+      @settings["number_of_notifications"], size: 3 %>
+    </p>
 
     <p>
     <label for="settings_header">Header</label>
@@ -54,7 +65,8 @@
     <label for="settings_footer">Footer</label>
     <%= text_area_tag 'settings[footer]', @settings['footer'] %>
     </p>
-  </div>
+
+ </div>
 </fieldset>
 
 
@@ -99,16 +111,11 @@
     <%= h l('update_reminder.settings.issue_updates_info') %>
     <br><br>
 
-    <p>
-    <label>
-      Update Interval for Tracker (Days)
-    </label>
-    </p>
-    <div class="box tabular settings">
+    <div class="tabular settings">
       <table>
         <tr>
           <th>Tracker</th>
-          <th>General</th>
+          <th>Any update</th>
           <%IssueStatus.where(is_closed: false).each do |issue_status|%>
             <th><%=issue_status.name%></th>
           <%end%>
@@ -132,5 +139,4 @@
     </div>
   </div>
 </fieldset>
-
 
