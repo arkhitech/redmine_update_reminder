@@ -21,18 +21,6 @@ class RemindingMailer < ActionMailer::Base
   end
   private :opt_out_email_addresses
 
-  def send_email(user, subject, message)
-    @message = message
-    unless user.locked?
-      if opt_out_email_addresses.include? user.mail
-        mail(subject: subject, cc: cc_email_addresses(user))
-      else
-        mail(to: user.mail, subject: subject, cc: cc_email_addresses(user))
-      end
-    end
-  end
-  private :send_email
-
   def cc_role_email_addresses(user)
     user_role_ids = Setting.plugin_redmine_update_reminder['user_roles']
     cc_role_ids = Setting.plugin_redmine_update_reminder['cc_roles']
@@ -57,22 +45,16 @@ class RemindingMailer < ActionMailer::Base
   
   # Public
 
-  def reminder_inactivity_login(user, last_login)
-    subject = I18n.t('update_reminder.subject', user_name: user.name)
-    message = I18n.t('update_reminder.not_logged_since', user_name: user.firstname, last_login: distance_of_time_in_words(last_login, Time.now))
-    send_email(user, subject, message)
-  end
-
-  def reminder_inactivity_updates(user, last_update)
-    subject = I18n.t('update_reminder.subject', user_name: user.name)
-    message = I18n.t('update_reminder.not_updated_since', user_name: user.firstname, last_login: distance_of_time_in_words(last_update, Time.now))
-    send_email(user, subject, message)
-  end
-
-  def reminder_inactivity_notes (user, last_note)
-    subject = I18n.t('update_reminder.subject', user_name: user.name)
-    message = I18n.t('update_reminder.not_commented_since', user_name: user.firstname, last_note: distance_of_time_in_words(last_note, Time.now))
-    send_email(user, subject, message)
+  def user_inactivity_reminder(user, since, message)
+    unless user.locked?
+      subject = I18n.t('update_reminder.subject', user_name: user.name)
+      @message = I18n.t(message, user_name: user.firstname, since: distance_of_time_in_words(since, Time.now))
+      if opt_out_email_addresses.include? user.mail
+        mail(subject: subject, cc: cc_email_addresses(user))
+      else
+        mail(to: user.mail, subject: subject, cc: cc_email_addresses(user))
+      end
+    end
   end
 
   def reminder_issue_email(user, issue, updated_since)

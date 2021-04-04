@@ -78,7 +78,7 @@ namespace :redmine_update_reminder do
       users.find_all do |user|
         difference = Date.today - max_inactivity - user.last_login_on.to_date
         if difference % interval == 0 and (max_notifications == 0 or difference / interval < max_notifications)
-          RemindingMailer.reminder_inactivity_login(user, user.last_login_on).deliver_now
+          RemindingMailer.user_inactivity_reminder(user, user.last_login_on, 'update_reminder.not_logged_since').deliver_now
           exclude_user_ids << user.id
         end
       end
@@ -102,7 +102,7 @@ namespace :redmine_update_reminder do
         last_update = user.created_on unless last_update
         difference = Date.today - max_inactivity - last_update.to_date
         if difference % interval == 0 and (max_notifications == 0 or difference / interval < max_notifications)
-          RemindingMailer.reminder_inactivity_updates(user, last_update).deliver_now
+          RemindingMailer.user_inactivity_reminder(user, last_update, 'update_reminder.not_updated_since').deliver_now
           exclude_user_ids << user.id
         end
       end
@@ -124,7 +124,7 @@ namespace :redmine_update_reminder do
         last_note = user.created_on unless last_note
         difference = Date.today - max_inactivity - last_note.to_date
         if difference % interval == 0 and (max_notifications == 0 or difference / interval < max_notifications)
-          RemindingMailer.reminder_inactivity_notes(user, last_note).deliver_now
+          RemindingMailer.user_inactivity_reminder(user, last_note, 'update_reminder_not_commented_since').deliver_now
           exclude_user_ids << user.id
         end
       end
