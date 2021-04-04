@@ -64,10 +64,9 @@ namespace :redmine_update_reminder do
         end
       end      
     end
-    
   end
 
- def send_last_login_reminders(exclude_user_ids)
+  def send_last_login_reminders(exclude_user_ids)
     max_inactivity = Setting.plugin_redmine_update_reminder["days_since_last_login"].to_i
     interval = Setting.plugin_redmine_update_reminder["notification_interval"].to_i
     interval = 1 if interval == 0

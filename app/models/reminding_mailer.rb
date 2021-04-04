@@ -8,19 +8,6 @@ class RemindingMailer < ActionMailer::Base
     ::Mailer.default_url_options
   end
   
-  def cc_group_email_addresses
-    @cc_group_email_addresses ||= begin
-      cc_group = Setting.plugin_redmine_update_reminder['cc']
-      if cc_group.present? and cc_group != "none"
-        Group.includes(:users).find(cc_group).users.map(&:mail) 
-      else
-        []
-      end
-  
-    end
-  end
-  private :cc_group_email_addresses
-
   def opt_out_email_addresses
     @opt_out_email_addresses ||= begin
       opt_out = Setting.plugin_redmine_update_reminder['opt_out']
@@ -57,17 +44,19 @@ class RemindingMailer < ActionMailer::Base
       []
     end
   end
+  private :cc_role_email_addresses
 
   def cc_email_addresses(user)
     return [] if non_working_week_days.include?(Date.today.cwday)
-    cc_email_addresses = cc_group_email_addresses
-    cc_email_addresses += cc_role_email_addresses(user)    
+    cc_email_addresses = cc_role_email_addresses(user)    
     cc_email_addresses.uniq
     cc_email_addresses -= opt_out_email_addresses
     cc_email_addresses -= [user.mail]
   end
   private :cc_email_addresses
   
+  # Public
+
   def reminder_inactivity_login(user, last_login)
     subject = I18n.t('update_reminder.subject', user_name: user.name)
     message = I18n.t('update_reminder.not_logged_since', user_name: user.firstname, last_login: distance_of_time_in_words(last_login, Time.now))
@@ -102,25 +91,7 @@ class RemindingMailer < ActionMailer::Base
     mail(to: user.mail, subject: @issue.subject, cc: cc_email_addresses(user))
   end
   
-  def remind_user_issue_trackers(user, issues_with_updated_since)
-    @user = user
-    @issues_with_updated_since = issues_with_updated_since
-    subject = I18n.t('update_reminder.issue_tracker_update_required', 
-      user_name: user.name, issue_count: @issues_with_updated_since.count)
-
-    mail(to: user.mail, subject: subject, cc: cc_email_addresses(user))
-  end
-
-  def remind_user_issue_statuses(user, issues_with_updated_since)
-    @user = user
-    @issues_with_updated_since = issues_with_updated_since
-    
-    subject = I18n.t('update_reminder.issue_status_update_required', 
-      user_name: user.name, issue_count: @issues_with_updated_since.count)
-    mail(to: user.mail, subject: subject, cc: cc_email_addresses(user))
-  end
-
-  def remind_user_past_due_issues(user, issues)
+ def remind_user_past_due_issues(user, issues)
     @user = user
     @issues = issues
     
@@ -129,13 +100,5 @@ class RemindingMailer < ActionMailer::Base
     mail(to: user.mail, subject: subject, cc: cc_email_addresses(user))
   end
 
-  def remind_user_issue_estimates(user, issues_with_updated_since)
-    @user = user
-    @issues_with_updated_since = issues_with_updated_since
-    
-    subject = I18n.t('update_reminder.issue_estimate_required', 
-      user_name: user.name, issue_count: @issues_with_updated_since.count)
-    mail(to: user.mail, subject: subject, cc: cc_email_addresses(user))
-  end
-  
+ 
 end
