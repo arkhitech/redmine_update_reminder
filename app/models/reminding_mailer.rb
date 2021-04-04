@@ -47,7 +47,7 @@ class RemindingMailer < ActionMailer::Base
 
   def user_inactivity_reminder(user, since, message)
     unless user.locked?
-      subject = I18n.t('update_reminder.subject', user_name: user.name)
+      subject = I18n.t('update_reminder.subject_user_inactivity', user_name: user.name)
       @message = I18n.t(message, user_name: user.firstname, since: distance_of_time_in_words(since, Time.now))
       if opt_out_email_addresses.include? user.mail
         mail(subject: subject, cc: cc_email_addresses(user))
@@ -57,29 +57,18 @@ class RemindingMailer < ActionMailer::Base
     end
   end
 
-  def reminder_issue_email(user, issue, updated_since)
-    @user = user
-    @issue = issue
-    @updated_since = updated_since
-        
-    mail(to: @user.mail, subject: @issue.subject, cc: cc_email_addresses(user))
-  end
-
-  def reminder_status_email(user, issue, updated_since)
-    @user = user
-    @issue = issue
-    @updated_since = updated_since
-
-    mail(to: user.mail, subject: @issue.subject, cc: cc_email_addresses(user))
-  end
-  
- def remind_user_past_due_issues(user, issues)
+ def issues_need_attention_reminder(user, issues, message)
     @user = user
     @issues = issues
-    
-    subject = I18n.t('update_reminder.past_due_issue_update_required', 
+    @message = I18n.t(message, user_name: user.firstname)
+    subject = I18n.t('update_reminder.subject_issues_need_attention', 
       user_name: user.name, issue_count: @issues.count)
-    mail(to: user.mail, subject: subject, cc: cc_email_addresses(user))
+
+    if opt_out_email_addresses.include? user.mail
+      mail(subject: subject, cc: cc_email_addresses(user))
+    else
+      mail(to: user.mail, subject: subject, cc: cc_email_addresses(user))
+    end
   end
 
  

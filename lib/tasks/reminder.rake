@@ -18,51 +18,55 @@ namespace :redmine_update_reminder do
     users.find_all do |user_id|
       issues = Issue.where(status_id: issue_status_ids).where('due_date < ?', Date.today).
         where(author_id: user_id)
-      RemindingMailer.remind_user_past_due_issues(User.find(user_id), issues).deliver_now if issues.exists?
+      RemindingMailer.issues_need_attention_reminder(User.find(user_id), issues, 'update_reminder.past_due_issues').deliver_now if issues.exists?
+      mailed_issue_ids.concat issues
     end
   end
   
   def send_issue_status_reminders(issue_status_ids, mailed_issue_ids)
+    all_issues = []
     Tracker.all.each do |tracker|
       issue_status_ids.each do |issue_status_id|
         update_duration = Setting.plugin_redmine_update_reminder["#{tracker.id}-status-#{issue_status_id}-update"].to_f      
         if update_duration > 0
           oldest_status_date = update_duration.days.ago
           issues_that_acquired_state_recently = JournalDetail.joins(journal: :issue).where(prop_key: "status_id", value: issue_status_id, "issues.tracker_id" => tracker).where("journals.created_on > ?", oldest_status_date).pluck("issues.id")
-          issues = Issue.distinct.where(tracker_id: tracker.id, status_id: issue_status_id).where.not(id: (mailed_issue_ids.to_a + issues_that_acquired_state_recently).uniq)
-
-          issues.find_each do |issue|       
-            user = issue.assigned_to
-            user = issue.author unless user
-            updated_on = JournalDetail.joins(:journal).where("journals.journalized_id" => issue.id).where(prop_key: "status_id").maximum("journals.created_on")
-            updated_on = issue.created_on unless updated_on
-            RemindingMailer.reminder_status_email(user, issue, updated_on).deliver_now
-            mailed_issue_ids << issue.id
-          end
-        end      
-      end    
+          all_issues = Issue.distinct.where(tracker_id: tracker.id, status_id: issue_status_id).
+            where(project_id: Project.active.pluck(:id)).
+            where.not(id: (mailed_issue_ids.to_a + issues_that_acquired_state_recently).uniq)
+        end
+      end
+    end
+    
+    User.active.each do |user|
+      issues = Issue.where(id: all_issues, assigned_to_id: user.id)
+      issues = issues.or Issue.where(id: all_issues, assigned_to_id: nil, author_id: user.id)
+      RemindingMailer.issues_need_attention_reminder(user, issues, 'update_reminder.tracker_status_reminder').deliver_now if issues.exists?
+      mailed_issue_ids.concat issues
     end
   end
   
   def send_issue_tracker_reminders(issue_status_ids, mailed_issue_ids)
-    trackers = Tracker.all
-    
-    trackers.each do |tracker|
+    all_issues = []
+    Tracker.all.each do |tracker|
       update_duration = Setting.plugin_redmine_update_reminder["#{tracker.id}_update_duration"].to_f
       if update_duration > 0
-        
         updated_since = update_duration.days.ago
-      	issues = Issue.where(tracker_id: tracker.id, status_id: issue_status_ids).
+        all_issues << Issue.where(tracker_id: tracker.id, status_id: issue_status_ids).
+          where(project_id: Project.active.pluck(:id)).
           where('updated_on < ?', updated_since).
-          where.not(id: mailed_issue_ids.to_a)
+          where.not(id: mailed_issue_ids.to_a).
+          pluck(:id)
+      end
+    end
 
-        issues.find_each do |issue|
-          user = issue.assigned_to
-          user = issue.author unless user
-          RemindingMailer.reminder_issue_email(user, issue, issue.updated_on).deliver_now
-          mailed_issue_ids << issue.id
-        end
-      end      
+    User.active.each do |user|
+      issues = Issue.where(id: all_issues, assigned_to_id: user.id)
+      issues = issues.or Issue.where(id: all_issues, assigned_to_id: nil, author_id: user.id)
+      puts "Issues:" if issues.exists?
+      puts issues
+      RemindingMailer.issues_need_attention_reminder(user, issues, 'update_reminder.tracker_reminder').deliver_now if issues.exists?
+      mailed_issue_ids.concat issues
     end
   end
 
@@ -145,7 +149,7 @@ namespace :redmine_update_reminder do
 
   def send_issue_not_updated_reminders
       open_issue_status_ids = IssueStatus.where(is_closed: false).pluck('id')
-      mailed_issue_ids = Set.new
+      mailed_issue_ids = []
       # Disabled
       # send_past_due_issues_reminders(open_issue_status_ids, mailed_issue_ids)
       send_issue_tracker_reminders(open_issue_status_ids, mailed_issue_ids)
