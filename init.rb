@@ -11,7 +11,7 @@ Redmine::Plugin.register :redmine_update_reminder do
   description 'This is a plugin for Redmine which sends a reminder email to the assignee working on a task, whose status is not updated with-in allowed duration'
   version '1.1'
   settings(default: {
-             'header' => 'Update on Task Required',
+             'header' => 'Missing Required Task Update',
              'footer' => 'powered by arkhitech.com',
            }, partial: 'settings/reminder_settings')
 end
