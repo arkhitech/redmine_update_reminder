@@ -9,6 +9,11 @@
   <%= select_tag('settings[cc]',
                  options_for_select(Group.all.collect{|g| [g.name, g.id]}, @settings['cc'])) %>
 </p>
+<p>
+  <label for="settings_cc_roles">Cc'd Project Roles:</label>
+  <%= select_tag('settings[cc_roles]',
+                 options_for_select(Role.all.collect{|r| [r.name, r.id]}, @settings['cc_roles']), multiple: true) %>
+</p>
 
 <p>
   <label for="settings_header">Header</label>
