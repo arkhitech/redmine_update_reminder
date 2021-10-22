@@ -43,6 +43,17 @@ class RemindingMailer < ActionMailer::Base
   end
   private :cc_email_addresses
   
+  def statistics_addresses(project)
+    statistics_role_ids = Setting.plugin_redmine_update_reminder['statistics_roles']
+    if statistics_role_ids.present?
+      User.active.preload(:email_address).joins(members: :member_roles).where("#{Member.table_name}.project_id" => project.id).
+        where("#{MemberRole.table_name}.role_id IN (?)", statistics_role_ids).map(&:email_address).map(&:address)
+    else
+      []
+    end
+  end
+  private :statistics_addresses
+
   # Public
 
   def user_inactivity_reminder(user, since, message)
@@ -71,5 +82,13 @@ class RemindingMailer < ActionMailer::Base
     end
   end
 
+ def statistics(project, supervisors, message)
+#   @message = "Hola"
+#   mail(to: "prueba@prueba.es", subject: "Prueba")
+
+   subject = "Actividad de #{project.name}"
+   @message = message
+   mail(to: supervisors.map(&:email_address).map(&:address), subject: subject)
+ end
  
 end
