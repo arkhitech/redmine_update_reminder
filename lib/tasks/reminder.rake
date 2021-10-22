@@ -63,10 +63,26 @@ namespace :redmine_update_reminder do
     User.active.each do |user|
       issues = Issue.where(id: all_issues, assigned_to_id: user.id)
       issues = issues.or Issue.where(id: all_issues, assigned_to_id: nil, author_id: user.id)
-      puts "Issues:" if issues.exists?
-      puts issues
       RemindingMailer.issues_need_attention_reminder(user, issues, 'update_reminder.tracker_reminder').deliver_now if issues.exists?
       mailed_issue_ids.concat issues
+    end
+  end
+  
+  def send_never_logged_in_reminders(exclude_user_ids)
+    max_inactivity = Setting.plugin_redmine_update_reminder["days_since_last_login"].to_i
+    interval = Setting.plugin_redmine_update_reminder["notification_interval"].to_i
+    interval = 1 if interval == 0
+    max_notifications = Setting.plugin_redmine_update_reminder["number_of_notifications"].to_i
+    
+    created_on = User.arel_table[:created_on]
+    users = User.active.where(:last_login_on => nil).where(created_on.lt(max_inactivity.days.ago)).where.not(id: exclude_user_ids.to_a)
+    
+    users.find_all do |user|
+      difference = Date.today - user.created_on.to_date
+      if difference % interval == 0 and (max_notifications == 0 or difference / interval < max_notifications)
+        RemindingMailer.user_inactivity_reminder(user, user.created_on, 'update_reminder.not_logged_since').deliver_now
+        exclude_user_ids << user.id
+      end
     end
   end
 
@@ -142,6 +158,7 @@ namespace :redmine_update_reminder do
 
   def send_user_inactivity_reminders
       mailed_user_ids = []
+      send_never_logged_in_reminders(mailed_user_ids)
       send_last_login_reminders(mailed_user_ids)
       send_last_update_reminders(mailed_user_ids)
       send_last_note_reminders(mailed_user_ids)
@@ -156,9 +173,36 @@ namespace :redmine_update_reminder do
       send_issue_status_reminders(open_issue_status_ids, mailed_issue_ids)
   end
 
+  def send_statistics
+    max_inactivity_login = Setting.plugin_redmine_update_reminder["days_since_last_login"].to_i
+    max_inactivity_update = Setting.plugin_redmine_update_reminder["days_since_last_update"].to_i
+    user_role_ids = Setting.plugin_redmine_update_reminder['user_roles'] 
+    supervisor_role_ids = Setting.plugin_redmine_update_reminder['cc_roles'] 
+    user_role_names = Role.where(:id => user_role_ids).pluck(:name)
+    Project.active.each do |p|
+      # Last login
+      last_login_on = User.arel_table[:last_login_on]
+      logged_in_users = User.active.where(last_login_on.gt(max_inactivity_login.days.ago)).joins(members: :member_roles).where("#{Member.table_name}.project_id" => p.id).where("#{MemberRole.table_name}.role_id IN (?)", user_role_ids) 
+
+      # Last interaction
+      supervisors = User.active.joins(members: :member_roles).where("#{Member.table_name}.project_id" => p.id).where("#{MemberRole.table_name}.role_id IN (?)", supervisor_role_ids)
+      interacting_users = []
+      if supervisors.count > 0
+        f = Redmine::Activity::Fetcher.new(supervisors.first, :project => p, :with_subprojects => 1) 
+        f.scope = ["issues"] 
+        interacting_users = f.events(DateTime.now - max_inactivity_update.days, DateTime.now ).map {|e| defined?(e.user_id) ? e.user_id : e.author_id}
+        interacting_users = interacting_users.uniq
+        if logged_in_users.count + interacting_users.count > 0
+          RemindingMailer.statistics(p, supervisors, "Proyecto #{p.name}: #{logged_in_users.count} usuarios con rol #{user_role_names} han accedido en los últimos #{max_inactivity_login} días y #{interacting_users.count} usuarios han anotado algo en los últimos #{max_inactivity_update} días").deliver_now
+        end
+      end
+    end
+  end
+
  task send_all_reminders: :environment do
     prepare_locale
     send_user_inactivity_reminders
     send_issue_not_updated_reminders
+    send_statistics
   end
 end

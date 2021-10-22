@@ -9,8 +9,8 @@ en:
       destination_header: Send reminders to
       destination_info: Who to send the emails to.
       email_config_header: Email configuration
-      email_config_info: Content for the reminder emails.
-      inactivity_warning_header: Inactivity warnings
+      email_config_info: "Send notifications every [notification interval] days with a limit of [Maximum number of notifications]. If notification interval is not set, it is assumed 1 day. If Maximum number of notifications is 0 or not set, it is assumed infinite."
+      inactivity_warning_header: User inactivity warnings
       inactivity_warning_info: Send reminders to users who haven't had activity in a number of days.
-      issue_updates_header: Issue updates
-      issue_updates_info: Issue updates
+      issue_updates_header: Issue not updated since... warnings
+      issue_updates_info: Send reminders if issues have remained unchanged for a number of days or if they have stayed in a certain state for more than a certain number of days.
