@@ -183,12 +183,12 @@ namespace :redmine_update_reminder do
     Project.active.each do |p|
       supervisors = User.active.joins(members: :member_roles).where("#{Member.table_name}.project_id" => p.id).where("#{MemberRole.table_name}.role_id IN (?)", supervisor_role_ids)
       if supervisors.count > 0
-        message = ""
+        messages = []
         # Last login
         unless max_inactivity_login == 0
           last_login_on = User.arel_table[:last_login_on]
           logged_in_users = User.active.where(last_login_on.gt(max_inactivity_login.days.ago)).joins(members: :member_roles).where("#{Member.table_name}.project_id" => p.id).where("#{MemberRole.table_name}.role_id IN (?)", user_role_ids) 
-          message << "<p>Usuarios con rol #{user_role_names} que han accedido en los últimos #{max_inactivity_login} días: #{logged_in_users.count}</p>" 
+          messages.append "Usuarios con rol #{user_role_names} que han accedido en los últimos #{max_inactivity_login} días: #{logged_in_users.count}" 
         end
 
         # Last interaction
@@ -196,12 +196,12 @@ namespace :redmine_update_reminder do
           f = Redmine::Activity::Fetcher.new(supervisors.first, :project => p, :with_subprojects => 1) 
           f.scope = ["issues"] 
           interacting_users = f.events(DateTime.now - max_inactivity_update.days, DateTime.now ).map {|e| defined?(e.user_id) ? e.user_id : e.author_id}
-          message << "<p>Usuarios que han anotado algo en los últimos #{max_inactivity_update} días: #{interacting_users.uniq.count}</p>"
+          messages.append "Usuarios que han anotado algo en los últimos #{max_inactivity_update} días: #{interacting_users.uniq.count}"
         end
 
         # Send message
-        unless message.empty?
-          RemindingMailer.statistics(p, supervisors, message).deliver_now
+        unless messages.empty?
+          RemindingMailer.statistics(p, supervisors, messages).deliver_now
         end
       end
     end
