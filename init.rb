@@ -1,7 +1,12 @@
+def load_redmine_update_reminder_patches
+  User.send(:include, RedmineUpdateReminder::Patches::UserPatch)
+end
+
+load_redmine_update_reminder_patches
+
 Rails.configuration.to_prepare do
-  require_dependency 'user'  
-  User.send(:include, RedmineUpdateReminder::Patches::UserPatch)  
-end  
+  load_redmine_update_reminder_patches
+end
 
 Redmine::Plugin.register :redmine_update_reminder do
   name 'Redmine Update Reminder'
